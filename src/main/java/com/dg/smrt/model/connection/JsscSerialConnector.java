@@ -14,7 +14,6 @@ public class JsscSerialConnector implements Connector, Closeable {
     private static SerialPort serial;
     private static StringBuilder sb;
 
-
     public JsscSerialConnector(String port) {
         this.port = port;
         try {
@@ -39,8 +38,6 @@ public class JsscSerialConnector implements Connector, Closeable {
 
         sb = new StringBuilder();
     }
-
-
 
     public void close() {
         try {
