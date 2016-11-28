@@ -1,6 +1,6 @@
-package com.dg.smrt.model.mail;
+package com.dg.srmt.model.mail;
 
-import com.dg.smrt.bo.BaseObject;
+import com.dg.srmt.bo.BaseObject;
 
 import java.io.Serializable;
 

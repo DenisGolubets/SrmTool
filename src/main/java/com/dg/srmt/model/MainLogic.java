@@ -1,12 +1,12 @@
-package com.dg.smrt.model;
+package com.dg.srmt.model;
 
-import com.dg.smrt.bo.Arduino;
-import com.dg.smrt.bo.BaseObject;
-import com.dg.smrt.bo.SubjectForMail;
-import com.dg.smrt.model.db.DbConnector;
-import com.dg.smrt.model.db.JdbcSqliteConnection;
-import com.dg.smrt.model.mail.EmailSender;
-import com.dg.smrt.model.mail.MailSettings;
+import com.dg.srmt.bo.Arduino;
+import com.dg.srmt.bo.BaseObject;
+import com.dg.srmt.bo.SubjectForMail;
+import com.dg.srmt.model.db.DbConnector;
+import com.dg.srmt.model.db.JdbcSqliteConnection;
+import com.dg.srmt.model.mail.EmailSender;
+import com.dg.srmt.model.mail.MailSettings;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;

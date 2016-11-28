@@ -1,6 +1,6 @@
-package com.dg.smrt.model;
+package com.dg.srmt.model;
 
-import com.dg.smrt.bo.BaseObject;
+import com.dg.srmt.bo.BaseObject;
 import org.apache.log4j.Logger;
 
 import javax.crypto.*;

@@ -1,9 +1,9 @@
-package com.dg.smrt.bo;
+package com.dg.srmt.bo;
 
 
-import com.dg.smrt.model.connection.Connector;
-import com.dg.smrt.model.connection.EthConnector;
-import com.dg.smrt.model.connection.JsscSerialConnector;
+import com.dg.srmt.model.connection.Connector;
+import com.dg.srmt.model.connection.EthConnector;
+import com.dg.srmt.model.connection.JsscSerialConnector;
 
 import java.io.*;
 

@@ -5,12 +5,33 @@
          version="3.0">
     <servlet>
         <servlet-name>srmt</servlet-name>
-        <servlet-class>com.dg.smrt.web.servlet.MainServlet</servlet-class>
+        <servlet-class>com.dg.srmt.web.servlet.MainServlet</servlet-class>
     </servlet>
-
-
     <servlet-mapping>
         <servlet-name>srmt</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.css</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>ErrorHandler</servlet-name>
+        <servlet-class>com.dg.srmt.web.servlet.ErrorHandler</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ErrorHandler</servlet-name>
+        <url-pattern>/ErrorHandler</url-pattern>
+    </servlet-mapping>
+    <error-page>
+        <exception-type>java.io.IOException</exception-type >
+        <location>/ErrorHandler</location>
+    </error-page>
+    <error-page>
+        <exception-type>javax.servlet.ServletException</exception-type >
+        <location>/ErrorHandler</location>
+    </error-page>
 </web-app>

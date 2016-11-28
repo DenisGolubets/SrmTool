@@ -8,19 +8,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
     <title>Settings</title>
-</head>
-<head>
-    <style>
-        <%@include file='/css/style-new.css' %>
-    </style>
-    <title>Settings</title>
-</head>
-<head>
-    <style>
-        <%@include file='/css/style-new.css' %>
-    </style>
-    <title></title>
 </head>
 <!-- -*- HTML -*- -->
 <body>

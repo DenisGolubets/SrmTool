@@ -1,4 +1,4 @@
-package com.dg.smrt.model.db;
+package com.dg.srmt.model.db;
 
 import java.util.Date;
 

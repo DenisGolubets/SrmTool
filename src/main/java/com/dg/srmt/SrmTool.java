@@ -1,6 +1,6 @@
-package com.dg.smrt;
+package com.dg.srmt;
 
-import com.dg.smrt.model.MainLogic;
+import com.dg.srmt.model.MainLogic;
 
 /**
  * Created by golubets on 19.08.2016.

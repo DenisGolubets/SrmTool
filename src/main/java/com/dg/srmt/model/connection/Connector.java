@@ -1,4 +1,4 @@
-package com.dg.smrt.model.connection;
+package com.dg.srmt.model.connection;
 
 import java.io.IOException;
 

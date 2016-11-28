@@ -1,4 +1,4 @@
-package com.dg.smrt.bo;
+package com.dg.srmt.bo;
 
 /**
  * Created by golubets on 13.08.2016.

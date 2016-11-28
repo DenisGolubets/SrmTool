@@ -1,7 +1,6 @@
-package com.dg.smrt.model;
+package com.dg.srmt.model;
 
-import com.dg.smrt.bo.Arduino;
-import com.dg.smrt.model.connection.EthConnector;
+import com.dg.srmt.bo.Arduino;
 import org.apache.log4j.Logger;
 
 import java.io.*;

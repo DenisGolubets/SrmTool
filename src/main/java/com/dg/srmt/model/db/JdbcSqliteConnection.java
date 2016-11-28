@@ -1,4 +1,4 @@
-package com.dg.smrt.model.db;
+package com.dg.srmt.model.db;
 
 import org.apache.log4j.Logger;
 
@@ -10,7 +10,7 @@ import java.util.Date;
  * Created by golubets on 20.08.2016.
  */
 public class JdbcSqliteConnection implements DbConnector {
-    Connection conn = null;
+    private Connection conn = null;
     private final String file = "./db/data.db";
     private static final Logger log = Logger.getLogger(JdbcSqliteConnection.class);
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -56,8 +56,6 @@ public class JdbcSqliteConnection implements DbConnector {
 
     public void initialization(Integer arduinoId, String name) {
         try (Statement st = conn.createStatement()) {
-            st.execute(CREATE_TABLE_ARDUINO);
-            st.execute(CREATE_TABLE_DATE);
             ResultSet rs = st.executeQuery(String.format("SELECT * FROM arduino WHERE id=%s", arduinoId));
             if (rs.next()) {
                 if (rs.getInt(1) == arduinoId) {

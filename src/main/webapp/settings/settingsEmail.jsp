@@ -11,9 +11,7 @@
     <title>Email Setting</title>
 </head>
 <head>
-    <style>
-        <%@include file='/css/style-new.css' %>
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
     <title></title>
 </head>
 <!-- -*- HTML -*- -->
@@ -23,8 +21,8 @@
     <table width="200" border="0">
         <tbody>
         <tr>
-            <td><h1><a href=../index>Home</a></h1></td>
-            <td><h1><a href=../settings>Settings</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}/index>Home</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}/settings>Settings</a></h1></td>
         </tr>
         </tbody>
     </table>

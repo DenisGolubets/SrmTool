@@ -1,4 +1,4 @@
-package com.dg.smrt.bo;
+package com.dg.srmt.bo;
 
 import java.io.Serializable;
 

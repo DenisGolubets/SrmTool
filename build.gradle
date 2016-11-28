@@ -17,7 +17,7 @@ repositories {
 //    }
 //    baseName = project.name
 //    manifest {
-//        attributes("Main-Class": "com.dg.smrt.SrmTool")
+//        attributes("Main-Class": "com.dg.srmt.SrmTool")
 //    }
 //}
 
