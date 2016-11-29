@@ -1,5 +1,8 @@
 package com.golubets.monitor.environment.model;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.golubets.monitor.environment.model.baseobject.Arduino;
 import org.apache.log4j.Logger;
 
@@ -32,6 +35,51 @@ public class ArduinoLoderSaver {
         }
     }
 
+    public void saveArduinoToJsonFile(List<Arduino> arduinos) {
+        for (Arduino a : arduinos) {
+            File file = new File(ARDUINO_SETTINGS_FOLDER + a.getId() + MASK);
+            ObjectMapper mapper = new ObjectMapper();
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                mapper.writeValue(file, a);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public List<Arduino> loadArduinoFromJsonFile() {
+
+        List<Arduino> list = new ArrayList<>();
+        try {
+            File folder = new File(ARDUINO_SETTINGS_FOLDER);
+            String[] files = folder.list((folder1, name) -> name.endsWith(MASK));
+
+            if (files.length > 0) {
+                for (String s : files) {
+                    File file = new File(ARDUINO_SETTINGS_FOLDER + s);
+                    if (file.length() > 0) {
+                        ObjectMapper mapper = new ObjectMapper();
+                        Arduino arduino = mapper.readValue(file, Arduino.class);
+                        list.add(arduino);
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            log.error(e);
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<Arduino> loadArduinoFromFile() {
         List<Arduino> list = new ArrayList<>();
         try {
@@ -41,7 +89,7 @@ public class ArduinoLoderSaver {
             if (files.length > 0) {
                 for (String s : files) {
                     File file = new File(ARDUINO_SETTINGS_FOLDER + s);
-                    if (file.length()>0){
+                    if (file.length() > 0) {
                         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
                             list.add((Arduino) in.readObject());
                         } catch (ClassNotFoundException e) {
@@ -52,7 +100,7 @@ public class ArduinoLoderSaver {
                     }
                 }
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             log.error(e);
         }
         return list;

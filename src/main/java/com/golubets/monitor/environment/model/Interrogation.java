@@ -43,7 +43,7 @@ public class Interrogation implements AutoCloseable {
 
     private Interrogation() {
         settingsMap = new SettingsLoaderSaver().loadSettingsFromFile();
-        arduinoList = new ArduinoLoderSaver().loadArduinoFromFile();
+        arduinoList = new ArduinoLoderSaver().loadArduinoFromJsonFile();
 
         db = new JdbcSqliteConnection();
         if (arduinoList.size()>0){

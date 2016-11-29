@@ -1,5 +1,6 @@
 package com.golubets.monitor.environment.model.mail;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.golubets.monitor.environment.model.baseobject.BaseObject;
 
 import java.io.Serializable;
@@ -7,8 +8,8 @@ import java.io.Serializable;
 /**
  * Created by golubets on 16.09.2016.
  */
+@JsonAutoDetect
 public class MailSettings implements BaseObject, Serializable {
-    private static final long serialVersionUID = 0L;
     private String host;
     private String from;
     private String to;
@@ -16,6 +17,9 @@ public class MailSettings implements BaseObject, Serializable {
     private String pass;
     private String port;
     private boolean ssl;
+
+    public MailSettings() {
+    }
 
     public MailSettings(String host, String from, String to) {
         this.host = host;
@@ -41,6 +45,7 @@ public class MailSettings implements BaseObject, Serializable {
         this.to = to;
         this.ssl = false;
     }
+
 
     public String getHost() {
         return host;

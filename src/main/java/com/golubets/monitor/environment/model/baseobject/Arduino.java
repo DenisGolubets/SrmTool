@@ -1,6 +1,8 @@
 package com.golubets.monitor.environment.model.baseobject;
 
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,10 +11,8 @@ import java.io.Serializable;
 /**
  * Created by golubets on 19.07.2016.
  */
+@JsonAutoDetect
 public class Arduino implements Serializable {
-    private static final long serialVersionUID = 0L;
-
-
     private int id;
     private String serialPort;
     private String name;
@@ -61,13 +61,14 @@ public class Arduino implements Serializable {
     private boolean isAlertT;
     private boolean isAlertH;
     private ConnectionType connectionType;
-    private transient String connectionString;
 
 
+    public Arduino() {
+
+    }
 
     public Arduino(ConnectionType connectionType, String connectionString) throws IOException {
         this.connectionType = connectionType;
-        this.connectionString = connectionString;
         this.id = Math.abs(0 + (int) (Math.random() * ((Integer.MAX_VALUE - 0) + 1)));
     }
 
@@ -160,6 +161,7 @@ public class Arduino implements Serializable {
     public int getDhtType() {
         return dhtType;
     }
+
 
     public ConnectionType getConnectionType() {
         return connectionType;
