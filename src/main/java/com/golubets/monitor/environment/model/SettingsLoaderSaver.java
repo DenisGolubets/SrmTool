@@ -43,15 +43,6 @@ public class SettingsLoaderSaver {
     }
 
 
-    public static void saveSettingsToJsonFile(Map<String, BaseObject> saveMap) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writeValue(settingFile,saveMap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void saveEncryptedSettingsToJsonFile(Map<String, BaseObject> saveMap) {
         initCipher();
         try {
@@ -69,26 +60,7 @@ public class SettingsLoaderSaver {
         }
     }
 
-
-
-    public Map<String, BaseObject> loadSettingsFromJsonFile() {
-        HashMap<String,BaseObject> map = null;
-        if (settingFile.exists() && !settingFile.isDirectory()) {
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                TypeFactory typeFactory = mapper.getTypeFactory();
-                MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, MailSettings.class);
-                map = mapper.readValue(settingFile, mapType);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //Map map = mapper.readValues(settingFile, HashMap.class);
-
-        }
-        return map;
-    }
-
-    public Map<String, BaseObject> loadEncryptelSettingsFromJsonFile() {
+    public Map<String, BaseObject> loadEncryptedSettingsFromJsonFile() {
         HashMap<String,BaseObject> map = null;
         initCipher();
         try {
@@ -108,24 +80,8 @@ public class SettingsLoaderSaver {
                 log.error(e);
             }
         }
-
-//        if (settingFile.exists() && !settingFile.isDirectory()) {
-//            try {
-//                ObjectMapper mapper = new ObjectMapper();
-//                TypeFactory typeFactory = mapper.getTypeFactory();
-//                MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, MailSettings.class);
-//                map = mapper.readValue(settingFile, mapType);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            //Map map = mapper.readValues(settingFile, HashMap.class);
-//
-//        }
-
-
         return map;
     }
-
 
     private static void initCipher() {
         if (cipher == null) {
@@ -137,70 +93,5 @@ public class SettingsLoaderSaver {
                 log.error(e);
             }
         }
-    }
-
-    public static void saveCryptSettingsToFile(Map<String, BaseObject> saveMap) {
-        initCipher();
-        try {
-            cipher.init(Cipher.ENCRYPT_MODE, key64);
-        } catch (InvalidKeyException e) {
-            log.error(e);
-        }
-
-        try (CipherOutputStream cipherOutputStream = new CipherOutputStream(new BufferedOutputStream(new FileOutputStream(cryptSettingFile)), cipher);
-             ObjectOutputStream out = new ObjectOutputStream(cipherOutputStream)) {
-            out.writeObject(saveMap);
-        } catch (FileNotFoundException e) {
-            log.error(SETTING_FILE + " not found", e);
-        } catch (IOException e) {
-            log.error(e);
-        }
-    }
-
-    public Map<String, BaseObject> loadCryptSettingsFromFile() {
-        initCipher();
-        try {
-            cipher.init(Cipher.DECRYPT_MODE, key64);
-        } catch (InvalidKeyException e) {
-            log.error(e);
-        }
-        if (cryptSettingFile.exists() && !cryptSettingFile.isDirectory()) {
-            try (CipherInputStream cipherInputStream = new CipherInputStream(new BufferedInputStream(new FileInputStream(cryptSettingFile)), cipher);
-                 ObjectInputStream in = new ObjectInputStream(cipherInputStream)) {
-                settingsMap = (Map<String, BaseObject>) in.readObject();
-            } catch (FileNotFoundException e) {
-                log.error(SETTING_FILE + " not found", e);
-            } catch (IOException e) {
-                log.error(e);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return settingsMap;
-    }
-
-    public static void saveSettingsToFile(Map<String, BaseObject> saveMap) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(settingFile))) {
-            out.writeObject(saveMap);
-        } catch (FileNotFoundException e) {
-            log.error(SETTING_FILE + " not found", e);
-        } catch (IOException e) {
-            log.error(e);
-        }
-    }
-
-    public Map<String, BaseObject> loadSettingsFromFile() {
-        if (settingFile.exists() && !settingFile.isDirectory()) {
-            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(settingFile))) {
-                settingsMap = (Map<String, BaseObject>) in.readObject();
-            } catch (FileNotFoundException e) {
-                log.error(SETTING_FILE + " not found", e);
-            } catch (IOException e) {
-                log.error(e);
-            } catch (ClassNotFoundException e) {
-                log.error(e);
-            }
-        }
-        return settingsMap;
     }
 }

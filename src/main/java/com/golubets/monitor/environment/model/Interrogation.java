@@ -17,16 +17,10 @@ public class Interrogation implements AutoCloseable {
     private static final Logger log = Logger.getLogger(Interrogation.class);
     public static Interrogation instance;
     private Map<String, BaseObject> settingsMap;
-
     //private long period = 600000; //10 min
     private long period = 60000; //1 min
-
     private Timer timer = new Timer();
-
     private DbConnector db = null;
-
-
-
     private List<Arduino> arduinoList = Collections.synchronizedList(new ArrayList<Arduino>());
     private int arduinoCounter = 0;
 
@@ -42,7 +36,7 @@ public class Interrogation implements AutoCloseable {
     }
 
     private Interrogation() {
-        settingsMap = new SettingsLoaderSaver().loadSettingsFromFile();
+        settingsMap = new SettingsLoaderSaver().loadEncryptedSettingsFromJsonFile();
         arduinoList = new ArduinoLoderSaver().loadArduinoFromJsonFile();
 
         db = new JdbcSqliteConnection();
@@ -50,7 +44,6 @@ public class Interrogation implements AutoCloseable {
             for (Arduino a : arduinoList) {
 
                 db.initialization(a.getId(), a.getName());
-
             }
             for (Arduino a : arduinoList) {
                 try {
@@ -59,7 +52,6 @@ public class Interrogation implements AutoCloseable {
                 } catch (IOException e) {
                     log.error(e);
                 }
-
             }
 
             timer.schedule(new TimerTask() {
@@ -71,7 +63,6 @@ public class Interrogation implements AutoCloseable {
                     } catch (IOException e) {
                         log.error(e);
                     }
-
                 }
             }, period, period);
         }
