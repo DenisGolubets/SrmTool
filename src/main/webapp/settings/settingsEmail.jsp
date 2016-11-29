@@ -21,8 +21,8 @@
     <table width="200" border="0">
         <tbody>
         <tr>
-            <td><h1><a href=${pageContext.request.contextPath}/index>Home</a></h1></td>
-            <td><h1><a href=${pageContext.request.contextPath}/settings>Settings</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}>Home</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}/settings?action=settings>Settings</a></h1></td>
         </tr>
         </tbody>
     </table>
@@ -32,16 +32,14 @@
         <p class=navigationjump><a href=#content>Skip navigation</a></p>
         <ul>
             <li>
-                <a href=../settings>General</a>
+                <a href=${pageContext.request.contextPath}/settings?action=settings>General</a>
             </li>
         </ul>
         <ul>
-            <li><a href=../settings/arduino>Arduino</a>
-            </li>
+            <li><a href=${pageContext.request.contextPath}/settings/email?action=settingsarduino>Arduino</a></li>            </li>
         </ul>
         <ul>
-            <li><a href=../settings/email>Email</a></li>
-        </ul>
+            <li><a href= ${pageContext.request.contextPath}/settings/email?action=settingsemailpage>Email</a></li>        </ul>
     </div>
 
         <div id="content">

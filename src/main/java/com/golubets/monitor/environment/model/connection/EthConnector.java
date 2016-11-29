@@ -1,4 +1,4 @@
-package com.dg.srmt.model.connection;
+package com.golubets.monitor.environment.model.connection;
 
 import org.apache.log4j.Logger;
 
@@ -112,6 +112,7 @@ public class EthConnector implements Connector, AutoCloseable {
 
         return sb.toString().substring(0, sb.length() - 3).replaceAll("[\\s]", "");
     }
+
 
     public void setDate(String request) throws IOException {
         out.write(request);

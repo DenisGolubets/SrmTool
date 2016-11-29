@@ -1,6 +1,6 @@
-package com.dg.srmt.model;
+package com.golubets.monitor.environment.model;
 
-import com.dg.srmt.bo.Arduino;
+import com.golubets.monitor.environment.model.baseobject.Arduino;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -28,23 +28,15 @@ public class ArduinoLoderSaver {
                 log.error(e);
             } catch (IOException e) {
                 log.error(e);
-
             }
-
         }
-
     }
 
     public List<Arduino> loadArduinoFromFile() {
         List<Arduino> list = new ArrayList<>();
         try {
             File folder = new File(ARDUINO_SETTINGS_FOLDER);
-            String[] files = folder.list(new FilenameFilter() {
-                @Override
-                public boolean accept(File folder, String name) {
-                    return name.endsWith(MASK);
-                }
-            });
+            String[] files = folder.list((folder1, name) -> name.endsWith(MASK));
 
             if (files.length > 0) {
                 for (String s : files) {

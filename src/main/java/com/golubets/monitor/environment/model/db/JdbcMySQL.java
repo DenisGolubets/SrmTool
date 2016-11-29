@@ -1,4 +1,4 @@
-package com.dg.srmt.model.db;
+package com.golubets.monitor.environment.model.db;
 
 import java.util.Date;
 
@@ -8,7 +8,7 @@ import java.util.Date;
 public class JdbcMySQL implements DbConnector {
 
     @Override
-    public void writeData(Integer arduinoId, Date date, double t, double h) {
+    public void persist(Integer arduinoId, Date date, double t, double h) {
 
     }
 

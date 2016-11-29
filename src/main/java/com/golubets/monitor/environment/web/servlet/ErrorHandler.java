@@ -1,4 +1,4 @@
-package com.dg.srmt.web.servlet;
+package com.golubets.monitor.environment.web.servlet;
 
 
 import javax.servlet.ServletException;

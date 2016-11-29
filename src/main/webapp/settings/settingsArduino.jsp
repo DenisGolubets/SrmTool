@@ -11,7 +11,7 @@
     <title>Settings</title>
 </head>
 <head>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"/>
     <title></title>
 </head>
 <!-- -*- HTML -*- -->
@@ -21,8 +21,8 @@
     <table width="200" border="0">
         <tbody>
         <tr>
-            <td><h1><a href=${pageContext.request.contextPath}/index>Home</a></h1></td>
-            <td><h1><a href=${pageContext.request.contextPath}/settings>Settings</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}>Home</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}/settings?action=settings>Settings</a></h1></td>
         </tr>
         </tbody>
     </table>
@@ -32,18 +32,27 @@
         <p class=navigationjump><a href=#content>Skip navigation</a></p>
         <ul>
             <li>
-                <a href=../settings>General</a>
+                <a href=${pageContext.request.contextPath}/settings?action=settings>General</a>
             </li>
         </ul>
         <ul>
-            <li><a href=../settings/arduino>Arduino</a>
-            </li>
+            <li><a href=${pageContext.request.contextPath}/settings/email?action=settingsarduino>Arduino</a></li>
         </ul>
         <ul>
-            <li><a href=../settings/email>Email</a></li>
+            <li><a href=${pageContext.request.contextPath}/settings/email?action=settingsemailpage>Email</a></li>
         </ul>
     </div>
-    ${context}
+    <div id=content><h2>Overview</h2>
+        <ul class=groupview>
+            <li class=last>
+                <span class=domain><a href=${pageContext.request.contextPath}/settings/arduino?action=editarduinopage>Server room 2</a></span>
+                <ul>
+                    <li class=last><span class=host>Sensor 1</span>[Temperature: C, Humidity: % ]</li>
+                </ul>
+            </li>
+        </ul>
+        <div class=contentpusher></div>
+    </div>
 </div>
 <div id="footer">
     <p class="tagline">Copyright 2016</p>

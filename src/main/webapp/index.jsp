@@ -43,8 +43,8 @@
     <table width="200" border="0">
         <tbody>
         <tr>
-            <td><h1><a href=index>Home</a></h1></td>
-            <td><h1><a href=settings>Settings</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}>Home</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}/settings?action=settings>Settings</a></h1></td>
         </tr>
         </tbody>
     </table>
@@ -71,6 +71,8 @@
         <div class="contentpusher"></div>
     </div>
 </div>
-
+<div id="footer">
+    <p class="tagline">Copyright 2016</p>
+</div>
 </body>
 </html>

@@ -1,6 +1,6 @@
-package com.dg.srmt.model;
+package com.golubets.monitor.environment.model;
 
-import com.dg.srmt.bo.BaseObject;
+import com.golubets.monitor.environment.model.baseobject.BaseObject;
 import org.apache.log4j.Logger;
 
 import javax.crypto.*;

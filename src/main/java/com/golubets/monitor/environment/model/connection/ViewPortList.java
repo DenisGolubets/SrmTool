@@ -1,4 +1,4 @@
-package com.dg.srmt.model.connection;
+package com.golubets.monitor.environment.model.connection;
 
 import jssc.SerialPortList;
 

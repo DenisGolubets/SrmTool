@@ -1,6 +1,6 @@
-package com.dg.srmt.model.mail;
+package com.golubets.monitor.environment.model.mail;
 
-import com.dg.srmt.bo.BaseObject;
+import com.golubets.monitor.environment.model.baseobject.BaseObject;
 
 import java.io.Serializable;
 

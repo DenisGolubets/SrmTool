@@ -1,11 +1,11 @@
-package com.dg.srmt.model.connection;
+package com.golubets.monitor.environment.model.connection;
 
 import java.io.IOException;
 
 /**
  * Created by golubets on 17.07.2016.
  */
-public interface Connector  {
+public interface Connector {
 
     String getResponse(String request) throws IOException;
 

@@ -1,4 +1,4 @@
-package com.dg.srmt.bo;
+package com.golubets.monitor.environment.model.baseobject;
 
 /**
  * Created by golubets on 13.08.2016.

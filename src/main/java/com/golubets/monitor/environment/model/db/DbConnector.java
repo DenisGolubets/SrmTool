@@ -1,4 +1,4 @@
-package com.dg.srmt.model.db;
+package com.golubets.monitor.environment.model.db;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ public interface DbConnector {
 
    void initialization(Integer arduinoId, String name);
 
-   void writeData(Integer arduinoId, Date date, double t, double h);
+   void persist(Integer arduinoId, Date date, double t, double h);
 
    void close();
 }

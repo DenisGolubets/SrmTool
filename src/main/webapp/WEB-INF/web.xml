@@ -5,7 +5,7 @@
          version="3.0">
     <servlet>
         <servlet-name>srmt</servlet-name>
-        <servlet-class>com.dg.srmt.web.servlet.MainServlet</servlet-class>
+        <servlet-class>com.golubets.monitor.environment.web.servlet.MainServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>srmt</servlet-name>
@@ -19,7 +19,7 @@
 
     <servlet>
         <servlet-name>ErrorHandler</servlet-name>
-        <servlet-class>com.dg.srmt.web.servlet.ErrorHandler</servlet-class>
+        <servlet-class>com.golubets.monitor.environment.web.servlet.ErrorHandler</servlet-class>
     </servlet>
 
     <servlet-mapping>

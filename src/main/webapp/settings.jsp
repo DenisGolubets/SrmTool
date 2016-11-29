@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"/>
     <title>Settings</title>
 </head>
 <!-- -*- HTML -*- -->
@@ -18,8 +18,8 @@
     <table width="200" border="0">
         <tbody>
         <tr>
-            <td><h1><a href=index>Home</a></h1></td>
-            <td><h1><a href=settings>Settings</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}>Home</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}/settings?action=settings>Settings</a></h1></td>
         </tr>
         </tbody>
     </table>
@@ -29,15 +29,14 @@
         <p class=navigationjump><a href=#content>Skip navigation</a></p>
         <ul>
             <li>
-                <a href=settings>General</a>
+                <a href=${pageContext.request.contextPath}/settings?action=settings>General</a>
             </li>
         </ul>
         <ul>
-            <li><a href=settings/arduino>Arduino</a>
-            </li>
+            <li><a href=${pageContext.request.contextPath}/settings/email?action=settingsarduino>Arduino</a></li>
         </ul>
         <ul>
-            <li><a href=settings/email>Email</a></li>
+            <li><a href=${pageContext.request.contextPath}/settings/email?action=settingsemailpage>Email</a></li>
         </ul>
     </div>
 

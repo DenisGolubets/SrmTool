@@ -1,4 +1,4 @@
-package com.dg.srmt.bo;
+package com.golubets.monitor.environment.model.baseobject;
 
 import java.io.Serializable;
 

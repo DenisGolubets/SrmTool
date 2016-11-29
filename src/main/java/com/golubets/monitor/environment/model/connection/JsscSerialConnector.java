@@ -1,4 +1,4 @@
-package com.dg.srmt.model.connection;
+package com.golubets.monitor.environment.model.connection;
 
 import jssc.*;
 
@@ -71,6 +71,7 @@ public class JsscSerialConnector implements Connector, Closeable {
         String result = sb.toString().replaceAll("null", "").replaceAll("[\\s]", "");
         return result.substring(0, result.length() - 3);
     }
+
 
     @Override
     public void setDate(String request) throws IOException {

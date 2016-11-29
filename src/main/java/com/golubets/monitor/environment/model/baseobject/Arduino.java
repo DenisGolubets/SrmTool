@@ -1,33 +1,59 @@
-package com.dg.srmt.bo;
+package com.golubets.monitor.environment.model.baseobject;
 
 
-import com.dg.srmt.model.connection.Connector;
-import com.dg.srmt.model.connection.EthConnector;
-import com.dg.srmt.model.connection.JsscSerialConnector;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /**
  * Created by golubets on 19.07.2016.
  */
-public class Arduino implements Serializable, Closeable {
+public class Arduino implements Serializable {
     private static final long serialVersionUID = 0L;
 
 
-    public Integer getId() {
-        return id;
-    }
-
     private int id;
     private String serialPort;
-
-
     private String name;
     private String mac;
     private String ip;
     private String subnet;
     private String gateway;
     private String dns;
+
+    public void setMac(String mac) {
+        this.mac = mac;
+    }
+
+    public void setSubnet(String subnet) {
+        this.subnet = subnet;
+    }
+
+    public void setGateway(String gateway) {
+        this.gateway = gateway;
+    }
+
+    public void setDns(String dns) {
+        this.dns = dns;
+    }
+
+    public void setDhtPort(int dhtPort) {
+        this.dhtPort = dhtPort;
+    }
+
+    public void setDhtType(int dhtType) {
+        this.dhtType = dhtType;
+    }
+
+    public void setAlertT(boolean alertT) {
+        isAlertT = alertT;
+    }
+
+    public void setAlertH(boolean alertH) {
+        isAlertH = alertH;
+    }
+
     private int dhtPort;
     private int dhtType;
     private int topT;
@@ -36,49 +62,21 @@ public class Arduino implements Serializable, Closeable {
     private boolean isAlertH;
     private ConnectionType connectionType;
     private transient String connectionString;
-    private transient Connector connector;
+
 
 
     public Arduino(ConnectionType connectionType, String connectionString) throws IOException {
         this.connectionType = connectionType;
         this.connectionString = connectionString;
-        createConnection(connectionType);
         this.id = Math.abs(0 + (int) (Math.random() * ((Integer.MAX_VALUE - 0) + 1)));
     }
 
-    private void createConnection(ConnectionType connectionType) throws IOException {
-        if (this.connectionType == ConnectionType.SERIAL) {
-            this.serialPort = connectionString;
-            this.connector = new JsscSerialConnector(serialPort);
-        } else if (this.connectionType == ConnectionType.ETHERNET) {
-            this.connector = new EthConnector(ip, 23);
-        }
-    }
-
-    public String getDate(String request) throws IOException {
-String response = "";
-        try {
-            response = connector.getResponse(request);
-        } catch (IOException e) {
-            createConnection(connectionType);
-            getDate(request);
-        }
-        return response;
-    }
-
-
     private void writeObject(ObjectOutputStream out) throws IOException {
-        try {
             out.defaultWriteObject();
-        } catch (IOException e) {
-            createConnection(connectionType);
-        }
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        createConnection(connectionType);
-
     }
 
 
@@ -111,6 +109,9 @@ String response = "";
         return serialPort;
     }
 
+    public Integer getId() {
+        return id;
+    }
 
     public boolean isAlertT() {
         return isAlertT;
@@ -169,13 +170,10 @@ String response = "";
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Arduino)) return false;
-
         Arduino arduino = (Arduino) o;
-
         if (id != arduino.id) return false;
         if (!name.equals(arduino.name)) return false;
         return connectionType == arduino.connectionType;
-
     }
 
     @Override
@@ -191,10 +189,5 @@ String response = "";
         String connectTo = (connectionType == ConnectionType.ETHERNET) ? ip : serialPort;
 
         return String.format("[Name: %s, id: %d, connected to: %s]", name, id, connectTo);
-    }
-
-    @Override
-    public void close() throws IOException {
-        connector.close();
     }
 }
