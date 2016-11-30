@@ -1,4 +1,5 @@
-<%--
+<%@ page import="com.golubets.monitor.environment.model.Interrogation" %>
+<%@ page import="com.golubets.monitor.environment.model.baseobject.Arduino" %><%--
   Created by IntelliJ IDEA.
   User: golubets
   Date: 26.11.2016
@@ -11,6 +12,9 @@
     <title>Settings</title>
 </head>
 <head>
+    <%
+        Interrogation interrogation = Interrogation.getInstance();
+    %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"/>
     <title></title>
 </head>
@@ -44,13 +48,17 @@
     </div>
     <div id=content><h2>Overview</h2>
         <ul class=groupview>
-            <li class=last>
-                <span class=domain><a href=${pageContext.request.contextPath}/settings/arduino?action=editarduinopage>Server room 2</a></span>
-                <ul>
-                    <li class=last><span class=host>Sensor 1</span>[Temperature: C, Humidity: % ]</li>
-                </ul>
-            </li>
+                 <span class=domain>
+                    <% for (Arduino a : interrogation.getArduinoList()) {%>
+                 <a href=${pageContext.request.contextPath}/settings/arduino?action=editarduinopage&id=<%=a.getId()%>><%=a.getName()%></a>
+                    <ul>
+                    <li class=last><span
+                            class=host>Sensor 1</span>[Temperature: <%=a.getTemp()%>, Humidity: <%=a.getHum()%>% ]</li>
+                    </ul>
+                        <% } %>
+                </span>
         </ul>
+        <li><a href=${pageContext.request.contextPath}/settings/arduino?action=addarduinopage>add Arduino</a></li>
         <div class=contentpusher></div>
     </div>
 </div>

@@ -11,7 +11,8 @@ import java.util.Date;
  */
 public class JdbcSqliteConnection implements DbConnector {
     private Connection conn;
-    private final String file = "./db/data.db";
+    //private final String file = "/db/data.db";
+    private final String file = "D:/db/data.db";
     private static final Logger log = Logger.getLogger(JdbcSqliteConnection.class);
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 

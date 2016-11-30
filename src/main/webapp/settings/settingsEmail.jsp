@@ -1,4 +1,5 @@
-<%--
+<%@ page import="com.golubets.monitor.environment.model.Interrogation" %>
+<%@ page import="com.golubets.monitor.environment.model.mail.MailSettings" %><%--
   Created by IntelliJ IDEA.
   User: golubets
   Date: 26.11.2016
@@ -8,6 +9,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <%
+        Interrogation interrogation = Interrogation.getInstance();
+        MailSettings mail = (MailSettings) interrogation.getSettingsMap().get("mail");
+    %>
     <title>Email Setting</title>
 </head>
 <head>
@@ -47,29 +52,29 @@
                 <input type="hidden" name="action" value="editemail"/>
                 <table>
                     <tr>
-                        <td>Host</td>
-                        <td><input type="text"  name="host" ></td>
+                        <td>SMTP</td>
+                        <td><input ${errHost} type="text"  name="host" value="<%=mail.getHost()%>"></td>
                     </tr>
                     <tr>
                         <td>From</td>
-                        <td><input type="text"  name="from" ></td>
+                        <td><input ${errFrom} type="text"  name="from" value="<%=mail.getFrom()%>"></td>
                     </tr>
                     <tr>
                         <td>To</td>
-                        <td><input type="text"  name="to" ></td>
+                        <td><input ${errTo} type="text"  name="to" value="<%=mail.getTo()%>" ></td>
                     </tr>
                     <tr>
                         <td>port</td>
-                        <td><input type="text"  name="port" ></td>
+                        <td><input type="text"  name="port" value="<%=mail.getPort()%>"></td>
                     </tr>
                     <tr>
-                        <td>SSl</td>
-                        <td><input type="checkbox" name="ssl" checked/>
+                        <td>SSL</td>
+                        <td><input type="checkbox" name="ssl" <%=(mail.isSsl() ? "checked='checked'" : "")%>/>
 
                     </tr>
                     <tr>
                         <td>Login</td>
-                        <td><input type="text"  name="login" ></td>
+                        <td><input type="text"  name="login" value="<%=mail.getLogin()%>"></td>
                     </tr>
                     <tr>
                         <td>Pass</td>

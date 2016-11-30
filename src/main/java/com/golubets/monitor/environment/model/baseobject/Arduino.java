@@ -2,6 +2,7 @@ package com.golubets.monitor.environment.model.baseobject;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -21,6 +22,34 @@ public class Arduino implements Serializable {
     private String subnet;
     private String gateway;
     private String dns;
+    private int dhtPort;
+    private int dhtType;
+    private int topT;
+    private int topH;
+    private boolean isAlertT;
+    private boolean isAlertH;
+    private ConnectionType connectionType;
+
+    @JsonIgnore
+    private double temp;
+    @JsonIgnore
+    private double hum;
+
+    public double getTemp() {
+        return temp;
+    }
+
+    public void setTemp(double temp) {
+        this.temp = temp;
+    }
+
+    public double getHum() {
+        return hum;
+    }
+
+    public void setHum(double hum) {
+        this.hum = hum;
+    }
 
     public void setMac(String mac) {
         this.mac = mac;
@@ -54,13 +83,7 @@ public class Arduino implements Serializable {
         isAlertH = alertH;
     }
 
-    private int dhtPort;
-    private int dhtType;
-    private int topT;
-    private int topH;
-    private boolean isAlertT;
-    private boolean isAlertH;
-    private ConnectionType connectionType;
+
 
 
     public Arduino() {

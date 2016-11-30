@@ -1,5 +1,3 @@
-<%@ page import="com.golubets.monitor.environment.model.Interrogation" %>
-<%@ page import="com.golubets.monitor.environment.model.baseobject.Arduino" %>
 <%--
   Created by IntelliJ IDEA.
   User: golubets
@@ -13,20 +11,7 @@
     <title>Edit arduino</title>
 </head>
 <head>
-    <%
-        int id;
-        Arduino arduino = null;
-        Interrogation interrogation = Interrogation.getInstance();
-        try {
-            id = Integer.parseInt(request.getParameter("id"));
-        } catch (NumberFormatException e) {
-            id = -1;
-        }
 
-        if (id > 0) {
-            arduino = interrogation.getArduinoById(id);
-        }
-    %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"/>
     <title></title>
 </head>
@@ -60,12 +45,12 @@
     </div>
 
     <div id="content">
-        <form method="post" action='arduino' name="arduino">
-            <input type="hidden" name="action" value="editarduino"/>
+        <form method="get" action='arduino' name="arduino">
+            <input type="hidden" name="action" value="addarduino"/>
             <table>
                 <tr>
                     <td>Name</td>
-                    <td><input ${errName} type="text" name="name" value=<%=arduino.getName()%>></td>
+                    <td><input ${errName} type="text" name="name" value="<%=(request.getParameter("name")==null)?"":request.getParameter("name")%>" ></td>
                 </tr>
                 <tr>
                     <td>Connection type</td>
@@ -77,54 +62,54 @@
                 </tr>
                 <tr>
                     <td>MAC</td>
-                    <td><input type="text" name="mac" value="<%=arduino.getMac()%>"></td>
+                    <td><input type="text" name="mac" value="<%=(request.getParameter("mac")==null)?"":request.getParameter("mac")%>"></td>
                 </tr>
                 <tr>
                     <td>IP</td>
-                    <td><input type="text" name="ip" value="<%=arduino.getIp()%>"></td>
+                    <td><input ${errIp} type="text" name="ip" value="<%=(request.getParameter("ip")==null)?"":request.getParameter("ip")%>"></td>
                 </tr>
                 <tr>
                     <td>Subnet</td>
-                    <td><input type="text" name="subnet" value="<%=arduino.getSubnet()%>"></td>
+                    <td><input type="text" name="subnet" value="<%=(request.getParameter("subnet")==null)?"":request.getParameter("subnet")%>"></td>
                 </tr>
 
                 <tr>
                     <td>Gateway</td>
-                    <td><input type="text" name="gateway" value="<%=arduino.getGateway()%>"></td>
+                    <td><input type="text" name="gateway" value="<%=(request.getParameter("gateway")==null)?"":request.getParameter("gateway")%>"></td>
                 </tr>
                 <tr>
                     <td>DNS</td>
-                    <td><input type="text" name="dns" value="<%=arduino.getDns()%>"></td>
+                    <td><input type="text" name="dns" value="<%=(request.getParameter("dns")==null)?"":request.getParameter("dns")%>"></td>
                 </tr>
 
                 <tr>
                     <td>Sensor port</td>
-                    <td><input type="text" name="dhtPort" value="<%=arduino.getDhtPort()%>"></td>
+                    <td><input ${errDhtPort} type="text" name="dhtPort" value="<%=(request.getParameter("dhtPort")==null)?"":request.getParameter("dhtPort")%>"></td>
                 </tr>
                 <tr>
                     <td>Sensor type</td>
 
                     <td><select name="sensorType">
-                        <option name="<%=arduino.getDhtType()%>"><%=arduino.getDhtType()%>
-                        </option>
+                        <option name="22"> 22</option>
+                        <option name="23"> 23</option>
                         <option name="11"> 11</option>
                     </select></td>
                     </td>
                 </tr>
                 <tr>
                     <td><input type="checkbox"
-                               name="isAlertT" <%=(arduino.isAlertT() ? "checked='checked'" : "")%>/><label>Alert by
+                               name="isAlertT" <%=((request.getParameter("isAlertT")!=null) ? "checked='checked'" : "")%> /><label>Alert by
                         temp</label>
                     </td>
-                    <td><input ${errTopT} type="text" name="topT" value="<%=arduino.getTopT()%>"></td>
+                    <td><input ${errTopT} type="text" name="topT" value="<%=(request.getParameter("topT")==null)?"":request.getParameter("topT")%>"></td>
 
                 </tr>
                 <tr>
                 <tr>
                     <td><input type="checkbox"
-                               name="isAlertH" <%=(arduino.isAlertH()? "checked='checked'" : "")%> ><label>Alert by
+                               name="isAlertH" <%=((request.getParameter("isAlertH")!=null) ? "checked='checked'" : "")%> ><label>Alert by
                         hum</label></td>
-                    <td><input ${errTopH} type="text" name="topH" value="<%=arduino.getTopH()%>"></td>
+                    <td><input ${errTopH} type="text" name="topH" value="<%=(request.getParameter("topH")==null)?"":request.getParameter("topH")%>"></td>
                 </tr>
                 <tr>
                     <td><input type="submit" value="Submit"/></td>

@@ -4,6 +4,7 @@ import com.golubets.monitor.environment.model.baseobject.Arduino;
 import com.golubets.monitor.environment.model.baseobject.BaseObject;
 import com.golubets.monitor.environment.model.db.DbConnector;
 import com.golubets.monitor.environment.model.db.JdbcSqliteConnection;
+import com.golubets.monitor.environment.model.mail.MailSettings;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -25,9 +26,9 @@ public class Interrogation implements AutoCloseable {
     private int arduinoCounter = 0;
 
     public static Interrogation getInstance() {
-        if (instance == null){
-            synchronized (Interrogation.class){
-                if (instance == null){
+        if (instance == null) {
+            synchronized (Interrogation.class) {
+                if (instance == null) {
                     instance = new Interrogation();
                 }
             }
@@ -40,14 +41,14 @@ public class Interrogation implements AutoCloseable {
         arduinoList = new ArduinoLoderSaver().loadArduinoFromJsonFile();
 
         db = new JdbcSqliteConnection();
-        if (arduinoList.size()>0){
+        if (arduinoList.size() > 0) {
             for (Arduino a : arduinoList) {
 
                 db.initialization(a.getId(), a.getName());
             }
             for (Arduino a : arduinoList) {
                 try {
-                    new Thread(new ArduinoListener(a, db,settingsMap)).start();
+                    new Thread(new ArduinoListener(a, db, settingsMap)).start();
                     arduinoCounter++;
                 } catch (IOException e) {
                     log.error(e);
@@ -68,8 +69,31 @@ public class Interrogation implements AutoCloseable {
         }
     }
 
+
+
     public void addArduino(Arduino arduino) {
+        try {
+            List<Arduino> list = new ArrayList<>();
+            list.add(arduino);
+            new ArduinoLoderSaver().saveArduinoToJsonFile(list);
+            new Thread(new ArduinoListener(arduino, db, settingsMap)).start();
+            arduinoCounter++;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         arduinoList.add(arduino);
+    }
+
+    public void editMailSetting(MailSettings mailSettings){
+        if (settingsMap==null){
+            settingsMap = new HashMap<>();
+        }
+        settingsMap.put("mail",mailSettings);
+        new SettingsLoaderSaver().saveEncryptedSettingsToJsonFile(settingsMap);
+    }
+
+    public void editArduino(Arduino arduino){
+
     }
 
     private void checkNewArduino() throws IOException {
@@ -87,13 +111,30 @@ public class Interrogation implements AutoCloseable {
         }
     }
 
+    public Arduino getArduinoById(int id) {
+        if (arduinoList.size() > 0) {
+            for (Arduino a : arduinoList) {
+                if (a.getId() == id) {
+                    return a;
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<Arduino> getArduinoList() {
+        return arduinoList;
+    }
+
+    public Map<String, BaseObject> getSettingsMap() {
+        return settingsMap;
+    }
 
     @Override
-    public void close() throws Exception {
-        db.close();
-        for (Arduino a : arduinoList) {
+    public void close() {
+        if (db!=null){
+            db.close();
         }
-        Thread.currentThread().interrupt();
     }
 }
 

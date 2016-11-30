@@ -51,14 +51,17 @@ public class ArduinoListener implements Runnable {
         }
     }
 
+
     private void getDate() throws NullPointerException, IOException {
         String[] arr = getDate("i").split("\\|");
 
         for (String s : arr) {
             if (s.startsWith("AVG10minT:")) {
                 avg10MinT = Double.parseDouble(s.replaceAll(",", "").substring(s.indexOf(":") + 1));
+                arduino.setTemp(avg10MinT);
             } else if (s.startsWith("AVG10minH:")) {
                 avg10MinH = Double.parseDouble(s.substring(s.indexOf(":") + 1));
+                arduino.setHum(avg10MinH);
             }
         }
         isAlert = (arduino.isAlertH() && avg10MinH >= topH) || (arduino.isAlertT() && avg10MinT >= topT);
@@ -119,6 +122,8 @@ public class ArduinoListener implements Runnable {
             }
         }
     }
+
+
     public String getDate(String request) throws IOException {
         try {
             return connector.getResponse(request);

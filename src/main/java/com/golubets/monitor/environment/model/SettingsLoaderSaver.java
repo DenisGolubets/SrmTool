@@ -1,6 +1,5 @@
 package com.golubets.monitor.environment.model;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.type.MapType;
@@ -27,12 +26,10 @@ public class SettingsLoaderSaver {
     private static final byte[] k = "2w32eEt9!".getBytes(Charset.forName("UTF-8"));
     private static final SecretKey key64 = new SecretKeySpec(k, "Blowfish");
 
-    private final static String SETTING_FILE = "setting.properties";
     private final static String ENCRYPT_SETTING_FILE = "setting.dat";
 
     @JsonDeserialize(as=HashMap.class)
     private Map<String, BaseObject> settingsMap;
-    private static File settingFile = new File(SETTING_FILE);
     private static File cryptSettingFile = new File(ENCRYPT_SETTING_FILE);
 
     private static Cipher cipher = null;
@@ -75,7 +72,7 @@ public class SettingsLoaderSaver {
                 MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, MailSettings.class);
                 map = mapper.readValue(in, mapType);
             } catch (FileNotFoundException e) {
-                log.error(SETTING_FILE + " not found", e);
+                log.error(ENCRYPT_SETTING_FILE + " not found", e);
             } catch (IOException e) {
                 log.error(e);
             }
