@@ -14,18 +14,24 @@
 </head>
 <head>
     <%
-        int id;
+        int id = -1;
         Arduino arduino = null;
         Interrogation interrogation = Interrogation.getInstance();
         try {
-            id = Integer.parseInt(request.getParameter("id"));
+            String stringId = request.getParameter("id");
+            if (stringId == null || stringId.length() == 0) {
+                arduino = (Arduino) request.getSession().getAttribute("arduino");
+            } else {
+                id = Integer.parseInt(stringId);
+            }
         } catch (NumberFormatException e) {
             id = -1;
         }
 
-        if (id > 0) {
+        if (arduino == null && id != -1) {
             arduino = interrogation.getArduinoById(id);
         }
+
     %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"/>
     <title></title>
@@ -62,10 +68,11 @@
     <div id="content">
         <form method="post" action='arduino' name="arduino">
             <input type="hidden" name="action" value="editarduino"/>
+            <input type="hidden" name="id" value="<%=arduino.getId()%>"/>
             <table>
                 <tr>
                     <td>Name</td>
-                    <td><input ${errName} type="text" name="name" value=<%=arduino.getName()%>></td>
+                    <td><input ${errName} type="text" name="name" value="<%=arduino.getName()%>"></td>
                 </tr>
                 <tr>
                     <td>Connection type</td>

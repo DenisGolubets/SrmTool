@@ -55,13 +55,22 @@ public class JdbcSqliteConnection implements DbConnector {
         }
     }
 
+public void renameArduino(Integer arduinoId, String name){
+    try (Statement st = conn.createStatement()) {
+        String query = String.format("UPDATE arduino SET name='%s' WHERE id=%s", name, arduinoId);
+        st.executeUpdate(query);
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
     public void initialization(Integer arduinoId, String name) {
         try (Statement st = conn.createStatement()) {
             ResultSet rs = st.executeQuery(String.format("SELECT * FROM arduino WHERE id=%s", arduinoId));
             if (rs.next()) {
                 if (rs.getInt(1) == arduinoId) {
                     if (!(rs.getString(2).equals(name))) {
-                        String query = String.format("UPDATE NAME SET name='%s' WHERE id=%s", name, arduinoId);
+                        String query = String.format("UPDATE arduino SET name='%s' WHERE id=%s", name, arduinoId);
                         st.executeUpdate(query);
                     }
                 }

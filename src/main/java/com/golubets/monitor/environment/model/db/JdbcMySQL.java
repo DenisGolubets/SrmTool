@@ -18,6 +18,11 @@ public class JdbcMySQL implements DbConnector {
     }
 
     @Override
+    public void renameArduino(Integer arduinoId, String name) {
+
+    }
+
+    @Override
     public void close() {
 
     }

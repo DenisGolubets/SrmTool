@@ -70,7 +70,6 @@ public class Interrogation implements AutoCloseable {
     }
 
 
-
     public void addArduino(Arduino arduino) {
         try {
             List<Arduino> list = new ArrayList<>();
@@ -84,15 +83,20 @@ public class Interrogation implements AutoCloseable {
         arduinoList.add(arduino);
     }
 
-    public void editMailSetting(MailSettings mailSettings){
-        if (settingsMap==null){
+    public void editMailSetting(MailSettings mailSettings) {
+        if (settingsMap == null) {
             settingsMap = new HashMap<>();
         }
-        settingsMap.put("mail",mailSettings);
+        settingsMap.put("mail", mailSettings);
         new SettingsLoaderSaver().saveEncryptedSettingsToJsonFile(settingsMap);
     }
 
-    public void editArduino(Arduino arduino){
+    public void editArduino(Arduino arduino) {
+        Arduino oldArduino = getArduinoById(arduino.getId());
+        db.renameArduino(oldArduino.getId(), arduino.getName());
+        List<Arduino> list = new ArrayList<>();
+        list.add(oldArduino);
+        new ArduinoLoderSaver().saveArduinoToJsonFile(list);
 
     }
 
@@ -132,7 +136,7 @@ public class Interrogation implements AutoCloseable {
 
     @Override
     public void close() {
-        if (db!=null){
+        if (db != null) {
             db.close();
         }
     }

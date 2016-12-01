@@ -16,6 +16,7 @@ import java.io.IOException;
  */
 public class MainServlet extends HttpServlet {
 
+
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("charset=utf-8");
@@ -58,6 +59,9 @@ public class MainServlet extends HttpServlet {
             }
             if (action.equals("addarduino")) {
                 addArduino(req, resp);
+            }
+            if (action.equals("editarduino")) {
+                editArduino(req, resp);
             }
             if (action.equals("addarduino")) {
                 editArduino(req, resp);
@@ -109,7 +113,15 @@ public class MainServlet extends HttpServlet {
 
     private void editArduino(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Arduino arduino = prepareArduino(req);
-        int errorCounter = 0;
+
+        int errorCounter = chekArduino(arduino, req, resp);
+        if (errorCounter == 0) {
+            Interrogation.getInstance().editArduino(arduino);
+            req.getRequestDispatcher("settingsArduino.jsp").forward(req, resp);
+        } else {
+            req.getSession().setAttribute("arduino", arduino);
+            req.getRequestDispatcher("editArduino.jsp").forward(req, resp);
+        }
     }
 
     private void addArduino(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -145,6 +157,7 @@ public class MainServlet extends HttpServlet {
 
     private Arduino prepareArduino(HttpServletRequest req) throws IOException {
         Arduino arduino = null;
+        String id = req.getParameter("id");
         String name = req.getParameter("name");
         String stringConnectionType = req.getParameter("connectionType");
         ConnectionType connectionType = null;
@@ -199,7 +212,11 @@ public class MainServlet extends HttpServlet {
             topH = -1;
         }
 
-        arduino = new Arduino(connectionType, ip);
+        if (id == null || id.length()==0){
+            arduino = new Arduino(connectionType, ip);
+        }else {
+            arduino = Interrogation.getInstance().getArduinoById(Integer.parseInt(id));
+        }
         arduino.setName(name);
         arduino.setConnectionType(connectionType);
         arduino.setIp(ip);
