@@ -1,5 +1,6 @@
 package com.golubets.monitor.environment.model.db;
 
+import com.golubets.monitor.environment.model.baseobject.User;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -55,14 +56,14 @@ public class JdbcSqliteConnection implements DbConnector {
         }
     }
 
-public void renameArduino(Integer arduinoId, String name){
-    try (Statement st = conn.createStatement()) {
-        String query = String.format("UPDATE arduino SET name='%s' WHERE id=%s", name, arduinoId);
-        st.executeUpdate(query);
-    } catch (SQLException e) {
-        e.printStackTrace();
+    public void renameArduino(Integer arduinoId, String name) {
+        try (Statement st = conn.createStatement()) {
+            String query = String.format("UPDATE arduino SET name='%s' WHERE id=%s", name, arduinoId);
+            st.executeUpdate(query);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
-}
 
     public void initialization(Integer arduinoId, String name) {
         try (Statement st = conn.createStatement()) {
@@ -84,7 +85,7 @@ public void renameArduino(Integer arduinoId, String name){
         }
     }
 
-    public void persist(Integer arduinoId, Date date, double t, double h) {
+    public void persistArduinoDate(Integer arduinoId, Date date, double t, double h) {
 
         String resultSQL = String.format("INSERT INTO 'date' ('ardiuino_id', 'date_time', 'temp', 'hum') VALUES ('%s','%s','%s','%s');",
                 arduinoId, DATE_FORMAT.format(date), t, h);
@@ -93,6 +94,26 @@ public void renameArduino(Integer arduinoId, String name){
         } catch (SQLException e) {
             log.error("Sql Exception", e);
         }
+    }
+
+    @Override
+    public User getUserByName(String name) {
+        User user = null;
+        String sql = String.format("SELECT id, user_name, password, role FROM users WHERE user_name = '%s'", name);
+        try (Statement st = conn.createStatement()) {
+            ResultSet rs = st.executeQuery(sql);
+            user = new User();
+            if (rs.next()) {
+                user.setId(rs.getInt("id"));
+                user.setUserName(rs.getString("user_name"));
+                user.setPassword(rs.getString("password"));
+                user.setRole(rs.getString("role"));
+                return user;
+            }
+        } catch (SQLException e) {
+            log.error(e);
+        }
+        return user;
     }
 
     public void close() {

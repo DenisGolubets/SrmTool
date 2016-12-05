@@ -2,6 +2,7 @@ package com.golubets.monitor.environment.model;
 
 import com.golubets.monitor.environment.model.baseobject.Arduino;
 import com.golubets.monitor.environment.model.baseobject.BaseObject;
+import com.golubets.monitor.environment.model.baseobject.User;
 import com.golubets.monitor.environment.model.db.DbConnector;
 import com.golubets.monitor.environment.model.db.JdbcSqliteConnection;
 import com.golubets.monitor.environment.model.mail.MailSettings;
@@ -106,6 +107,9 @@ public class Interrogation implements AutoCloseable {
             db.initialization(arduinoList.get(arduinoList.size() - 1).getId(), arduinoList.get(arduinoList.size() - 1).getName());
         }
     }
+    public User getUserByName(String userName) {
+       return db.getUserByName(userName);
+    }
 
     private void doJob() {
         for (Arduino a : arduinoList) {
@@ -140,6 +144,8 @@ public class Interrogation implements AutoCloseable {
             db.close();
         }
     }
+
+
 }
 
 

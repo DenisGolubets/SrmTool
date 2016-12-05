@@ -89,7 +89,7 @@ public class ArduinoListener implements Runnable {
     }
 
     private void writeDateToDB(Integer arduinoId) {
-        db.persist(arduinoId, new Date(), avg10MinT, avg10MinH);
+        db.persistArduinoDate(arduinoId, new Date(), avg10MinT, avg10MinH);
     }
 
     @Override

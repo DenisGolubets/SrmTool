@@ -1,5 +1,7 @@
 package com.golubets.monitor.environment.model.db;
 
+import com.golubets.monitor.environment.model.baseobject.User;
+
 import java.util.Date;
 
 /**
@@ -8,8 +10,13 @@ import java.util.Date;
 public class JdbcMySQL implements DbConnector {
 
     @Override
-    public void persist(Integer arduinoId, Date date, double t, double h) {
+    public void persistArduinoDate(Integer arduinoId, Date date, double t, double h) {
 
+    }
+
+    @Override
+    public User getUserByName(String userName) {
+        return null;
     }
 
     @Override

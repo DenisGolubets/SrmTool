@@ -3,12 +3,14 @@ package com.golubets.monitor.environment.web.servlet;
 import com.golubets.monitor.environment.model.Interrogation;
 import com.golubets.monitor.environment.model.baseobject.Arduino;
 import com.golubets.monitor.environment.model.baseobject.ConnectionType;
+import com.golubets.monitor.environment.model.baseobject.User;
 import com.golubets.monitor.environment.model.mail.MailSettings;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -16,58 +18,90 @@ import java.io.IOException;
  */
 public class MainServlet extends HttpServlet {
 
-
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("charset=utf-8");
         String action = req.getParameter("action");
-        if (action != null) {
-            if (action.equals("editarduinopage")) {
-                req.getRequestDispatcher("editArduino.jsp").forward(req, resp);
-            }
-            if (action.equals("editarduino")) {
-                editArduinopage(req, resp);
-            }
+        HttpSession session = req.getSession();
+        String role = (String) session.getAttribute("role");
 
-            if (action.equals("index")) {
-                req.getRequestDispatcher("index.jsp").forward(req, resp);
-            }
-            if (action.equals("settings")) {
-                req.getRequestDispatcher("settings.jsp").forward(req, resp);
-            }
-            if (action.equals("settingsarduino")) {
-                req.getRequestDispatcher("settingsArduino.jsp").forward(req, resp);
-            }
-            if (action.equals("addemail")) {
-                configureEmail(req, resp);
-            }
-
-            if (action.equals("editemail")) {
-                configureEmail(req, resp);
-            }
-
-            if (action.equals("settingsemailpage")) {
-                if (Interrogation.getInstance().getSettingsMap() != null && Interrogation.getInstance().getSettingsMap().containsKey("mail")) {
-                    req.getRequestDispatcher("settingsEmail.jsp").forward(req, resp);
+        if (role == null) {
+            if (action != null && action.equals("signin")) {
+                if (validateUser(req, resp)) {
+                    req.setAttribute("action", "index");
+                    req.getRequestDispatcher("settings.jsp").include(req, resp);
                 } else {
-                    req.getRequestDispatcher("addEmail.jsp").forward(req, resp);
+                    req.getRequestDispatcher("login.jsp").forward(req, resp);
                 }
+            } else {
+                req.getRequestDispatcher("login.jsp").forward(req, resp);
+            }
+        } else {
+            if (role.equals("root")) {
+                if (action != null) {
+                    if (action.equals("editarduinopage")) {
+                        req.getRequestDispatcher("editArduino.jsp").forward(req, resp);
+                    }
+                    if (action.equals("editarduino")) {
+                        editArduinopage(req, resp);
+                    }
+                    if (action.equals("index")) {
+                        req.getRequestDispatcher("index.jsp").forward(req, resp);
+                    }
+                    if (action.equals("settings")) {
+                        req.getRequestDispatcher("settings.jsp").forward(req, resp);
+                    }
+                    if (action.equals("settingsarduino")) {
+                        req.getRequestDispatcher("settingsArduino.jsp").forward(req, resp);
+                    }
+                    if (action.equals("addemail")) {
+                        configureEmail(req, resp);
+                    }
 
-            }
-            if (action.equals("addarduinopage")) {
-                req.getRequestDispatcher("addArduino.jsp").forward(req, resp);
-            }
-            if (action.equals("addarduino")) {
-                addArduino(req, resp);
-            }
-            if (action.equals("editarduino")) {
-                editArduino(req, resp);
-            }
-            if (action.equals("addarduino")) {
-                editArduino(req, resp);
+                    if (action.equals("editemail")) {
+                        configureEmail(req, resp);
+                    }
+
+                    if (action.equals("settingsemailpage")) {
+                        if (Interrogation.getInstance().getSettingsMap() != null && Interrogation.getInstance().getSettingsMap().containsKey("mail")) {
+                            req.getRequestDispatcher("settingsEmail.jsp").forward(req, resp);
+                        } else {
+                            req.getRequestDispatcher("addEmail.jsp").forward(req, resp);
+                        }
+                    }
+                    if (action.equals("addarduinopage")) {
+                        req.getRequestDispatcher("addArduino.jsp").forward(req, resp);
+                    }
+                    if (action.equals("addarduino")) {
+                        addArduino(req, resp);
+                    }
+                    if (action.equals("editarduino")) {
+                        editArduino(req, resp);
+                    }
+                    if (action.equals("addarduino")) {
+                        editArduino(req, resp);
+                    }
+                } else {
+                    req.getRequestDispatcher("index.jsp").forward(req, resp);
+                }
             }
         }
     }
+
+    private boolean validateUser(HttpServletRequest req, HttpServletResponse resp) {
+
+        User user = new User();
+        user.setUserName(req.getParameter("j_username"));
+        user.setPassword(req.getParameter("j_password"));
+        User userDb = Interrogation.getInstance().getUserByName(user.getUserName());
+        if (userDb != null & user.getUserName().equals(userDb.getUserName()) & user.getPassword().equals(userDb.getPassword())) {
+            req.getSession().setAttribute("role", userDb.getRole());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     private void configureEmail(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         MailSettings mailSettings = prepareEmail(req);
@@ -212,9 +246,9 @@ public class MainServlet extends HttpServlet {
             topH = -1;
         }
 
-        if (id == null || id.length()==0){
+        if (id == null || id.length() == 0) {
             arduino = new Arduino(connectionType, ip);
-        }else {
+        } else {
             arduino = Interrogation.getInstance().getArduinoById(Integer.parseInt(id));
         }
         arduino.setName(name);
