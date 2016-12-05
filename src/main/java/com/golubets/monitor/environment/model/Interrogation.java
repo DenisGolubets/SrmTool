@@ -9,6 +9,8 @@ import com.golubets.monitor.environment.model.mail.MailSettings;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -35,6 +37,10 @@ public class Interrogation implements AutoCloseable {
             }
         }
         return instance;
+    }
+
+    public DbConnector getDb() {
+        return db;
     }
 
     private Interrogation() {
@@ -107,9 +113,6 @@ public class Interrogation implements AutoCloseable {
             db.initialization(arduinoList.get(arduinoList.size() - 1).getId(), arduinoList.get(arduinoList.size() - 1).getName());
         }
     }
-    public User getUserByName(String userName) {
-       return db.getUserByName(userName);
-    }
 
     private void doJob() {
         for (Arduino a : arduinoList) {
@@ -128,6 +131,23 @@ public class Interrogation implements AutoCloseable {
             }
         }
         return null;
+    }
+
+    public String sha1(String input){
+        MessageDigest mDigest = null;
+        StringBuffer sb = null;
+        try {
+            mDigest = MessageDigest.getInstance("SHA1");
+            byte[] result = mDigest.digest(input.getBytes());
+            sb = new StringBuffer();
+            for (int i = 0; i < result.length; i++) {
+                sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
 
     public List<Arduino> getArduinoList() {
