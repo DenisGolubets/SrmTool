@@ -28,7 +28,6 @@ public class MainServlet extends HttpServlet {
         if (role == null) {
             if (action != null && action.equals("signin")) {
                 if (validateUser(req, resp)) {
-                    req.setAttribute("action", "index");
                     req.getRequestDispatcher("settings.jsp").include(req, resp);
                 } else {
                     req.getRequestDispatcher("login.jsp").forward(req, resp);
@@ -92,8 +91,8 @@ public class MainServlet extends HttpServlet {
 
         User user = new User();
         user.setUserName(req.getParameter("j_username"));
-        user.setPassword(req.getParameter("j_password"));
-        User userDb = Interrogation.getInstance().getUserByName(user.getUserName());
+        user.setPassword(Interrogation.getInstance().sha1(req.getParameter("j_password")));
+        User userDb = Interrogation.getInstance().getDb().getUserByName(user.getUserName());
         if (userDb != null & user.getUserName().equals(userDb.getUserName()) & user.getPassword().equals(userDb.getPassword())) {
             req.getSession().setAttribute("role", userDb.getRole());
             return true;
