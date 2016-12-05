@@ -1,5 +1,7 @@
 package com.golubets.monitor.environment.model.db;
 
+import com.golubets.monitor.environment.model.baseobject.User;
+
 import java.util.Date;
 
 /**
@@ -8,9 +10,12 @@ import java.util.Date;
 public interface DbConnector {
 
    void initialization(Integer arduinoId, String name);
+
    void renameArduino(Integer arduinoId, String name);
 
-   void persist(Integer arduinoId, Date date, double t, double h);
+   void persistArduinoDate(Integer arduinoId, Date date, double t, double h);
+
+   User getUserByName(String userName);
 
    void close();
 }
