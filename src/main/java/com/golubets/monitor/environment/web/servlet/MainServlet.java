@@ -4,6 +4,7 @@ import com.golubets.monitor.environment.model.Interrogation;
 import com.golubets.monitor.environment.model.baseobject.Arduino;
 import com.golubets.monitor.environment.model.baseobject.ConnectionType;
 import com.golubets.monitor.environment.model.baseobject.User;
+import com.golubets.monitor.environment.model.baseobject.dao.UserDao;
 import com.golubets.monitor.environment.model.mail.MailSettings;
 
 import javax.servlet.ServletException;
@@ -92,8 +93,11 @@ public class MainServlet extends HttpServlet {
         User user = new User();
         user.setUserName(req.getParameter("j_username"));
         user.setPassword(Interrogation.getInstance().sha1(req.getParameter("j_password")));
-        User userDb = Interrogation.getInstance().getDb().getUserByName(user.getUserName());
-        if (userDb != null & user.getUserName().equals(userDb.getUserName()) & user.getPassword().equals(userDb.getPassword())) {
+//        User userDb = Interrogation.getInstance().getDb().getUserByName(user.getUserName());
+        UserDao userDao = (UserDao) req.getSession().getAttribute("userDao");
+        User userDb = userDao.getByName(user.getUserName()) ;
+
+        if (userDb != null && user.getUserName().equals(userDb.getUserName()) && user.getPassword().equals(userDb.getPassword())) {
             req.getSession().setAttribute("role", userDb.getRole());
             return true;
         } else {

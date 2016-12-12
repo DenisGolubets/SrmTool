@@ -18,6 +18,9 @@
     <listener>
         <listener-class>com.golubets.monitor.environment.web.servlet.Config</listener-class>
     </listener>
+    <listener>
+        <listener-class>com.golubets.monitor.environment.web.servlet.SessionListener</listener-class>
+    </listener>
 
     <!--<security-constraint>-->
         <!--<web-resource-collection>-->

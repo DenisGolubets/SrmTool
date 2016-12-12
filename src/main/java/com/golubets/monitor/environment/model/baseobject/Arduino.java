@@ -4,6 +4,7 @@ package com.golubets.monitor.environment.model.baseobject;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -12,8 +13,11 @@ import java.io.Serializable;
 /**
  * Created by golubets on 19.07.2016.
  */
+@Entity
+@Table(name = "arduino", schema = "", catalog = "")
 @JsonAutoDetect
 public class Arduino implements Serializable {
+
     private int id;
     private String serialPort;
     private String name;
@@ -35,12 +39,115 @@ public class Arduino implements Serializable {
     @JsonIgnore
     private double hum;
 
+    public Arduino() {
+
+    }
+
+    public Arduino(ConnectionType connectionType, String connectionString) throws IOException {
+        this.connectionType = connectionType;
+        this.id = Math.abs(0 + (int) (Math.random() * ((Integer.MAX_VALUE - 0) + 1)));
+    }
+
+
+    @Id
+    @Column(name = "id", nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    protected void setId(int id) {
+        this.id = id;
+    }
+
+    @Basic
+    @Column(name = "name", nullable = false, length = 0)
+    public String getName() {
+        return name;
+    }
+
+    @Basic
+    @Column(name = "temp", nullable = false, length = 0)
     public double getTemp() {
         return temp;
     }
 
-    public void setTemp(double temp) {
-        this.temp = temp;
+    @Basic
+    @Column(name = "connectionType", nullable = false, length = 0)
+    public ConnectionType getConnectionType() {
+        return connectionType;
+    }
+
+    public String getSerialPort() {
+
+        return serialPort;
+    }
+
+    public boolean isAlertT() {
+        return isAlertT;
+    }
+
+    public boolean isAlertH() {
+        return isAlertH;
+    }
+
+    public int getTopT() {
+        return topT;
+    }
+
+    public int getTopH() {
+        return topH;
+    }
+
+    public String getMac() {
+        return mac;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public String getSubnet() {
+        return subnet;
+    }
+
+    public String getGateway() {
+        return gateway;
+    }
+
+    public String getDns() {
+        return dns;
+    }
+
+    public int getDhtPort() {
+        return dhtPort;
+    }
+
+    public int getDhtType() {
+        return dhtType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSerialPort(String serialPort) {
+        this.serialPort = serialPort;
+    }
+
+    public void setConnectionType(ConnectionType connectionType) {
+        this.connectionType = connectionType;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public void setTopT(int topT) {
+        this.topT = topT;
+    }
+
+    public void setTopH(int topH) {
+        this.topH = topH;
     }
 
     public double getHum() {
@@ -83,112 +190,12 @@ public class Arduino implements Serializable {
         isAlertH = alertH;
     }
 
-
-
-
-    public Arduino() {
-
-    }
-
-    public Arduino(ConnectionType connectionType, String connectionString) throws IOException {
-        this.connectionType = connectionType;
-        this.id = Math.abs(0 + (int) (Math.random() * ((Integer.MAX_VALUE - 0) + 1)));
-    }
-
-    private void writeObject(ObjectOutputStream out) throws IOException {
-            out.defaultWriteObject();
-    }
-
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
+    public void setTemp(double temp) {
+        this.temp = temp;
     }
 
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public void setSerialPort(String serialPort) {
-        this.serialPort = serialPort;
-    }
-
-    public void setConnectionType(ConnectionType connectionType) {
-        this.connectionType = connectionType;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public void setTopT(int topT) {
-        this.topT = topT;
-    }
-
-    public void setTopH(int topH) {
-        this.topH = topH;
-    }
-
-    public String getSerialPort() {
-
-        return serialPort;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public boolean isAlertT() {
-        return isAlertT;
-    }
-
-    public boolean isAlertH() {
-        return isAlertH;
-    }
-
-    public int getTopT() {
-        return topT;
-    }
-
-    public int getTopH() {
-        return topH;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getMac() {
-        return mac;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public String getSubnet() {
-        return subnet;
-    }
-
-    public String getGateway() {
-        return gateway;
-    }
-
-    public String getDns() {
-        return dns;
-    }
-
-    public int getDhtPort() {
-        return dhtPort;
-    }
-
-    public int getDhtType() {
-        return dhtType;
-    }
-
-
-    public ConnectionType getConnectionType() {
-        return connectionType;
-    }
 
 
     @Override

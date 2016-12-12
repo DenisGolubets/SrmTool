@@ -17,7 +17,7 @@
     <form action=${loginUrl} method="post">
         <h2 class="form-signin-heading">Please sign in</h2>
         <input type="hidden" name="action" value="signin"/>
-        <input type="text" class="form-control" name="j_username"  required autofocus>
+        <input type="text" class="form-control" name="j_username" placeholder="Login" required autofocus>
         <input type="password" class="form-control" name="j_password" placeholder="Password">
         <button class="btn btn-lg btn-primary btn-block" type="submit">sign in</button>
     </form>

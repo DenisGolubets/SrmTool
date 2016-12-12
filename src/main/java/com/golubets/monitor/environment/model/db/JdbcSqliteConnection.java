@@ -1,8 +1,13 @@
 package com.golubets.monitor.environment.model.db;
 
 import com.golubets.monitor.environment.model.baseobject.User;
+import com.golubets.monitor.environment.model.connection.Connector;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,7 +15,9 @@ import java.util.Date;
 /**
  * Created by golubets on 20.08.2016.
  */
+@Component
 public class JdbcSqliteConnection implements DbConnector {
+
     private Connection conn;
     //private final String file = "/db/data.db";
     private final String file = "D:/db/data.db";
@@ -29,6 +36,11 @@ public class JdbcSqliteConnection implements DbConnector {
             "`hum`INTEGER NOT NULL," +
             "FOREIGN KEY (`ardiuino_id`) REFERENCES `arduino`(id)" +
             ");";
+
+    @Bean(name = "db")
+    private JdbcSqliteConnection connection() {
+        return new JdbcSqliteConnection();
+    }
 
     //create default database
     public JdbcSqliteConnection() {

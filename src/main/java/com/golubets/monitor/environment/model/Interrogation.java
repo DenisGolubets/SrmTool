@@ -2,11 +2,17 @@ package com.golubets.monitor.environment.model;
 
 import com.golubets.monitor.environment.model.baseobject.Arduino;
 import com.golubets.monitor.environment.model.baseobject.BaseObject;
-import com.golubets.monitor.environment.model.baseobject.User;
-import com.golubets.monitor.environment.model.db.DbConnector;
+import com.golubets.monitor.environment.model.baseobject.HibernateSessionFactory;
+import com.golubets.monitor.environment.model.baseobject.dao.ArduinoDao;
+import com.golubets.monitor.environment.model.baseobject.dao.DataDao;
+import com.golubets.monitor.environment.model.baseobject.dao.UserDao;
 import com.golubets.monitor.environment.model.db.JdbcSqliteConnection;
 import com.golubets.monitor.environment.model.mail.MailSettings;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -16,17 +22,30 @@ import java.util.*;
 /**
  * Created by golubets on 24.08.2016.
  */
+@Component
 public class Interrogation implements AutoCloseable {
 
     private static final Logger log = Logger.getLogger(Interrogation.class);
     public static Interrogation instance;
     private Map<String, BaseObject> settingsMap;
+    ApplicationContext context;
     //private long period = 600000; //10 min
     private long period = 60000; //1 min
     private Timer timer = new Timer();
-    private DbConnector db = null;
+
+    @Autowired
+    ArduinoDao arduinoDao;
+
+    @Autowired
+    UserDao userDao;
+
+    @Autowired
+    DataDao dataDao;
+    //private DbConnector db;
+
     private List<Arduino> arduinoList = Collections.synchronizedList(new ArrayList<Arduino>());
     private int arduinoCounter = 0;
+
 
     public static Interrogation getInstance() {
         if (instance == null) {
@@ -39,23 +58,36 @@ public class Interrogation implements AutoCloseable {
         return instance;
     }
 
-    public DbConnector getDb() {
-        return db;
+//    public DbConnector getDb() {
+//        return db;
+//    }
+
+    public ApplicationContext getContext() {
+        return context;
     }
 
     private Interrogation() {
+        context = new AnnotationConfigApplicationContext(JdbcSqliteConnection.class, ArduinoDao.class, UserDao.class, DataDao.class);
+        //db = (DbConnector) context.getBean("db");
+        arduinoDao = (ArduinoDao) context.getBean("arduinoDao");
+        userDao = (UserDao) context.getBean("userDao");
+
+
         settingsMap = new SettingsLoaderSaver().loadEncryptedSettingsFromJsonFile();
         arduinoList = new ArduinoLoderSaver().loadArduinoFromJsonFile();
 
-        db = new JdbcSqliteConnection();
+        //db = new JdbcSqliteConnection();
         if (arduinoList.size() > 0) {
             for (Arduino a : arduinoList) {
 
-                db.initialization(a.getId(), a.getName());
+                //db.initialization(a.getId(), a.getName());
+                if (arduinoDao.getByID(a.getId()).getId()!=a.getId()){
+                    arduinoDao.persist(a);
+                }
             }
             for (Arduino a : arduinoList) {
                 try {
-                    new Thread(new ArduinoListener(a, db, settingsMap)).start();
+                    new Thread(new ArduinoListener(a, (DataDao) context.getBean("dataDao"), settingsMap)).start();
                     arduinoCounter++;
                 } catch (IOException e) {
                     log.error(e);
@@ -82,7 +114,7 @@ public class Interrogation implements AutoCloseable {
             List<Arduino> list = new ArrayList<>();
             list.add(arduino);
             new ArduinoLoderSaver().saveArduinoToJsonFile(list);
-            new Thread(new ArduinoListener(arduino, db, settingsMap)).start();
+            new Thread(new ArduinoListener(arduino, dataDao, settingsMap)).start();
             arduinoCounter++;
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,7 +132,8 @@ public class Interrogation implements AutoCloseable {
 
     public void editArduino(Arduino arduino) {
         Arduino oldArduino = getArduinoById(arduino.getId());
-        db.renameArduino(oldArduino.getId(), arduino.getName());
+       // db.renameArduino(oldArduino.getId(), arduino.getName());
+        arduinoDao.persist(arduino);
         List<Arduino> list = new ArrayList<>();
         list.add(oldArduino);
         new ArduinoLoderSaver().saveArduinoToJsonFile(list);
@@ -109,8 +142,9 @@ public class Interrogation implements AutoCloseable {
 
     private void checkNewArduino() throws IOException {
         if (arduinoList.size() > arduinoCounter) {
-            new Thread(new ArduinoListener(arduinoList.get(arduinoList.size() - 1), db, settingsMap)).start();
-            db.initialization(arduinoList.get(arduinoList.size() - 1).getId(), arduinoList.get(arduinoList.size() - 1).getName());
+            new Thread(new ArduinoListener(arduinoList.get(arduinoList.size() - 1), dataDao, settingsMap)).start();
+            //db.initialization(arduinoList.get(arduinoList.size() - 1).getId(), arduinoList.get(arduinoList.size() - 1).getName());
+            arduinoDao.persist(arduinoList.get(arduinoList.size() - 1));
         }
     }
 
@@ -133,7 +167,7 @@ public class Interrogation implements AutoCloseable {
         return null;
     }
 
-    public String sha1(String input){
+    public String sha1(String input) {
         MessageDigest mDigest = null;
         StringBuffer sb = null;
         try {
@@ -160,9 +194,10 @@ public class Interrogation implements AutoCloseable {
 
     @Override
     public void close() {
-        if (db != null) {
-            db.close();
-        }
+//        if (db != null) {
+//            db.close();
+//        }
+        HibernateSessionFactory.getSessionFactory().close();
     }
 
 

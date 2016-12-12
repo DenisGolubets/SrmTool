@@ -4,6 +4,7 @@ import com.golubets.monitor.environment.model.baseobject.Arduino;
 import com.golubets.monitor.environment.model.baseobject.BaseObject;
 import com.golubets.monitor.environment.model.baseobject.ConnectionType;
 import com.golubets.monitor.environment.model.baseobject.SubjectForMail;
+import com.golubets.monitor.environment.model.baseobject.dao.DataDao;
 import com.golubets.monitor.environment.model.connection.Connector;
 import com.golubets.monitor.environment.model.connection.EthConnector;
 import com.golubets.monitor.environment.model.connection.JsscSerialConnector;
@@ -22,6 +23,7 @@ import java.util.Map;
  */
 public class ArduinoListener implements Runnable {
     private final Logger log = Logger.getLogger(ArduinoListener.class);
+    DataDao dao;
 
     private DbConnector db;
     private String separator = System.getProperty("line.separator");
@@ -43,6 +45,19 @@ public class ArduinoListener implements Runnable {
         this.topH = arduino.getTopH();
         this.topT = arduino.getTopT();
         this.db = db;
+        this.connector = createConnection(arduino.getConnectionType());
+        if (settingsMap != null) {
+            if (settingsMap.containsKey("mail")) {
+                emailSender = new EmailSender((MailSettings) settingsMap.get("mail"));
+            }
+        }
+    }
+
+    public ArduinoListener(Arduino arduino, DataDao dao, Map<String, BaseObject> settingsMap) throws IOException {
+        this.arduino = arduino;
+        this.topH = arduino.getTopH();
+        this.topT = arduino.getTopT();
+        this.dao = dao;
         this.connector = createConnection(arduino.getConnectionType());
         if (settingsMap != null) {
             if (settingsMap.containsKey("mail")) {
@@ -89,7 +104,8 @@ public class ArduinoListener implements Runnable {
     }
 
     private void writeDateToDB(Integer arduinoId) {
-        db.persistArduinoDate(arduinoId, new Date(), avg10MinT, avg10MinH);
+        //db.persistArduinoDate(arduinoId, new Date(), avg10MinT, avg10MinH);
+        dao.persist(arduino, new Date());
     }
 
     @Override

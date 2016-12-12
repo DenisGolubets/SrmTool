@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+        <property name="dialect">com.enigmabridge.hibernate.dialect.SQLiteDialect</property>
+        <property name="connection.driver_class">org.sqlite.JDBC</property>
+        <property name="connection.url">jdbc:sqlite:D:\db\data2.db</property>
+        <property name="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider
+        </property>
+        <property name="hibernate.c3p0.min_size">1</property>
+        <property name="hibernate.c3p0.max_size">20</property>
+        <property name="hibernate.c3p0.timeout">1200</property>
+        <property name="hibernate.c3p0.idle_test_period">600</property>
+        <mapping class="com.golubets.monitor.environment.model.baseobject.domain.ArduinoEntity"/>
+        <mapping class="com.golubets.monitor.environment.model.baseobject.domain.DataEntity"/>
+        <mapping class="com.golubets.monitor.environment.model.baseobject.domain.UsersEntity"/>
+
+    </session-factory>
+</hibernate-configuration>

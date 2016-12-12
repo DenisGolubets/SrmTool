@@ -16,6 +16,6 @@ public class Config implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-Interrogation.getInstance().close();
+        Interrogation.getInstance().close();
     }
 }
