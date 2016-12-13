@@ -1,6 +1,4 @@
-package com.golubets.monitor.environment.model.baseobject.domain;
-
-import com.golubets.monitor.environment.model.baseobject.Arduino;
+package com.golubets.monitor.environment.model;
 
 import javax.persistence.*;
 

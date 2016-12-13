@@ -1,7 +1,7 @@
-package com.golubets.monitor.environment.model.mail;
+package com.golubets.monitor.environment.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.golubets.monitor.environment.model.baseobject.BaseObject;
+import com.golubets.monitor.environment.model.BaseObject;
 
 import java.io.Serializable;
 

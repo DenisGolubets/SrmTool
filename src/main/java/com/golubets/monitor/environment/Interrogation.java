@@ -1,13 +1,14 @@
-package com.golubets.monitor.environment.model;
+package com.golubets.monitor.environment;
 
-import com.golubets.monitor.environment.model.baseobject.Arduino;
-import com.golubets.monitor.environment.model.baseobject.BaseObject;
-import com.golubets.monitor.environment.model.baseobject.HibernateSessionFactory;
-import com.golubets.monitor.environment.model.baseobject.dao.ArduinoDao;
-import com.golubets.monitor.environment.model.baseobject.dao.DataDao;
-import com.golubets.monitor.environment.model.baseobject.dao.UserDao;
-import com.golubets.monitor.environment.model.db.JdbcSqliteConnection;
-import com.golubets.monitor.environment.model.mail.MailSettings;
+import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.model.BaseObject;
+import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import com.golubets.monitor.environment.dao.ArduinoDao;
+import com.golubets.monitor.environment.dao.DataDao;
+import com.golubets.monitor.environment.dao.UserDao;
+import com.golubets.monitor.environment.model.MailSettings;
+import com.golubets.monitor.environment.serializer.ArduinoSerializer;
+import com.golubets.monitor.environment.serializer.SettingsSerializer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -41,11 +43,9 @@ public class Interrogation implements AutoCloseable {
 
     @Autowired
     DataDao dataDao;
-    //private DbConnector db;
 
     private List<Arduino> arduinoList = Collections.synchronizedList(new ArrayList<Arduino>());
     private int arduinoCounter = 0;
-
 
     public static Interrogation getInstance() {
         if (instance == null) {
@@ -58,25 +58,18 @@ public class Interrogation implements AutoCloseable {
         return instance;
     }
 
-//    public DbConnector getDb() {
-//        return db;
-//    }
-
     public ApplicationContext getContext() {
         return context;
     }
 
     private Interrogation() {
-        context = new AnnotationConfigApplicationContext(JdbcSqliteConnection.class, ArduinoDao.class, UserDao.class, DataDao.class);
+        context = new AnnotationConfigApplicationContext(ArduinoDao.class, UserDao.class, DataDao.class);
         //db = (DbConnector) context.getBean("db");
         arduinoDao = (ArduinoDao) context.getBean("arduinoDao");
         userDao = (UserDao) context.getBean("userDao");
+        settingsMap = new SettingsSerializer().loadEncryptedSettingsFromJsonFile();
+        arduinoList = new ArduinoSerializer().loadArduinoFromJsonFile();
 
-
-        settingsMap = new SettingsLoaderSaver().loadEncryptedSettingsFromJsonFile();
-        arduinoList = new ArduinoLoderSaver().loadArduinoFromJsonFile();
-
-        //db = new JdbcSqliteConnection();
         if (arduinoList.size() > 0) {
             for (Arduino a : arduinoList) {
 
@@ -108,12 +101,11 @@ public class Interrogation implements AutoCloseable {
         }
     }
 
-
     public void addArduino(Arduino arduino) {
         try {
             List<Arduino> list = new ArrayList<>();
             list.add(arduino);
-            new ArduinoLoderSaver().saveArduinoToJsonFile(list);
+            new ArduinoSerializer().saveArduinoToJsonFile(list);
             new Thread(new ArduinoListener(arduino, dataDao, settingsMap)).start();
             arduinoCounter++;
         } catch (IOException e) {
@@ -127,16 +119,15 @@ public class Interrogation implements AutoCloseable {
             settingsMap = new HashMap<>();
         }
         settingsMap.put("mail", mailSettings);
-        new SettingsLoaderSaver().saveEncryptedSettingsToJsonFile(settingsMap);
+        new SettingsSerializer().saveEncryptedSettingsToJsonFile(settingsMap);
     }
 
     public void editArduino(Arduino arduino) {
         Arduino oldArduino = getArduinoById(arduino.getId());
-       // db.renameArduino(oldArduino.getId(), arduino.getName());
         arduinoDao.persist(arduino);
         List<Arduino> list = new ArrayList<>();
         list.add(oldArduino);
-        new ArduinoLoderSaver().saveArduinoToJsonFile(list);
+        new ArduinoSerializer().saveArduinoToJsonFile(list);
 
     }
 
@@ -172,7 +163,7 @@ public class Interrogation implements AutoCloseable {
         StringBuffer sb = null;
         try {
             mDigest = MessageDigest.getInstance("SHA1");
-            byte[] result = mDigest.digest(input.getBytes());
+            byte[] result = mDigest.digest(input.getBytes(Charset.forName("UTF-8")));
             sb = new StringBuffer();
             for (int i = 0; i < result.length; i++) {
                 sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
@@ -194,13 +185,8 @@ public class Interrogation implements AutoCloseable {
 
     @Override
     public void close() {
-//        if (db != null) {
-//            db.close();
-//        }
         HibernateSessionFactory.getSessionFactory().close();
     }
-
-
 }
 
 

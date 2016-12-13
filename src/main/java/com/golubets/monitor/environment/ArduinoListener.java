@@ -1,16 +1,15 @@
-package com.golubets.monitor.environment.model;
+package com.golubets.monitor.environment;
 
-import com.golubets.monitor.environment.model.baseobject.Arduino;
-import com.golubets.monitor.environment.model.baseobject.BaseObject;
-import com.golubets.monitor.environment.model.baseobject.ConnectionType;
-import com.golubets.monitor.environment.model.baseobject.SubjectForMail;
-import com.golubets.monitor.environment.model.baseobject.dao.DataDao;
-import com.golubets.monitor.environment.model.connection.Connector;
-import com.golubets.monitor.environment.model.connection.EthConnector;
-import com.golubets.monitor.environment.model.connection.JsscSerialConnector;
-import com.golubets.monitor.environment.model.db.DbConnector;
-import com.golubets.monitor.environment.model.mail.EmailSender;
-import com.golubets.monitor.environment.model.mail.MailSettings;
+import com.golubets.monitor.environment.dao.DataDao;
+import com.golubets.monitor.environment.mail.EmailSender;
+import com.golubets.monitor.environment.model.MailSettings;
+import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.model.BaseObject;
+import com.golubets.monitor.environment.model.ConnectionType;
+import com.golubets.monitor.environment.model.SubjectForMail;
+import com.golubets.monitor.environment.connection.Connector;
+import com.golubets.monitor.environment.connection.EthConnector;
+import com.golubets.monitor.environment.connection.JsscSerialConnector;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class ArduinoListener implements Runnable {
     private final Logger log = Logger.getLogger(ArduinoListener.class);
     DataDao dao;
 
-    private DbConnector db;
+
     private String separator = System.getProperty("line.separator");
     private Arduino arduino;
     private double avg10MinT;
@@ -39,19 +38,6 @@ public class ArduinoListener implements Runnable {
 
     private transient Connector connector;
 
-
-    public ArduinoListener(Arduino arduino, DbConnector db, Map<String, BaseObject> settingsMap) throws IOException {
-        this.arduino = arduino;
-        this.topH = arduino.getTopH();
-        this.topT = arduino.getTopT();
-        this.db = db;
-        this.connector = createConnection(arduino.getConnectionType());
-        if (settingsMap != null) {
-            if (settingsMap.containsKey("mail")) {
-                emailSender = new EmailSender((MailSettings) settingsMap.get("mail"));
-            }
-        }
-    }
 
     public ArduinoListener(Arduino arduino, DataDao dao, Map<String, BaseObject> settingsMap) throws IOException {
         this.arduino = arduino;

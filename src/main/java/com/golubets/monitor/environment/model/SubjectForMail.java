@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.model.baseobject;
+package com.golubets.monitor.environment.model;
 
 /**
  * Created by golubets on 13.08.2016.

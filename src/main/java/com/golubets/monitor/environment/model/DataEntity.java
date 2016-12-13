@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.model.baseobject.domain;
+package com.golubets.monitor.environment.model;
 
 import javax.persistence.*;
 

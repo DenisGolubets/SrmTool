@@ -1,8 +1,8 @@
-package com.golubets.monitor.environment.model.baseobject.dao;
+package com.golubets.monitor.environment.dao;
 
-import com.golubets.monitor.environment.model.baseobject.Arduino;
-import com.golubets.monitor.environment.model.baseobject.HibernateSessionFactory;
-import com.golubets.monitor.environment.model.baseobject.domain.ArduinoEntity;
+import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import com.golubets.monitor.environment.model.ArduinoEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -69,7 +69,6 @@ public class ArduinoDao extends Arduino {
     public List<Arduino> getAll (){
         List<Arduino> list = new ArrayList<>();
         Session session = sessionFactory.openSession();
-//        List<ArduinoEntity> tmpList = session.createQuery("from ArduinoEntity").list();
         List<ArduinoEntity> tmpList = session.createQuery("from ArduinoEntity").list();
         for (ArduinoEntity e:tmpList){
             PersistArduino arduino = new PersistArduino();

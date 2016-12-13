@@ -1,7 +1,5 @@
 package com.golubets.monitor.environment;
 
-import com.golubets.monitor.environment.model.Interrogation;
-
 /**
  * Created by golubets on 19.08.2016.
  */

@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.model.baseobject;
+package com.golubets.monitor.environment.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;

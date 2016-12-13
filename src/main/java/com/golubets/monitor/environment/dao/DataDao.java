@@ -1,8 +1,8 @@
-package com.golubets.monitor.environment.model.baseobject.dao;
+package com.golubets.monitor.environment.dao;
 
-import com.golubets.monitor.environment.model.baseobject.Arduino;
-import com.golubets.monitor.environment.model.baseobject.HibernateSessionFactory;
-import com.golubets.monitor.environment.model.baseobject.domain.DataEntity;
+import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import com.golubets.monitor.environment.model.DataEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.model.connection;
+package com.golubets.monitor.environment.connection;
 
 import org.apache.log4j.Logger;
 

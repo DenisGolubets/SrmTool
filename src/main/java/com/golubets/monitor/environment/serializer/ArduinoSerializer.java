@@ -1,9 +1,9 @@
-package com.golubets.monitor.environment.model;
+package com.golubets.monitor.environment.serializer;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.golubets.monitor.environment.model.baseobject.Arduino;
+import com.golubets.monitor.environment.model.Arduino;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -13,8 +13,8 @@ import java.util.List;
 /**
  * Created by golubets on 24.08.2016.
  */
-public class ArduinoLoderSaver {
-    private static final Logger log = Logger.getLogger(ArduinoLoderSaver.class);
+public class ArduinoSerializer {
+    private static final Logger log = Logger.getLogger(ArduinoSerializer.class);
 
     private static final long serialVersionUID = 0L;
 

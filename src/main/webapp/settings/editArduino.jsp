@@ -1,5 +1,5 @@
-<%@ page import="com.golubets.monitor.environment.model.Interrogation" %>
-<%@ page import="com.golubets.monitor.environment.model.baseobject.Arduino" %>
+<%@ page import="com.golubets.monitor.environment.Interrogation" %>
+<%@ page import="com.golubets.monitor.environment.model.Arduino" %>
 <%--
   Created by IntelliJ IDEA.
   User: golubets

@@ -1,5 +1,5 @@
-<%@ page import="com.golubets.monitor.environment.model.Interrogation" %>
-<%@ page import="com.golubets.monitor.environment.model.mail.MailSettings" %><%--
+<%@ page import="com.golubets.monitor.environment.Interrogation" %>
+<%@ page import="com.golubets.monitor.environment.model.MailSettings" %><%--
   Created by IntelliJ IDEA.
   User: golubets
   Date: 26.11.2016

@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.model.baseobject;
+package com.golubets.monitor.environment.model;
 
 import java.io.Serializable;
 

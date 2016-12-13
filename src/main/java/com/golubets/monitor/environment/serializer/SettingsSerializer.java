@@ -1,11 +1,11 @@
-package com.golubets.monitor.environment.model;
+package com.golubets.monitor.environment.serializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.golubets.monitor.environment.model.baseobject.BaseObject;
-import com.golubets.monitor.environment.model.mail.MailSettings;
+import com.golubets.monitor.environment.model.BaseObject;
+import com.golubets.monitor.environment.model.MailSettings;
 import org.apache.log4j.Logger;
 
 import javax.crypto.*;
@@ -20,8 +20,8 @@ import java.util.Map;
 /**
  * Created by golubets on 24.08.2016.
  */
-public class SettingsLoaderSaver {
-    private static final Logger log = Logger.getLogger(SettingsLoaderSaver.class);
+public class SettingsSerializer {
+    private static final Logger log = Logger.getLogger(SettingsSerializer.class);
 
     private static final byte[] k = "2w32eEt9!".getBytes(Charset.forName("UTF-8"));
     private static final SecretKey key64 = new SecretKeySpec(k, "Blowfish");
@@ -35,7 +35,7 @@ public class SettingsLoaderSaver {
     private static Cipher cipher = null;
 
 
-    public SettingsLoaderSaver() {
+    public SettingsSerializer() {
         settingsMap = new HashMap<>();
     }
 

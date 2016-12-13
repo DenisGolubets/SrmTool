@@ -1,6 +1,6 @@
 package com.golubets.monitor.environment.web.servlet;
 
-import com.golubets.monitor.environment.model.Interrogation;
+import com.golubets.monitor.environment.Interrogation;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

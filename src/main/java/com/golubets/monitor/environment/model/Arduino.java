@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.model.baseobject;
+package com.golubets.monitor.environment.model;
 
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**

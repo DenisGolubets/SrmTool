@@ -1,6 +1,7 @@
-package com.golubets.monitor.environment.model.mail;
+package com.golubets.monitor.environment.mail;
 
-import com.golubets.monitor.environment.model.baseobject.BaseObject;
+import com.golubets.monitor.environment.model.BaseObject;
+import com.golubets.monitor.environment.model.MailSettings;
 import org.apache.log4j.Logger;
 
 import javax.mail.*;

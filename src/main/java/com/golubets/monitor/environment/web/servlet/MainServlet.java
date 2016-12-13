@@ -1,11 +1,11 @@
 package com.golubets.monitor.environment.web.servlet;
 
-import com.golubets.monitor.environment.model.Interrogation;
-import com.golubets.monitor.environment.model.baseobject.Arduino;
-import com.golubets.monitor.environment.model.baseobject.ConnectionType;
-import com.golubets.monitor.environment.model.baseobject.User;
-import com.golubets.monitor.environment.model.baseobject.dao.UserDao;
-import com.golubets.monitor.environment.model.mail.MailSettings;
+import com.golubets.monitor.environment.Interrogation;
+import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.model.ConnectionType;
+import com.golubets.monitor.environment.model.User;
+import com.golubets.monitor.environment.dao.UserDao;
+import com.golubets.monitor.environment.model.MailSettings;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

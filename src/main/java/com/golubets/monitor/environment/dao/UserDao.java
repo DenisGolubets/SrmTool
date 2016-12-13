@@ -1,8 +1,8 @@
-package com.golubets.monitor.environment.model.baseobject.dao;
+package com.golubets.monitor.environment.dao;
 
-import com.golubets.monitor.environment.model.baseobject.HibernateSessionFactory;
-import com.golubets.monitor.environment.model.baseobject.User;
-import com.golubets.monitor.environment.model.baseobject.domain.UsersEntity;
+import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import com.golubets.monitor.environment.model.User;
+import com.golubets.monitor.environment.model.UsersEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
