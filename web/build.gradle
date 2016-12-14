@@ -8,7 +8,6 @@ repositories {
 
 dependencies {
     compile project(":dao")
-    compile project(":core")
 
     // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
     compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.0.1'

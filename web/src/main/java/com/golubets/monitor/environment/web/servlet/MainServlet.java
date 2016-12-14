@@ -1,12 +1,14 @@
 package com.golubets.monitor.environment.web.servlet;
 
 import com.golubets.monitor.environment.Interrogation;
+import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.ConnectionType;
 import com.golubets.monitor.environment.model.User;
 
 import com.golubets.monitor.environment.model.MailSettings;
+import com.golubets.monitor.environment.util.DaoApplicationContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -94,7 +96,7 @@ public class MainServlet extends HttpServlet {
         User user = new User();
         user.setUserName(req.getParameter("j_username"));
         user.setPassword(Interrogation.getInstance().sha1(req.getParameter("j_password")));
-        UserDao userDao = (UserDao) Interrogation.getContext().getBean("userDao");
+        UserDao userDao = (UserDao) DaoApplicationContext.getInstance().getContext().getBean("userDao");
         User userDb = userDao.getByName(user.getUserName()) ;
 
         if (userDb != null && user.getUserName().equals(userDb.getUserName()) && user.getPassword().equals(userDb.getPassword())) {
@@ -153,7 +155,9 @@ public class MainServlet extends HttpServlet {
 
         int errorCounter = chekArduino(arduino, req, resp);
         if (errorCounter == 0) {
-            Interrogation.getInstance().editArduino(arduino);
+            //Interrogation.getInstance().editArduino(arduino);
+            ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
+            arduinoDao.persist(arduino);
             req.getRequestDispatcher("settingsArduino.jsp").forward(req, resp);
         } else {
             req.getSession().setAttribute("arduino", arduino);
@@ -166,8 +170,11 @@ public class MainServlet extends HttpServlet {
         Arduino arduino = prepareArduino(req);
         int errArduinoCounter = chekArduino(arduino, req, resp);
         if (errArduinoCounter == 0) {
-            Interrogation interrogation = Interrogation.getInstance();
-            interrogation.addArduino(arduino);
+//            Interrogation interrogation = Interrogation.getInstance();
+//            interrogation.addArduino(arduino);
+
+            ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
+            arduinoDao.persist(arduino);
             req.getRequestDispatcher("settingsArduino.jsp").forward(req, resp);
         } else {
             req.getRequestDispatcher("addArduino.jsp").forward(req, resp);

@@ -1,5 +1,7 @@
-<%@ page import="com.golubets.monitor.environment.Interrogation" %>
-<%@ page import="com.golubets.monitor.environment.model.Arduino" %><%--
+<%@ page import="com.golubets.monitor.environment.dao.ArduinoDao" %>
+<%@ page import="com.golubets.monitor.environment.model.Arduino" %>
+<%@ page import="com.golubets.monitor.environment.util.DaoApplicationContext" %>
+<%--
   Created by IntelliJ IDEA.
   User: golubets
   Date: 26.11.2016
@@ -13,7 +15,7 @@
 </head>
 <head>
     <%
-        Interrogation interrogation = Interrogation.getInstance();
+        ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
     %>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"/>
     <title></title>
@@ -49,11 +51,11 @@
     <div id=content><h2>Overview</h2>
         <ul class=groupview>
                  <span class=domain>
-                    <% for (Arduino a : interrogation.getArduinoList()) {%>
+                    <% for (Arduino a : arduinoDao.getAll()) {%>
                  <a href=${pageContext.request.contextPath}/settings/arduino?action=editarduinopage&id=<%=a.getId()%>><%=a.getName()%></a>
                     <ul>
                     <li class=last><span
-                            class=host>Sensor 1</span>[Temperature: <%=a.getTemp()%>, Humidity: <%=a.getHum()%>% ]</li>
+                            class=host>Sensor </span>[ Temperature: <%=a.getTemp()%>, Humidity: <%=a.getHum()%>% ]</li>
                     </ul>
                         <% } %>
                 </span>

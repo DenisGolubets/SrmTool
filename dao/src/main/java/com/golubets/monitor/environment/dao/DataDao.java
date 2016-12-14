@@ -29,7 +29,7 @@ public class DataDao {
 //        return new DataDao();
 //    }
 
-    public synchronized void persist(Arduino arduino, Date date){
+    public void persist(Arduino arduino, Date date){
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
 

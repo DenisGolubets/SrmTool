@@ -1,19 +1,12 @@
 package com.golubets.monitor.environment;
 
 import com.golubets.monitor.environment.dao.ArduinoDao;
-import com.golubets.monitor.environment.dao.DataDao;
-import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.BaseObject;
 import com.golubets.monitor.environment.model.MailSettings;
-import com.golubets.monitor.environment.serializer.ArduinoSerializer;
 import com.golubets.monitor.environment.serializer.SettingsSerializer;
-import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import com.golubets.monitor.environment.util.DaoApplicationContext;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -24,25 +17,15 @@ import java.util.*;
 /**
  * Created by golubets on 24.08.2016.
  */
-@Configuration
-public class Interrogation implements AutoCloseable {
+
+public class Interrogation {
 
     private static final Logger log = Logger.getLogger(Interrogation.class);
     public static Interrogation instance;
     private Map<String, BaseObject> settingsMap;
-    static ApplicationContext  context;
     //private long period = 600000; //10 min
     private long period = 60000; //1 min
     private Timer timer = new Timer();
-
-    @Autowired
-    ArduinoDao arduinoDao;
-
-    @Autowired
-    UserDao userDao;
-
-    @Autowired
-    DataDao dataDao;
 
     private List<Arduino> arduinoList = Collections.synchronizedList(new ArrayList<Arduino>());
     private int arduinoCounter = 0;
@@ -58,62 +41,17 @@ public class Interrogation implements AutoCloseable {
         return instance;
     }
 
-    public static ApplicationContext getContext() {
-        return context;
-    }
-
     private Interrogation() {
-        //context = new ClassPathXmlApplicationContext("spring.xml");
-        context = new AnnotationConfigApplicationContext(UserDao.class,ArduinoDao.class,DataDao.class);
 
-
-        arduinoDao = (ArduinoDao) context.getBean("arduinoDao");
-        userDao = (UserDao) context.getBean("userDao");
         settingsMap = new SettingsSerializer().loadEncryptedSettingsFromJsonFile();
-        arduinoList = new ArduinoSerializer().loadArduinoFromJsonFile();
+        interview();
 
-        if (arduinoList.size() > 0) {
-            for (Arduino a : arduinoList) {
-
-                //db.initialization(a.getId(), a.getName());
-                if (arduinoDao.getByID(a.getId()).getId() != a.getId()) {
-                    arduinoDao.persist(a);
-                }
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                interview();
             }
-            for (Arduino a : arduinoList) {
-                try {
-                    new Thread(new ArduinoListener(a, (DataDao) context.getBean("dataDao"), settingsMap)).start();
-                    arduinoCounter++;
-                } catch (IOException e) {
-                    log.error(e);
-                }
-            }
-
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        checkNewArduino();
-                        doJob();
-                    } catch (IOException e) {
-                        log.error(e);
-                    }
-                }
-            }, period, period);
-        }
-    }
-
-    public void addArduino(Arduino arduino) {
-        try {
-            List<Arduino> list = new ArrayList<>();
-            list.add(arduino);
-            new ArduinoSerializer().saveArduinoToJsonFile(list);
-            new Thread(new ArduinoListener(arduino, dataDao, settingsMap)).start();
-            arduinoCounter++;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        arduinoList.add(arduino);
+        }, period, period);
     }
 
     public void editMailSetting(MailSettings mailSettings) {
@@ -124,27 +62,14 @@ public class Interrogation implements AutoCloseable {
         new SettingsSerializer().saveEncryptedSettingsToJsonFile(settingsMap);
     }
 
-    public void editArduino(Arduino arduino) {
-        Arduino oldArduino = getArduinoById(arduino.getId());
-        arduinoDao.persist(arduino);
-        List<Arduino> list = new ArrayList<>();
-        list.add(oldArduino);
-        new ArduinoSerializer().saveArduinoToJsonFile(list);
-
-    }
-
-    private void checkNewArduino() throws IOException {
-        if (arduinoList.size() > arduinoCounter) {
-            new Thread(new ArduinoListener(arduinoList.get(arduinoList.size() - 1), dataDao, settingsMap)).start();
-            //db.initialization(arduinoList.get(arduinoList.size() - 1).getId(), arduinoList.get(arduinoList.size() - 1).getName());
-            arduinoDao.persist(arduinoList.get(arduinoList.size() - 1));
-        }
-    }
-
-    private void doJob() {
-        for (Arduino a : arduinoList) {
-            synchronized (a) {
-                a.notify();
+    private void interview() {
+       final Date date = new Date();
+        ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
+        for (Arduino a : arduinoDao.getAll()) {
+            try {
+                new ArduinoListener(a, date, settingsMap);
+            } catch (IOException e) {
+                log.error(e);
             }
         }
     }
@@ -175,19 +100,6 @@ public class Interrogation implements AutoCloseable {
             e.printStackTrace();
         }
         return sb.toString();
-    }
-
-    public List<Arduino> getArduinoList() {
-        return arduinoList;
-    }
-
-    public Map<String, BaseObject> getSettingsMap() {
-        return settingsMap;
-    }
-
-    @Override
-    public void close() {
-        HibernateSessionFactory.getSessionFactory().close();
     }
 }
 

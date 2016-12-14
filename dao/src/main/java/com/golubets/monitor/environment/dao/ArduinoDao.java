@@ -1,17 +1,12 @@
 package com.golubets.monitor.environment.dao;
 
 import com.golubets.monitor.environment.model.Arduino;
-import com.golubets.monitor.environment.model.ArduinoEntity;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +16,7 @@ import java.util.List;
 public class ArduinoDao extends Arduino {
     private static SessionFactory sessionFactory = null;
 
-//   // @Bean(name = "arduinoDao")
+    //   // @Bean(name = "arduinoDao")
 //    public ArduinoDao getArduinoDao(){
 //        return new ArduinoDao();
 //    }
@@ -39,10 +34,7 @@ public class ArduinoDao extends Arduino {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         try {
-            ArduinoEntity arduinoEntity = new ArduinoEntity();
-            arduinoEntity.setId(arduino.getId());
-            arduinoEntity.setName(arduino.getName());
-            session.saveOrUpdate(arduinoEntity);
+            session.saveOrUpdate(arduino);
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -54,30 +46,34 @@ public class ArduinoDao extends Arduino {
     }
 
     public Arduino getByID(Integer id) {
-        PersistArduino arduino = null;
+       Arduino arduino = null;
         Session session = sessionFactory.openSession();
-
-        List<ArduinoEntity> list = session.createQuery("from ArduinoEntity where id=" + id).list();
+        List<Arduino> list = session.createQuery("from  where id=" + id).list();
         if (list.size() == 1) {
-            arduino = new PersistArduino();
-            arduino.setId(list.get(0).getId());
-            arduino.setName(list.get(0).getName());
+            arduino = list.get(0);
         }
         if (session != null && session.isOpen()) {
             session.close();
         }
         return arduino;
     }
-    public List<Arduino> getAll (){
-        List<Arduino> list = new ArrayList<>();
+
+    public Arduino getByName(String name) {
+        Arduino arduino = null;
         Session session = sessionFactory.openSession();
-        List<ArduinoEntity> tmpList = session.createQuery("from ArduinoEntity").list();
-        for (ArduinoEntity e:tmpList){
-            PersistArduino arduino = new PersistArduino();
-            arduino.setId(e.getId());
-            arduino.setName(e.getName());
-            list.add(arduino);
+        List<Arduino> list = session.createQuery("from  where name=" + name).list();
+        if (list.size() == 1) {
+            arduino = list.get(0);
         }
+        if (session != null && session.isOpen()) {
+            session.close();
+        }
+        return arduino;
+    }
+
+    public List<Arduino> getAll() {
+        Session session = sessionFactory.openSession();
+        List<Arduino> list = session.createQuery("from Arduino ").list();
         if (session != null && session.isOpen()) {
             session.close();
         }
