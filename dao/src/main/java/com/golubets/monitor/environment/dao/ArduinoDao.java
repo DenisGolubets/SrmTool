@@ -1,13 +1,15 @@
 package com.golubets.monitor.environment.dao;
 
 import com.golubets.monitor.environment.model.Arduino;
-import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import com.golubets.monitor.environment.model.ArduinoEntity;
+import com.golubets.monitor.environment.util.HibernateSessionFactory;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +17,14 @@ import java.util.List;
 /**
  * Created by golubets on 9.12.2016.
  */
-@Component
+@Repository("arduinoDao")
 public class ArduinoDao extends Arduino {
     private static SessionFactory sessionFactory = null;
 
-    @Bean(name = "arduinoDao")
-    public ArduinoDao getArduinoDao(){
-        return new ArduinoDao();
-    }
+//   // @Bean(name = "arduinoDao")
+//    public ArduinoDao getArduinoDao(){
+//        return new ArduinoDao();
+//    }
     public ArduinoDao() {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }

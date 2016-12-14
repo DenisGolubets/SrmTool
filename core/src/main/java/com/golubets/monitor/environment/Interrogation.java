@@ -1,19 +1,19 @@
 package com.golubets.monitor.environment;
 
-import com.golubets.monitor.environment.model.Arduino;
-import com.golubets.monitor.environment.model.BaseObject;
-import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.dao.DataDao;
 import com.golubets.monitor.environment.dao.UserDao;
+import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.model.BaseObject;
 import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.serializer.ArduinoSerializer;
 import com.golubets.monitor.environment.serializer.SettingsSerializer;
+import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -24,13 +24,13 @@ import java.util.*;
 /**
  * Created by golubets on 24.08.2016.
  */
-@Component
+@Configuration
 public class Interrogation implements AutoCloseable {
 
     private static final Logger log = Logger.getLogger(Interrogation.class);
     public static Interrogation instance;
     private Map<String, BaseObject> settingsMap;
-    ApplicationContext context;
+    static ApplicationContext  context;
     //private long period = 600000; //10 min
     private long period = 60000; //1 min
     private Timer timer = new Timer();
@@ -58,13 +58,15 @@ public class Interrogation implements AutoCloseable {
         return instance;
     }
 
-    public ApplicationContext getContext() {
+    public static ApplicationContext getContext() {
         return context;
     }
 
     private Interrogation() {
-        context = new AnnotationConfigApplicationContext(ArduinoDao.class, UserDao.class, DataDao.class);
-        //db = (DbConnector) context.getBean("db");
+        //context = new ClassPathXmlApplicationContext("spring.xml");
+        context = new AnnotationConfigApplicationContext(UserDao.class,ArduinoDao.class,DataDao.class);
+
+
         arduinoDao = (ArduinoDao) context.getBean("arduinoDao");
         userDao = (UserDao) context.getBean("userDao");
         settingsMap = new SettingsSerializer().loadEncryptedSettingsFromJsonFile();
@@ -74,7 +76,7 @@ public class Interrogation implements AutoCloseable {
             for (Arduino a : arduinoList) {
 
                 //db.initialization(a.getId(), a.getName());
-                if (arduinoDao.getByID(a.getId()).getId()!=a.getId()){
+                if (arduinoDao.getByID(a.getId()).getId() != a.getId()) {
                     arduinoDao.persist(a);
                 }
             }

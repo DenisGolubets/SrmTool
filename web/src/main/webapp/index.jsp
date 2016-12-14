@@ -44,7 +44,7 @@
         <tbody>
         <tr>
             <td><h1><a href=${pageContext.request.contextPath}>Home</a></h1></td>
-            <td><h1><a href=${pageContext.request.contextPath}/settings?action=settings>Settings</a></h1></td>
+            <td><h1><a href=${pageContext.request.contextPath}../settings?action=settings>Settings</a></h1></td>
         </tr>
         </tbody>
     </table>

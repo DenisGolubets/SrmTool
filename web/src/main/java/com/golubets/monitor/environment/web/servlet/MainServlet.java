@@ -1,10 +1,11 @@
 package com.golubets.monitor.environment.web.servlet;
 
 import com.golubets.monitor.environment.Interrogation;
+import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.ConnectionType;
 import com.golubets.monitor.environment.model.User;
-import com.golubets.monitor.environment.dao.UserDao;
+
 import com.golubets.monitor.environment.model.MailSettings;
 
 import javax.servlet.ServletException;
@@ -93,8 +94,7 @@ public class MainServlet extends HttpServlet {
         User user = new User();
         user.setUserName(req.getParameter("j_username"));
         user.setPassword(Interrogation.getInstance().sha1(req.getParameter("j_password")));
-//        User userDb = Interrogation.getInstance().getDb().getUserByName(user.getUserName());
-        UserDao userDao = (UserDao) req.getSession().getAttribute("userDao");
+        UserDao userDao = (UserDao) Interrogation.getContext().getBean("userDao");
         User userDb = userDao.getByName(user.getUserName()) ;
 
         if (userDb != null && user.getUserName().equals(userDb.getUserName()) && user.getPassword().equals(userDb.getPassword())) {

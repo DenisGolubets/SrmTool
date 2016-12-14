@@ -1,13 +1,13 @@
 package com.golubets.monitor.environment.dao;
 
-import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import com.golubets.monitor.environment.model.User;
 import com.golubets.monitor.environment.model.UsersEntity;
+import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,23 +15,24 @@ import java.util.List;
 /**
  * Created by golubets on 9.12.2016.
  */
-@Component
+@Repository("userDao")
 public class UserDao {
     private static SessionFactory sessionFactory = null;
 
     public UserDao() {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }
+
     private class PersistUser extends User {
         public void setId(Integer id){
             super.setId(id);
         }
     }
 
-    @Bean(name = "userDao")
-    public UserDao getUserDao(){
-        return new UserDao();
-    }
+//   @Bean(name = "userDao")
+//    public UserDao getUserDao(){
+//        return new UserDao();
+//    }
 
     public synchronized void persist(User user){
         Session session = sessionFactory.openSession();
@@ -55,7 +56,7 @@ public class UserDao {
     public User getById (Integer id){
         PersistUser user = null;
         Session session = sessionFactory.openSession();
-        List<UsersEntity> list = session.createQuery("from UsersEntity where id="+id).list();
+        List<UsersEntity> list = session.createQuery("from UsersEntity").list();
         if (list.size()==1){
             user.setUserName(list.get(0).getUserName());
             user.setPassword(list.get(0).getPassword());
