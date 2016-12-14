@@ -1,0 +1,5 @@
+rootProject.name = 'srmtool'
+include 'core'
+include 'dao'
+include 'web'
+
