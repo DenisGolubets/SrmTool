@@ -22,7 +22,7 @@ public class Interrogation {
 
     private static final Logger log = Logger.getLogger(Interrogation.class);
     public static Interrogation instance;
-    private Map<String, BaseObject> settingsMap;
+    //private Map<String, BaseObject> settingsMap;
     //private long period = 600000; //10 min
     private long period = 60000; //1 min
     private Timer timer = new Timer();
@@ -43,7 +43,7 @@ public class Interrogation {
 
     private Interrogation() {
 
-        settingsMap = new SettingsSerializer().loadEncryptedSettingsFromJsonFile();
+       // settingsMap = new SettingsSerializer().loadEncryptedSettingsFromJsonFile();
         interview();
 
         timer.schedule(new TimerTask() {
@@ -54,20 +54,20 @@ public class Interrogation {
         }, period, period);
     }
 
-    public void editMailSetting(MailSettings mailSettings) {
-        if (settingsMap == null) {
-            settingsMap = new HashMap<>();
-        }
-        settingsMap.put("mail", mailSettings);
-        new SettingsSerializer().saveEncryptedSettingsToJsonFile(settingsMap);
-    }
+//    public void editMailSetting(MailSettings mailSettings) {
+//        if (settingsMap == null) {
+//            settingsMap = new HashMap<>();
+//        }
+//        settingsMap.put("mail", mailSettings);
+//        new SettingsSerializer().saveEncryptedSettingsToJsonFile(settingsMap);
+//    }
 
     private void interview() {
        final Date date = new Date();
         ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
         for (Arduino a : arduinoDao.getAll()) {
             try {
-                new ArduinoListener(a, date, settingsMap);
+                new ArduinoListener(a, date);
             } catch (IOException e) {
                 log.error(e);
             }
@@ -101,6 +101,10 @@ public class Interrogation {
         }
         return sb.toString();
     }
+
+//    public Map<String, BaseObject> getSettingsMap() {
+//        return settingsMap;
+//    }
 }
 
 

@@ -6,7 +6,7 @@ repositories {
 }
 
 dependencies {
-compile project(":core")
+//compile project(":core")
     // https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.7.2'
 

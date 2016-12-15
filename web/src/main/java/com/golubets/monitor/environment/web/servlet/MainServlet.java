@@ -2,6 +2,7 @@ package com.golubets.monitor.environment.web.servlet;
 
 import com.golubets.monitor.environment.Interrogation;
 import com.golubets.monitor.environment.dao.ArduinoDao;
+import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.ConnectionType;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by golubets on 26.11.2016.
@@ -66,7 +69,9 @@ public class MainServlet extends HttpServlet {
                     }
 
                     if (action.equals("settingsemailpage")) {
-                        if (Interrogation.getInstance().getSettingsMap() != null && Interrogation.getInstance().getSettingsMap().containsKey("mail")) {
+                        MailSettingsDao mailSettingsDao = new MailSettingsDao();
+                        List<MailSettings> list = mailSettingsDao.getAll();
+                        if (list.size()>0) {
                             req.getRequestDispatcher("settingsEmail.jsp").forward(req, resp);
                         } else {
                             req.getRequestDispatcher("addEmail.jsp").forward(req, resp);
@@ -112,7 +117,8 @@ public class MainServlet extends HttpServlet {
         MailSettings mailSettings = prepareEmail(req);
         int mailErrCounter = checkEmail(mailSettings, req, resp);
         if (mailErrCounter == 0) {
-            Interrogation.getInstance().editMailSetting(mailSettings);
+            MailSettingsDao mailSettingsDao = (MailSettingsDao) DaoApplicationContext.getInstance().getContext().getBean("mailSettingsDao");
+mailSettingsDao.persist(mailSettings);
             editEmail(req, resp);
         } else {
             req.getRequestDispatcher("addEmail.jsp").forward(req, resp);
@@ -130,9 +136,11 @@ public class MainServlet extends HttpServlet {
             req.setAttribute("errFrom", "style=\"background-color: #FF7A7C \"");
             mailErrCounter++;
         }
-        if (mailSettings.getTo().length() == 0) {
-            req.setAttribute("errTo", "style=\"background-color: #FF7A7C \"");
-            mailErrCounter++;
+        for (String s:mailSettings.getTo()){
+            if (s.length() == 0) {
+                req.setAttribute("errTo", "style=\"background-color: #FF7A7C \"");
+                mailErrCounter++;
+            }
         }
         return mailErrCounter;
     }
@@ -142,7 +150,9 @@ public class MainServlet extends HttpServlet {
         MailSettings mailSettings = new MailSettings();
         mailSettings.setHost(req.getParameter("host"));
         mailSettings.setFrom(req.getParameter("from"));
-        mailSettings.setTo(req.getParameter("to"));
+        List<String> list = new ArrayList<>();
+        list.add(req.getParameter("to"));
+        mailSettings.setTo(list);
         mailSettings.setLogin(req.getParameter("login"));
         mailSettings.setPass(req.getParameter("pass"));
         mailSettings.setPort(req.getParameter("port"));

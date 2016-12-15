@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.connection;
+package com.golubets.monitor.environment.arduinoconnection;
 
 import org.apache.log4j.Logger;
 

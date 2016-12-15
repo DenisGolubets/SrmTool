@@ -3,6 +3,7 @@ package com.golubets.monitor.environment.model;
 //import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by golubets on 16.09.2016.
@@ -11,7 +12,7 @@ import java.io.Serializable;
 public class MailSettings implements BaseObject, Serializable {
     private String host;
     private String from;
-    private String to;
+    private List<String> to;
     private String login;
     private String pass;
     private String port;
@@ -20,13 +21,13 @@ public class MailSettings implements BaseObject, Serializable {
     public MailSettings() {
     }
 
-    public MailSettings(String host, String from, String to) {
+    public MailSettings(String host, String from, List<String> to) {
         this.host = host;
         this.from = from;
         this.to = to;
     }
 
-    public MailSettings(String host, String login, String pass, String port, String from, String to, boolean ssl) {
+    public MailSettings(String host, String login, String pass, String port, String from, List<String> to, boolean ssl) {
         this.host = host;
         this.login = login;
         this.pass = pass;
@@ -35,7 +36,7 @@ public class MailSettings implements BaseObject, Serializable {
         this.to = to;
         this.ssl = ssl;
     }
-    public MailSettings(String host, String login, String pass, String port, String from, String to) {
+    public MailSettings(String host, String login, String pass, String port, String from, List<String> to) {
         this.host = host;
         this.login = login;
         this.pass = pass;
@@ -62,11 +63,11 @@ public class MailSettings implements BaseObject, Serializable {
         this.from = from;
     }
 
-    public String getTo() {
+    public List<String> getTo() {
         return to;
     }
 
-    public void setTo(String to) {
+    public void setTo(List<String> to) {
         this.to = to;
     }
 
@@ -101,4 +102,5 @@ public class MailSettings implements BaseObject, Serializable {
     public void setSsl(boolean ssl) {
         this.ssl = ssl;
     }
+
 }

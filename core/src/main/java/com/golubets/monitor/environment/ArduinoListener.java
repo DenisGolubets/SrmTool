@@ -1,19 +1,23 @@
 package com.golubets.monitor.environment;
 
-import com.golubets.monitor.environment.connection.Connector;
-import com.golubets.monitor.environment.connection.EthConnector;
-import com.golubets.monitor.environment.connection.JsscSerialConnector;
+import com.golubets.monitor.environment.arduinoconnection.Connector;
+import com.golubets.monitor.environment.arduinoconnection.EthConnector;
+import com.golubets.monitor.environment.arduinoconnection.JsscSerialConnector;
 import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.dao.DataDao;
+import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.mail.EmailSender;
-import com.golubets.monitor.environment.model.*;
+import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.model.ConnectionType;
+import com.golubets.monitor.environment.model.MailSettings;
+import com.golubets.monitor.environment.model.SubjectForMail;
 import com.golubets.monitor.environment.util.DaoApplicationContext;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by golubets on 29.11.2016.
@@ -28,23 +32,23 @@ public class ArduinoListener {
     private int topH;
     private boolean isAlert = false;
     private long lastEmailSend = 0;
-    private EmailSender emailSender;
+    private EmailSender emailSender = null;
     private Date date;
     private static final long periodicityOfMailing = 20 * 60 * 980;
 
     private transient Connector connector;
 
-    public ArduinoListener(Arduino arduino, Date date, Map<String, BaseObject> settingsMap) throws IOException {
+    public ArduinoListener(Arduino arduino, Date date) throws IOException {
         this.arduino = arduino;
         this.topH = arduino.getTopH();
         this.topT = arduino.getTopT();
         this.date = date;
         this.connector = createConnection(arduino.getConnectionType());
-        if (settingsMap != null) {
-            if (settingsMap.containsKey("mail")) {
-                emailSender = new EmailSender((MailSettings) settingsMap.get("mail"));
-            }
-        }
+//        if (settingsMap != null) {
+//            if (settingsMap.containsKey("mail")) {
+//                emailSender = new EmailSender((MailSettings) settingsMap.get("mail"));
+//            }
+//        }
         doJob();
     }
 
@@ -63,6 +67,11 @@ public class ArduinoListener {
     }
 
     private void informIfAlert() {
+        MailSettingsDao mailSettingsDao = (MailSettingsDao) DaoApplicationContext.getInstance().getContext().getBean("mailSettingsDao");
+        List<MailSettings> list = mailSettingsDao.getAll();
+        if (list != null && list.size() < 2) {
+            emailSender = new EmailSender(list.get(0));
+        }
         String subject = String.valueOf(SubjectForMail.ALERT);
         String textBody = arduino + "\n\r";
 
@@ -76,7 +85,9 @@ public class ArduinoListener {
             //save to log
             log.warn(subject + " " + textBody);
         } else if (lastEmailSend == 0 || (System.currentTimeMillis() - lastEmailSend >= periodicityOfMailing)) {
-            emailSender.sendMail(subject, textBody);
+            if (emailSender!=null) {
+                emailSender.sendMail(subject, textBody);
+            }else log.info(subject + "\n\r"+textBody);
             lastEmailSend = System.currentTimeMillis();
         }
     }
@@ -85,7 +96,7 @@ public class ArduinoListener {
         ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
         DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
         arduinoDao.persist(arduino);
-        dataDao.persist(arduino,date);
+        dataDao.persist(arduino, date);
     }
 
     private void doJob() {
@@ -96,7 +107,7 @@ public class ArduinoListener {
                 informIfAlert();
             }
         } catch (NumberFormatException e) {
-            String textBody = "Check the sensor connection on Arduino ";
+            String textBody = "Check the sensor arduinoconnection on Arduino ";
             log.error(textBody + arduino, e);
             emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
         } catch (SocketTimeoutException e) {

@@ -8,6 +8,7 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -22,7 +23,7 @@ public class EmailSender implements BaseObject, Serializable {
 
     private String host;
     private String from;
-    private String to;
+    private List<String> to;
     private String login;
     private String pass;
     private String port;
@@ -34,7 +35,7 @@ public class EmailSender implements BaseObject, Serializable {
     int errCounter = 0;
 
     //email without authentication
-    public EmailSender(String host, String from, String to) {
+    public EmailSender(String host, String from, List<String> to) {
         this.host = host;
         this.from = from;
         this.to = to;
@@ -99,20 +100,23 @@ public class EmailSender implements BaseObject, Serializable {
     public void sendMail(String subject, String bodyText) {
 
         try {
-            MimeMessage message = new MimeMessage(session); // email message
-            message.setFrom(new InternetAddress(from)); // setting header fields
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject(subject);
-            message.setText(bodyText);
-            Transport transport;
-            if (ssl) {
-                transport = session.getTransport("smtp");
-                transport.send(message);
-            } else {
-                Transport.send(message);
+            for (String adress:to){
+                MimeMessage message = new MimeMessage(session); // email message
+                message.setFrom(new InternetAddress(from)); // setting header fields
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(adress));
+                message.setSubject(subject);
+                message.setText(bodyText);
+                Transport transport;
+                if (ssl) {
+                    transport = session.getTransport("smtp");
+                    transport.send(message);
+                } else {
+                    Transport.send(message);
+                }
+                if (errCounter > 0)
+                    errCounter = 0;
             }
-            if (errCounter > 0)
-                errCounter = 0;
+
         } catch (MessagingException e) {
             errCounter++;
             if (errCounter > 5) {
