@@ -2,16 +2,10 @@ package com.golubets.monitor.environment;
 
 import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.model.Arduino;
-import com.golubets.monitor.environment.model.BaseObject;
-import com.golubets.monitor.environment.model.MailSettings;
-import com.golubets.monitor.environment.serializer.SettingsSerializer;
 import com.golubets.monitor.environment.util.DaoApplicationContext;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -22,7 +16,6 @@ public class Interrogation {
 
     private static final Logger log = Logger.getLogger(Interrogation.class);
     public static Interrogation instance;
-    //private Map<String, BaseObject> settingsMap;
     //private long period = 600000; //10 min
     private long period = 60000; //1 min
     private Timer timer = new Timer();
@@ -42,8 +35,6 @@ public class Interrogation {
     }
 
     private Interrogation() {
-
-       // settingsMap = new SettingsSerializer().loadEncryptedSettingsFromJsonFile();
         interview();
 
         timer.schedule(new TimerTask() {
@@ -53,14 +44,6 @@ public class Interrogation {
             }
         }, period, period);
     }
-
-//    public void editMailSetting(MailSettings mailSettings) {
-//        if (settingsMap == null) {
-//            settingsMap = new HashMap<>();
-//        }
-//        settingsMap.put("mail", mailSettings);
-//        new SettingsSerializer().saveEncryptedSettingsToJsonFile(settingsMap);
-//    }
 
     private void interview() {
        final Date date = new Date();
@@ -84,27 +67,6 @@ public class Interrogation {
         }
         return null;
     }
-
-    public String sha1(String input) {
-        MessageDigest mDigest = null;
-        StringBuffer sb = null;
-        try {
-            mDigest = MessageDigest.getInstance("SHA1");
-            byte[] result = mDigest.digest(input.getBytes(Charset.forName("UTF-8")));
-            sb = new StringBuffer();
-            for (int i = 0; i < result.length; i++) {
-                sb.append(Integer.toString((result[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
-
-//    public Map<String, BaseObject> getSettingsMap() {
-//        return settingsMap;
-//    }
 }
 
 

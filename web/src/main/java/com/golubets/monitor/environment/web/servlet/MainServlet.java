@@ -1,15 +1,14 @@
 package com.golubets.monitor.environment.web.servlet;
 
-import com.golubets.monitor.environment.Interrogation;
 import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.ConnectionType;
-import com.golubets.monitor.environment.model.User;
-
 import com.golubets.monitor.environment.model.MailSettings;
+import com.golubets.monitor.environment.model.User;
 import com.golubets.monitor.environment.util.DaoApplicationContext;
+import com.golubets.monitor.environment.util.Sha1Converter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -100,7 +99,7 @@ public class MainServlet extends HttpServlet {
 
         User user = new User();
         user.setUserName(req.getParameter("j_username"));
-        user.setPassword(Interrogation.getInstance().sha1(req.getParameter("j_password")));
+        user.setPassword(Sha1Converter.convertToSHA1(req.getParameter("j_password")));
         UserDao userDao = (UserDao) DaoApplicationContext.getInstance().getContext().getBean("userDao");
         User userDb = userDao.getByName(user.getUserName()) ;
 
@@ -269,7 +268,9 @@ mailSettingsDao.persist(mailSettings);
         if (id == null || id.length() == 0) {
             arduino = new Arduino(connectionType, ip);
         } else {
-            arduino = Interrogation.getInstance().getArduinoById(Integer.parseInt(id));
+//            arduino = Interrogation.getInstance().getArduinoById(Integer.parseInt(id));
+            ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
+            arduino = arduinoDao.getByID(Integer.parseInt(id));
         }
         arduino.setName(name);
         arduino.setConnectionType(connectionType);

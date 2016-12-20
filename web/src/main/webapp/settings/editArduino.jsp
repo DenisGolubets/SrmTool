@@ -1,5 +1,6 @@
-<%@ page import="com.golubets.monitor.environment.Interrogation" %>
+<%@ page import="com.golubets.monitor.environment.dao.ArduinoDao" %>
 <%@ page import="com.golubets.monitor.environment.model.Arduino" %>
+<%@ page import="com.golubets.monitor.environment.util.DaoApplicationContext" %>
 <%--
   Created by IntelliJ IDEA.
   User: golubets
@@ -16,7 +17,7 @@
     <%
         int id = -1;
         Arduino arduino = null;
-        Interrogation interrogation = Interrogation.getInstance();
+        ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
         try {
             String stringId = request.getParameter("id");
             if (stringId == null || stringId.length() == 0) {
@@ -29,7 +30,7 @@
         }
 
         if (arduino == null && id != -1) {
-            arduino = interrogation.getArduinoById(id);
+            arduino = arduinoDao.getByID(id);
         }
 
     %>
