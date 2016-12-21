@@ -12,36 +12,19 @@
     <title>Email Setting</title>
 </head>
 <head>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
+
     <title></title>
 </head>
 <!-- -*- HTML -*- -->
 <body>
 <div id="header">
     <h1>ServerRoomMonitorTools</h1>
-    <table width="200" border="0">
-        <tbody>
-        <tr>
-            <td><h1><a href=${pageContext.request.contextPath}>Home</a></h1></td>
-            <td><h1><a href=${pageContext.request.contextPath}/settings?action=settings>Settings</a></h1></td>
-        </tr>
-        </tbody>
-    </table>
+    <jsp:include page="/views/headerMenue.jsp" />
+
 </div>
 <div id="main">
-    <div id=nav>
-        <p class=navigationjump><a href=#content>Skip navigation</a></p>
-        <ul>
-            <li>
-                <a href=${pageContext.request.contextPath}/settings?action=settings>General</a>
-            </li>
-        </ul>
-        <ul>
-            <li><a href=${pageContext.request.contextPath}/settings/email?action=settingsarduino>Arduino</a></li>            </li>
-        </ul>
-        <ul>
-            <li><a href= ${pageContext.request.contextPath}/settings/email?action=settingsemailpage>Email</a></li>        </ul>
-    </div>
+    <jsp:include page="/views/leftSettingsMenue.jsp" />
 
     <div id="content">
         <form method="get" action='email' name="email">
@@ -86,8 +69,6 @@
         <div class="contentpusher"></div>
     </div>
 </div>
-<div id="footer">
-    <p class="tagline">Copyright 2016</p>
-</div>
+<jsp:include page="/views/footer.jsp"/>
 </body>
 </html>

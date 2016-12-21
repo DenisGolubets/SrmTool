@@ -9,7 +9,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <html>
 <head>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css" />
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
         <title>Home</title>
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -40,14 +40,8 @@
 
 <div id="header">
     <h1>ServerRoomMonitorTools</h1>
-    <table width="200" border="0">
-        <tbody>
-        <tr>
-            <td><h1><a href=${pageContext.request.contextPath}>Home</a></h1></td>
-            <td><h1><a href=${pageContext.request.contextPath}/settings?action=settings>Settings</a></h1></td>
-        </tr>
-        </tbody>
-    </table>
+    <jsp:include page="/views/headerMenue.jsp" />
+
 </div>
 <div id="main">
     <div id=nav>
@@ -71,8 +65,6 @@
         <div class="contentpusher"></div>
     </div>
 </div>
-<div id="footer">
-    <p class="tagline">Copyright 2016</p>
-</div>
+<jsp:include page="/views/footer.jsp"/>
 </body>
 </html>

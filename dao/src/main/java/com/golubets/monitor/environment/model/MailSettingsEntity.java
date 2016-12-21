@@ -11,6 +11,7 @@ public class MailSettingsEntity {
     private int id;
     private String host;
     private String from;
+    private String to;
     private String port;
     private boolean ssl;
     private String login;
@@ -45,6 +46,16 @@ public class MailSettingsEntity {
 
     public void setFrom(String from) {
         this.from = from;
+    }
+
+    @Basic
+    @Column(name = "to_", nullable = true, length = 0)
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
     }
 
     @Basic

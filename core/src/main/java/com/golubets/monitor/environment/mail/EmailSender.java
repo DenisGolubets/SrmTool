@@ -8,6 +8,8 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +25,7 @@ public class EmailSender implements BaseObject, Serializable {
 
     private String host;
     private String from;
-    private List<String> to;
+    private String to;
     private String login;
     private String pass;
     private String port;
@@ -35,7 +37,7 @@ public class EmailSender implements BaseObject, Serializable {
     int errCounter = 0;
 
     //email without authentication
-    public EmailSender(String host, String from, List<String> to) {
+    public EmailSender(String host, String from, String to) {
         this.host = host;
         this.from = from;
         this.to = to;
@@ -100,7 +102,8 @@ public class EmailSender implements BaseObject, Serializable {
     public void sendMail(String subject, String bodyText) {
 
         try {
-            for (String adress:to){
+            List<String> adressList = Arrays.asList(to.split(";"));
+            for (String adress:adressList){
                 MimeMessage message = new MimeMessage(session); // email message
                 message.setFrom(new InternetAddress(from)); // setting header fields
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(adress));

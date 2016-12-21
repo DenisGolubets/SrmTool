@@ -1,12 +1,14 @@
 package com.golubets.monitor.environment.web.servlet;
 
+import com.golubets.monitor.environment.Interrogation;
 import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.ConnectionType;
-import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.model.User;
+
+import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.DaoApplicationContext;
 import com.golubets.monitor.environment.util.Sha1Converter;
 
@@ -117,7 +119,7 @@ public class MainServlet extends HttpServlet {
         int mailErrCounter = checkEmail(mailSettings, req, resp);
         if (mailErrCounter == 0) {
             MailSettingsDao mailSettingsDao = (MailSettingsDao) DaoApplicationContext.getInstance().getContext().getBean("mailSettingsDao");
-mailSettingsDao.persist(mailSettings);
+            mailSettingsDao.persist(mailSettings);
             editEmail(req, resp);
         } else {
             req.getRequestDispatcher("addEmail.jsp").forward(req, resp);
@@ -135,12 +137,12 @@ mailSettingsDao.persist(mailSettings);
             req.setAttribute("errFrom", "style=\"background-color: #FF7A7C \"");
             mailErrCounter++;
         }
-        for (String s:mailSettings.getTo()){
-            if (s.length() == 0) {
-                req.setAttribute("errTo", "style=\"background-color: #FF7A7C \"");
-                mailErrCounter++;
-            }
-        }
+//        for (String s:mailSettings.getTo()){
+//            if (s.length() == 0) {
+//                req.setAttribute("errTo", "style=\"background-color: #FF7A7C \"");
+//                mailErrCounter++;
+//            }
+//        }
         return mailErrCounter;
     }
 
@@ -151,7 +153,7 @@ mailSettingsDao.persist(mailSettings);
         mailSettings.setFrom(req.getParameter("from"));
         List<String> list = new ArrayList<>();
         list.add(req.getParameter("to"));
-        mailSettings.setTo(list);
+        //mailSettings.setTo(list);
         mailSettings.setLogin(req.getParameter("login"));
         mailSettings.setPass(req.getParameter("pass"));
         mailSettings.setPort(req.getParameter("port"));
@@ -268,9 +270,7 @@ mailSettingsDao.persist(mailSettings);
         if (id == null || id.length() == 0) {
             arduino = new Arduino(connectionType, ip);
         } else {
-//            arduino = Interrogation.getInstance().getArduinoById(Integer.parseInt(id));
-            ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
-            arduino = arduinoDao.getByID(Integer.parseInt(id));
+            arduino = Interrogation.getInstance().getArduinoById(Integer.parseInt(id));
         }
         arduino.setName(name);
         arduino.setConnectionType(connectionType);

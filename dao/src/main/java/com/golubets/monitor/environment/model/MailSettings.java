@@ -12,7 +12,7 @@ import java.util.List;
 public class MailSettings implements BaseObject, Serializable {
     private String host;
     private String from;
-    private List<String> to;
+    private String to;
     private String login;
     private String pass;
     private String port;
@@ -21,13 +21,13 @@ public class MailSettings implements BaseObject, Serializable {
     public MailSettings() {
     }
 
-    public MailSettings(String host, String from, List<String> to) {
+    public MailSettings(String host, String from, String to) {
         this.host = host;
         this.from = from;
         this.to = to;
     }
 
-    public MailSettings(String host, String login, String pass, String port, String from, List<String> to, boolean ssl) {
+    public MailSettings(String host, String login, String pass, String port, String from, String to, boolean ssl) {
         this.host = host;
         this.login = login;
         this.pass = pass;
@@ -36,7 +36,7 @@ public class MailSettings implements BaseObject, Serializable {
         this.to = to;
         this.ssl = ssl;
     }
-    public MailSettings(String host, String login, String pass, String port, String from, List<String> to) {
+    public MailSettings(String host, String login, String pass, String port, String from, String to) {
         this.host = host;
         this.login = login;
         this.pass = pass;
@@ -63,11 +63,11 @@ public class MailSettings implements BaseObject, Serializable {
         this.from = from;
     }
 
-    public List<String> getTo() {
+    public String getTo() {
         return to;
     }
 
-    public void setTo(List<String> to) {
+    public void setTo(String to) {
         this.to = to;
     }
 

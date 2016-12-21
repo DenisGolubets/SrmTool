@@ -30,6 +30,7 @@ public class MailSettingsDao {
             MailSettingsEntity mailSettingsEntity = new MailSettingsEntity();
             mailSettingsEntity.setHost(mailSettings.getHost());
             mailSettingsEntity.setFrom(mailSettings.getFrom());
+            mailSettingsEntity.setTo(mailSettings.getTo());
             mailSettingsEntity.setPort(mailSettings.getPort());
             mailSettings.setLogin(mailSettings.getLogin());
             mailSettingsEntity.setPass(mailSettings.getPass());
@@ -37,14 +38,7 @@ public class MailSettingsDao {
 
             session.saveOrUpdate(mailSettingsEntity);
 
-            int id = mailSettingsEntity.getId();
-            for (String email : mailSettings.getTo()) {
-                EmailListEntity emailListEntity = new EmailListEntity();
-                emailListEntity.setMailSettingId(id);
-                emailListEntity.setEmail(email);
 
-                session.saveOrUpdate(emailListEntity);
-            }
             tx.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +61,7 @@ public class MailSettingsDao {
             settings.setLogin(m.getLogin());
             settings.setPass(m.getPass());
             settings.setSsl(m.getSsl());
-            settings.setTo(session.createQuery("from EmailListEntity where mailSettingId =" + m.getId()).list());
+            settings.setTo(m.getTo());
 
             mailSettings.add(settings);
         }

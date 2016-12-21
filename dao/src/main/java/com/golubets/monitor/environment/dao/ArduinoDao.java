@@ -48,7 +48,7 @@ public class ArduinoDao extends Arduino {
     public Arduino getByID(Integer id) {
        Arduino arduino = null;
         Session session = sessionFactory.openSession();
-        List<Arduino> list = session.createQuery("from  where id=" + id).list();
+        List<Arduino> list = session.createQuery("from Arduino where id=" + id).list();
         if (list.size() == 1) {
             arduino = list.get(0);
         }
@@ -61,7 +61,7 @@ public class ArduinoDao extends Arduino {
     public Arduino getByName(String name) {
         Arduino arduino = null;
         Session session = sessionFactory.openSession();
-        List<Arduino> list = session.createQuery("from  where name=" + name).list();
+        List<Arduino> list = session.createQuery("from Arduino where name=" + name).list();
         if (list.size() == 1) {
             arduino = list.get(0);
         }
