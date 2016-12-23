@@ -1,6 +1,9 @@
 package com.golubets.monitor.environment.model;
 
 
+import com.golubets.monitor.environment.util.ArduinoIDGenerator;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
 import java.io.IOException;
 import java.io.Serializable;
@@ -10,7 +13,6 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "arduino", schema = "", catalog = "")
-//@JsonAutoDetect
 public class Arduino implements Serializable {
 
     private int id;
@@ -29,20 +31,16 @@ public class Arduino implements Serializable {
     private boolean isAlertH;
     private ConnectionType connectionType;
 
-    //@JsonIgnore
     private double temp;
-   // @JsonIgnore
     private double hum;
 
     public Arduino() {
-
     }
 
     public Arduino(ConnectionType connectionType, String connectionString) throws IOException {
         this.connectionType = connectionType;
-        this.id = Math.abs(0 + (int) (Math.random() * ((Integer.MAX_VALUE - 0) + 1)));
+        this.id = new ArduinoIDGenerator().genereteId();
     }
-
 
     @Id
     @Column(name = "id", nullable = false)
@@ -50,6 +48,7 @@ public class Arduino implements Serializable {
         return id;
     }
 
+    @NotEmpty
     @Basic
     @Column(name = "name", nullable = false, length = 0)
     public String getName() {
@@ -148,7 +147,7 @@ public class Arduino implements Serializable {
         return temp;
     }
 
-    protected void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 

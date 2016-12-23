@@ -26,8 +26,7 @@
     <jsp:include page="/views/leftSettingsMenue.jsp" />
 
     <div id="content">
-        <form method="get" action='arduino' name="arduino">
-            <input type="hidden" name="action" value="addarduino"/>
+        <form method="post">
             <table>
                 <tr>
                     <td>Name</td>
@@ -36,8 +35,8 @@
                 <tr>
                     <td>Connection type</td>
                     <td><select name="connectionType">
-                        <option name="eth">
-                            Ethernet
+                        <option name="ETHERNET">
+                            ETHERNET
                         </option>
                     </select></td>
                 </tr>

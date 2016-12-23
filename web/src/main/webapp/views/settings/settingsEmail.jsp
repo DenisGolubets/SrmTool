@@ -27,7 +27,7 @@
 
     <div id="content">
         <form method="post" action='email' name="email">
-            <input type="hidden" name="action" value="editemail"/>
+            <input type="hidden" name="id" value="${mailSettings.getId()}"/>
             <table>
                 <tr>
                     <td>SMTP</td>
@@ -44,7 +44,7 @@
                 <tr>
                     <td>SSL</td>
 
-                    <td><input type="checkbox" name="ssl" <c:if test="${mailSettings.isSsl()}">checked="checked"</c:if> />
+                    <td><input type="checkbox" name="ssl" <c:if test="${mailSettings.getSsl()}">checked="checked"</c:if> />
 
                 </tr>
                 <tr>

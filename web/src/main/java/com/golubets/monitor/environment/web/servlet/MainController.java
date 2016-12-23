@@ -3,15 +3,19 @@ package com.golubets.monitor.environment.web.servlet;
 import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.dao.UserDao;
+import com.golubets.monitor.environment.mail.EmailSender;
+import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.MailSettings;
+import com.golubets.monitor.environment.util.ArduinoIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Collection;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -39,13 +43,15 @@ public class MainController {
         modelAndView.setViewName("settings");
         return modelAndView;
     }
+
     @RequestMapping(value = "/settings/arduino")
     public ModelAndView settingsArduino() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("arduinos",arduinoDao.getAll());
+        modelAndView.addObject("arduinos", arduinoDao.getAll());
         modelAndView.setViewName("/settings/settingsArduino");
         return modelAndView;
     }
+
     @RequestMapping(value = "/settings/arduino/new")
     public ModelAndView settingsArduinoNew() {
         ModelAndView modelAndView = new ModelAndView();
@@ -53,12 +59,38 @@ public class MainController {
         return modelAndView;
     }
 
+    @RequestMapping(value = "/settings/arduino/new", method = RequestMethod.POST)
+    public String saveNewArduino(@Valid Arduino arduino, BindingResult result) {
+
+        if (result.hasErrors()) {
+            return "redirect:/settings/arduino/new";
+        }
+        if (arduino.getId() == 0) {
+            arduino.setId(new ArduinoIDGenerator().genereteId());
+        }
+        arduinoDao.persist(arduino);
+        return "redirect:/settings/arduino";
+
+    }
+
     @RequestMapping(value = "/settings/arduino/{id}")
     public ModelAndView settingsArduinoId(@PathVariable int id) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("arduino",arduinoDao.getByID(id));
+        modelAndView.addObject("arduino", arduinoDao.getByID(id));
         modelAndView.setViewName("/settings/editArduino");
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/settings/arduino/{id}", method = RequestMethod.POST)
+    public String saveArduinoId(@Valid Arduino arduino, BindingResult result, @PathVariable int id) {
+
+        if (result.hasErrors()) {
+            return "redirect:/settings/arduino/" + id;
+        }
+
+        arduinoDao.persist(arduino);
+        return "redirect:/settings/arduino";
+
     }
 
     @RequestMapping(value = "/settings/email")
@@ -66,8 +98,25 @@ public class MainController {
         ModelAndView modelAndView = new ModelAndView();
         List<MailSettings> list = mailSettingsDao.getAll();
         modelAndView.setViewName("/settings/settingsEmail");
-        MailSettings mailSettings = (list.size()==1)?list.get(0):new MailSettings();
-        modelAndView.addObject("mailSettings",mailSettings);
+        MailSettings mailSettings = (list.size() == 1) ? list.get(0) : new MailSettings();
+        modelAndView.addObject("mailSettings", mailSettings);
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/settings/email", method = RequestMethod.POST)
+    public String saveSettingsEmail(@Valid MailSettings mailSettings, BindingResult result) {
+
+        if (result.hasErrors()) {
+            return "redirect:/settings/email";
+        }
+        try {
+            EmailSender emailSender = new EmailSender(mailSettings);
+            emailSender.sendMail("Test","This email is tested from STMTool");
+        }catch (Exception e){
+            return "redirect:/settings/email";
+        }
+        mailSettingsDao.persist(mailSettings);
+        return "redirect:/settings/";
+
     }
 }

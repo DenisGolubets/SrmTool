@@ -26,6 +26,11 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-core
     compile group: 'org.hibernate', name: 'hibernate-core', version: '4.3.11.Final-atlassian-1'
+
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-validator
+    compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.1.3.Final'
+
+
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-c3p0
     compile group: 'org.hibernate', name: 'hibernate-c3p0', version: '4.3.11.Final'
     // https://mvnrepository.com/artifact/com.enigmabridge/hibernate4-sqlite-dialect

@@ -18,7 +18,7 @@
         <mapping class="com.golubets.monitor.environment.model.Arduino"/>
         <mapping class="com.golubets.monitor.environment.model.DataEntity"/>
         <mapping class="com.golubets.monitor.environment.model.UsersEntity"/>
-        <mapping class="com.golubets.monitor.environment.model.MailSettingsEntity"/>
+        <mapping class="com.golubets.monitor.environment.model.MailSettings"/>
         <mapping class="com.golubets.monitor.environment.model.EmailListEntity"/>
 
     </session-factory>

@@ -1,6 +1,6 @@
 package com.golubets.monitor.environment.web.servlet;
 
-import com.golubets.monitor.environment.Interrogation;
+import com.golubets.monitor.environment.Poll;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -11,11 +11,11 @@ import javax.servlet.ServletContextListener;
 public class Config implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        Interrogation.getInstance();
+        Poll.getInstance();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-       // Interrogation.getInstance().close();
+       // Poll.getInstance().close();
     }
 }

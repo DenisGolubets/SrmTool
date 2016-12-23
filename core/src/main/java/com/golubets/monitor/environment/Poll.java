@@ -12,10 +12,10 @@ import java.util.*;
  * Created by golubets on 24.08.2016.
  */
 
-public class Interrogation {
+public class Poll {
 
-    private static final Logger log = Logger.getLogger(Interrogation.class);
-    public static Interrogation instance;
+    private static final Logger log = Logger.getLogger(Poll.class);
+    public static Poll instance;
     //private long period = 600000; //10 min
     private long period = 60000; //1 min
     private Timer timer = new Timer();
@@ -23,18 +23,18 @@ public class Interrogation {
     private List<Arduino> arduinoList = Collections.synchronizedList(new ArrayList<Arduino>());
     private int arduinoCounter = 0;
 
-    public static Interrogation getInstance() {
+    public static Poll getInstance() {
         if (instance == null) {
-            synchronized (Interrogation.class) {
+            synchronized (Poll.class) {
                 if (instance == null) {
-                    instance = new Interrogation();
+                    instance = new Poll();
                 }
             }
         }
         return instance;
     }
 
-    private Interrogation() {
+    private Poll() {
         interview();
 
         timer.schedule(new TimerTask() {
@@ -52,7 +52,7 @@ public class Interrogation {
             try {
                 new ArduinoListener(a, date);
             } catch (IOException e) {
-                log.error(e);
+                log.error(a.getName() + " has error "+e);
             }
         }
     }

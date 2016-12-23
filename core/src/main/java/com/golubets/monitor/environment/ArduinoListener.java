@@ -66,7 +66,7 @@ public class ArduinoListener {
         isAlert = (arduino.isAlertH() && avg10MinH >= topH) || (arduino.isAlertT() && avg10MinT >= topT);
     }
 
-    private void informIfAlert() {
+    private void informIfAlert() throws Exception {
         MailSettingsDao mailSettingsDao = (MailSettingsDao) DaoApplicationContext.getInstance().getContext().getBean("mailSettingsDao");
         List<MailSettings> list = mailSettingsDao.getAll();
         if (list != null && list.size() < 2) {
@@ -109,16 +109,18 @@ public class ArduinoListener {
         } catch (NumberFormatException e) {
             String textBody = "Check the sensor arduinoconnection on Arduino ";
             log.error(textBody + arduino, e);
-            emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
+           // emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
         } catch (SocketTimeoutException e) {
             String textBody = "The Arduino is disconnected ";
             log.error(textBody + arduino, e);
-            emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
+           // emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
         } catch (IOException e) {
             String textBody = "The Arduino has problems ";
             log.error(textBody + arduino, e);
-            emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
+           // emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
 
+        } catch (Exception e) {
+            log.error(e);
         }
     }
 

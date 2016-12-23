@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page import="com.golubets.monitor.environment.dao.ArduinoDao" %>
 <%@ page import="com.golubets.monitor.environment.model.Arduino" %>
 <%@ page import="com.golubets.monitor.environment.util.DaoApplicationContext" %>
@@ -15,26 +16,26 @@
     <title>Edit arduino</title>
 </head>
 <head>
-    <%
-        int id = -1;
-        Arduino arduino = null;
-        ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
-        try {
-            String stringId = request.getParameter("id");
-            if (stringId == null || stringId.length() == 0) {
-                arduino = (Arduino) request.getSession().getAttribute("arduino");
-            } else {
-                id = Integer.parseInt(stringId);
-            }
-        } catch (NumberFormatException e) {
-            id = -1;
-        }
+    <%--<%--%>
+    <%--int id = -1;--%>
+    <%--Arduino arduino = null;--%>
+    <%--ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");--%>
+    <%--try {--%>
+    <%--String stringId = request.getParameter("id");--%>
+    <%--if (stringId == null || stringId.length() == 0) {--%>
+    <%--arduino = (Arduino) request.getSession().getAttribute("arduino");--%>
+    <%--} else {--%>
+    <%--id = Integer.parseInt(stringId);--%>
+    <%--}--%>
+    <%--} catch (NumberFormatException e) {--%>
+    <%--id = -1;--%>
+    <%--}--%>
 
-        if (arduino == null && id != -1) {
-            arduino = arduinoDao.getByID(id);
-        }
+    <%--if (arduino == null && id != -1) {--%>
+    <%--arduino = arduinoDao.getByID(id);--%>
+    <%--}--%>
 
-    %>
+    <%--%>--%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css"/>
 
     <title></title>
@@ -51,8 +52,7 @@
 
 
     <div id="content">
-        <form method="post" action='arduino' name="arduino">
-            <input type="hidden" name="action" value="editarduino"/>
+        <form method="post">
             <input type="hidden" name="id" value="${arduino.getId()}"/>
             <table>
                 <tr>
@@ -62,8 +62,8 @@
                 <tr>
                     <td>Connection type</td>
                     <td><select name="connectionType">
-                        <option name="eth">
-                            Ethernet
+                        <option name="${arduino.getConnectionType()}">
+                            ${arduino.getConnectionType()}
                         </option>
                     </select></td>
                 </tr>

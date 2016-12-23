@@ -1,8 +1,6 @@
 package com.golubets.monitor.environment.dao;
 
-import com.golubets.monitor.environment.model.EmailListEntity;
 import com.golubets.monitor.environment.model.MailSettings;
-import com.golubets.monitor.environment.model.MailSettingsEntity;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -27,16 +25,16 @@ public class MailSettingsDao {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         try {
-            MailSettingsEntity mailSettingsEntity = new MailSettingsEntity();
-            mailSettingsEntity.setHost(mailSettings.getHost());
-            mailSettingsEntity.setFrom(mailSettings.getFrom());
-            mailSettingsEntity.setTo(mailSettings.getTo());
-            mailSettingsEntity.setPort(mailSettings.getPort());
-            mailSettings.setLogin(mailSettings.getLogin());
-            mailSettingsEntity.setPass(mailSettings.getPass());
-            mailSettings.setSsl(mailSettings.isSsl());
+//            MailSettings mailSettingsEntity = new MailSettings();
+//            mailSettingsEntity.setHost(mailSettings.getHost());
+//            mailSettingsEntity.setFrom(mailSettings.getFrom());
+//            mailSettingsEntity.setTo(mailSettings.getTo());
+//            mailSettingsEntity.setPort(mailSettings.getPort());
+//            mailSettings.setLogin(mailSettings.getLogin());
+//            mailSettingsEntity.setPass(mailSettings.getPass());
+//            mailSettings.setSsl(mailSettings.getSsl());
 
-            session.saveOrUpdate(mailSettingsEntity);
+            session.saveOrUpdate(mailSettings);
 
 
             tx.commit();
@@ -52,19 +50,19 @@ public class MailSettingsDao {
 
     public List<MailSettings> getAll() {
         Session session = sessionFactory.openSession();
-        List<MailSettings> mailSettings = new ArrayList<>();
-        List<MailSettingsEntity> mailSettingsEntities = session.createQuery("from MailSettingsEntity ").list();
-        for (MailSettingsEntity m : mailSettingsEntities) {
-            MailSettings settings = new MailSettings();
-            settings.setHost(m.getHost());
-            settings.setFrom(m.getFrom());
-            settings.setLogin(m.getLogin());
-            settings.setPass(m.getPass());
-            settings.setSsl(m.getSsl());
-            settings.setTo(m.getTo());
-
-            mailSettings.add(settings);
-        }
+        List<MailSettings> mailSettings = session.createQuery("from MailSettings ").list();
+//        List<MailSettings> mailSettingsEntities = session.createQuery("from MailSettings ").list();
+//        for (MailSettings m : mailSettingsEntities) {
+//            MailSettings settings = new MailSettings();
+//            settings.setHost(m.getHost());
+//            settings.setFrom(m.getFrom());
+//            settings.setLogin(m.getLogin());
+//            settings.setPass(m.getPass());
+//            settings.setSsl(m.getSsl());
+//            settings.setTo(m.getTo());
+//
+//            mailSettings.add(settings);
+//        }
         return mailSettings;
     }
 }

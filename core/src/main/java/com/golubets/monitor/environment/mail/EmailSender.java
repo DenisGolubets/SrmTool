@@ -52,14 +52,14 @@ public class EmailSender implements BaseObject, Serializable {
         this.port = mailSettings.getPort();
         this.from = mailSettings.getFrom();
         this.to = mailSettings.getTo();
-        this.ssl = mailSettings.isSsl();
+        this.ssl = mailSettings.getSsl();
         initialize();
 
     }
 
     private void initialize() {
         if (properties == null && session == null) {
-            if (login == null || pass == null || port == null) {
+            if ((login == null || login.length() == 0) || (pass == null || pass.length() == 0) || (port == null || port.length() == 0)) {
                 initialize(host);
             } else {
                 initialize(host, login, pass, port, ssl);
@@ -81,7 +81,7 @@ public class EmailSender implements BaseObject, Serializable {
         properties.put("mail.smtp.starttls.enable", "true");
         if (ssl) {
             properties.put("mail.transport.protocol", "smtp");
-            properties.put("mail.smtp.socketFactory.class","javax.net.ssl.SSLSocketFactory");
+            properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
             properties.put("mail.smtp.ssl.enable", "true");
             properties.put("mail.smtp.ssl.checkserveridentity", "false");
             properties.put("mail.smtp.ssl.trust", "*");
@@ -99,11 +99,11 @@ public class EmailSender implements BaseObject, Serializable {
                 });
     }
 
-    public void sendMail(String subject, String bodyText) {
+    public void sendMail(String subject, String bodyText) throws Exception {
 
         try {
             List<String> adressList = Arrays.asList(to.split(";"));
-            for (String adress:adressList){
+            for (String adress : adressList) {
                 MimeMessage message = new MimeMessage(session); // email message
                 message.setFrom(new InternetAddress(from)); // setting header fields
                 message.addRecipient(Message.RecipientType.TO, new InternetAddress(adress));
@@ -122,6 +122,9 @@ public class EmailSender implements BaseObject, Serializable {
 
         } catch (MessagingException e) {
             errCounter++;
+            if (subject.equalsIgnoreCase("test")) {
+                throw new Exception(e);
+            }
             if (errCounter > 5) {
                 log.error(e);
             } else {
@@ -130,6 +133,7 @@ public class EmailSender implements BaseObject, Serializable {
                     sendMail(subject, bodyText);
                 } catch (InterruptedException e1) {
 
+                    log.error(e1);
                 }
             }
         }

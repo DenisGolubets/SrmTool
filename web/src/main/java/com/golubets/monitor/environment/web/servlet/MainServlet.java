@@ -1,6 +1,6 @@
 package com.golubets.monitor.environment.web.servlet;
 
-import com.golubets.monitor.environment.Interrogation;
+import com.golubets.monitor.environment.Poll;
 import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.dao.UserDao;
@@ -166,7 +166,7 @@ public class MainServlet extends HttpServlet {
 
         int errorCounter = chekArduino(arduino, req, resp);
         if (errorCounter == 0) {
-            //Interrogation.getInstance().editArduino(arduino);
+            //Poll.getInstance().editArduino(arduino);
             ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
             arduinoDao.persist(arduino);
             req.getRequestDispatcher("settingsArduino.jsp").forward(req, resp);
@@ -181,7 +181,7 @@ public class MainServlet extends HttpServlet {
         Arduino arduino = prepareArduino(req);
         int errArduinoCounter = chekArduino(arduino, req, resp);
         if (errArduinoCounter == 0) {
-//            Interrogation interrogation = Interrogation.getInstance();
+//            Poll interrogation = Poll.getInstance();
 //            interrogation.addArduino(arduino);
 
             ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
@@ -270,7 +270,7 @@ public class MainServlet extends HttpServlet {
         if (id == null || id.length() == 0) {
             arduino = new Arduino(connectionType, ip);
         } else {
-            arduino = Interrogation.getInstance().getArduinoById(Integer.parseInt(id));
+            arduino = Poll.getInstance().getArduinoById(Integer.parseInt(id));
         }
         arduino.setName(name);
         arduino.setConnectionType(connectionType);

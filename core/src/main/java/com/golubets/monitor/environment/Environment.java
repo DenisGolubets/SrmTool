@@ -5,6 +5,6 @@ package com.golubets.monitor.environment;
  */
 public class Environment {
     public static void main(String[] args) {
-        Interrogation interrogation = Interrogation.getInstance();
+        Poll poll = Poll.getInstance();
     }
 }
