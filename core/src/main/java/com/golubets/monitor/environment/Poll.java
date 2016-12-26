@@ -6,6 +6,7 @@ import com.golubets.monitor.environment.util.DaoApplicationContext;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.*;
 
 /**
@@ -46,13 +47,22 @@ public class Poll {
     }
 
     private void interview() {
-       final Date date = new Date();
+        final Date date = new Date();
         ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
         for (Arduino a : arduinoDao.getAll()) {
             try {
                 new ArduinoListener(a, date);
+            } catch (NumberFormatException e) {
+                String textBody = "Check the sensor arduinoconnection on Arduino ";
+                log.error(textBody + a, e);
+            } catch (SocketTimeoutException e) {
+                String textBody = "The Arduino is disconnected ";
+                log.error(textBody + a, e);
             } catch (IOException e) {
-                log.error(a.getName() + " has error "+e);
+                String textBody = "The Arduino has problems ";
+                log.error(textBody + a, e);
+            } catch (Exception e) {
+                log.error(e);
             }
         }
     }

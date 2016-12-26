@@ -38,17 +38,13 @@ public class ArduinoListener {
 
     private transient Connector connector;
 
-    public ArduinoListener(Arduino arduino, Date date) throws IOException {
+    public ArduinoListener(Arduino arduino, Date date) throws Exception {
         this.arduino = arduino;
         this.topH = arduino.getTopH();
         this.topT = arduino.getTopT();
         this.date = date;
         this.connector = createConnection(arduino.getConnectionType());
-//        if (settingsMap != null) {
-//            if (settingsMap.containsKey("mail")) {
-//                emailSender = new EmailSender((MailSettings) settingsMap.get("mail"));
-//            }
-//        }
+
         doJob();
     }
 
@@ -85,43 +81,27 @@ public class ArduinoListener {
             //save to log
             log.warn(subject + " " + textBody);
         } else if (lastEmailSend == 0 || (System.currentTimeMillis() - lastEmailSend >= periodicityOfMailing)) {
-            if (emailSender!=null) {
+            if (emailSender != null) {
                 emailSender.sendMail(subject, textBody);
-            }else log.info(subject + "\n\r"+textBody);
+            } else log.info(subject + "\n\r" + textBody);
             lastEmailSend = System.currentTimeMillis();
         }
     }
 
-    private void writeDateToDB(Integer arduinoId) {
+    private void writeDateToDB() {
         ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
         DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
         arduinoDao.persist(arduino);
         dataDao.persist(arduino, date);
     }
 
-    private void doJob() {
-        try {
-            getDate();
-            writeDateToDB(arduino.getId());
-            if (isAlert) {
-                informIfAlert();
-            }
-        } catch (NumberFormatException e) {
-            String textBody = "Check the sensor arduinoconnection on Arduino ";
-            log.error(textBody + arduino, e);
-           // emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
-        } catch (SocketTimeoutException e) {
-            String textBody = "The Arduino is disconnected ";
-            log.error(textBody + arduino, e);
-           // emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
-        } catch (IOException e) {
-            String textBody = "The Arduino has problems ";
-            log.error(textBody + arduino, e);
-           // emailSender.sendMail(String.valueOf(SubjectForMail.EXCEPTION), textBody + arduino);
-
-        } catch (Exception e) {
-            log.error(e);
+    private void doJob() throws Exception {
+        getDate();
+        writeDateToDB();
+        if (isAlert) {
+            informIfAlert();
         }
+        connector.close();
     }
 
 

@@ -53,44 +53,37 @@ public class EthConnector implements Connector, AutoCloseable {
         try {
             socket = new Socket(server, port);
 
-            socket.setKeepAlive(true);
+            socket.setKeepAlive(false);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             out = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
         } catch (IOException e) {
             reconnect();
         }
-
-
     }
 
     private void reconnect() throws IOException {
 
-        if (connectCount >= 2) {
+        if (connectCount >= 10) {
             connectCount = 0;
             throw new SocketTimeoutException();
-
         }
         try {
-            Thread.sleep(reconnectTime * 1000);
+            Thread.sleep(1000);
         } catch (InterruptedException e1) {
             throw new IOException(e1);
         }
-        if (reconnectTime < 300) {
-            reconnectTime += 10;
-        }
-        connectCount++;
         connect(server, port);
+        connectCount++;
+        System.out.println("Try connect: " + connectCount);
     }
 
 
     public String getResponse(String request) throws IOException {
         while (true) {
             try {
-                if(!(socket.isConnected())){
+                if (!(socket.isConnected())) {
                     reconnect();
                 }
-
-
                 sb.setLength(0);
                 out.write(request);
                 out.flush();
@@ -99,24 +92,18 @@ public class EthConnector implements Connector, AutoCloseable {
                     sb.append(in.readLine());
                 }
                 break;
-            } catch (SocketTimeoutException e){
+            } catch (SocketTimeoutException e) {
                 reconnect();
-                //getResponse(request);
-            }catch (IOException e) {
+            } catch (IOException e) {
                 throw new IOException(e);
             }
         }
 
-
         //return string without space and last word "end"
-
         return sb.toString().substring(0, sb.length() - 3).replaceAll("[\\s]", "");
     }
-
 
     public void setDate(String request) throws IOException {
         out.write(request);
     }
-
-
 }
