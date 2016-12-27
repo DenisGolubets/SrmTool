@@ -24,11 +24,6 @@ public class DataDao {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }
 
-//    //@Bean(name = "dataDao")
-//    public DataDao getDataDao(){
-//        return new DataDao();
-//    }
-
     public void persist(Arduino arduino, Date date){
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();

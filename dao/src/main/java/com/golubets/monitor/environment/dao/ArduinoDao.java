@@ -16,10 +16,6 @@ import java.util.List;
 public class ArduinoDao extends Arduino {
     private static SessionFactory sessionFactory = null;
 
-    //   // @Bean(name = "arduinoDao")
-//    public ArduinoDao getArduinoDao(){
-//        return new ArduinoDao();
-//    }
     public ArduinoDao() {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }

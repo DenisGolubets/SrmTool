@@ -1,12 +1,10 @@
 package com.golubets.monitor.environment.dao;
 
 import com.golubets.monitor.environment.model.User;
-import com.golubets.monitor.environment.model.UsersEntity;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -29,20 +27,11 @@ public class UserDao {
         }
     }
 
-//   @Bean(name = "userDao")
-//    public UserDao getUserDao(){
-//        return new UserDao();
-//    }
-
     public synchronized void persist(User user){
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         try {
-            UsersEntity usersEntity = new UsersEntity();
-            usersEntity.setUserName(user.getUserName());
-            usersEntity.setPassword(user.getPassword());
-            usersEntity.setRole(user.getRole());
-            session.saveOrUpdate(usersEntity);
+            session.saveOrUpdate(user);
             tx.commit();
         }catch (Exception e){
             tx.rollback();
@@ -56,7 +45,7 @@ public class UserDao {
     public User getById (Integer id){
         PersistUser user = null;
         Session session = sessionFactory.openSession();
-        List<UsersEntity> list = session.createQuery("from UsersEntity").list();
+        List<User> list = session.createQuery("from User").list();
         if (list.size()==1){
             user.setUserName(list.get(0).getUserName());
             user.setPassword(list.get(0).getPassword());
@@ -71,8 +60,8 @@ public class UserDao {
     public List<User> getAll() {
         Session session = sessionFactory.openSession();
         List<User> list = new ArrayList<>();
-        List<UsersEntity> entityList = session.createQuery("from UsersEntity ").list();
-        for (UsersEntity u:entityList){
+        List<User> entityList = session.createQuery("from User ").list();
+        for (User u:entityList){
             PersistUser user = new PersistUser();
             user.setId(u.getId());
             user.setUserName(u.getUserName());
@@ -88,7 +77,7 @@ public class UserDao {
     public User getByName (String name){
         PersistUser user = new PersistUser();
         Session session = sessionFactory.openSession();
-        List<UsersEntity> list = session.createQuery("from UsersEntity").list();
+        List<User> list = session.createQuery("from User").list();
         if (list.size()==1){
             user.setUserName(list.get(0).getUserName());
             user.setPassword(list.get(0).getPassword());

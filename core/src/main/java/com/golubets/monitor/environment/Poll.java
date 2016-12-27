@@ -12,7 +12,6 @@ import java.util.*;
 /**
  * Created by golubets on 24.08.2016.
  */
-
 public class Poll {
 
     private static final Logger log = Logger.getLogger(Poll.class);
@@ -22,7 +21,6 @@ public class Poll {
     private Timer timer = new Timer();
 
     private List<Arduino> arduinoList = Collections.synchronizedList(new ArrayList<Arduino>());
-    private int arduinoCounter = 0;
 
     public static Poll getInstance() {
         if (instance == null) {

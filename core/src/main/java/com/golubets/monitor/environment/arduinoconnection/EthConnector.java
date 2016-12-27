@@ -74,7 +74,6 @@ public class EthConnector implements Connector, AutoCloseable {
         }
         connect(server, port);
         connectCount++;
-        System.out.println("Try connect: " + connectCount);
     }
 
 
