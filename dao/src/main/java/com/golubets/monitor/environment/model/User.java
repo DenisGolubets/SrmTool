@@ -15,7 +15,7 @@ public class User {
     private boolean enabled;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     public int getId() {
         return id;
@@ -43,16 +43,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    @Basic
-    @Column(name = "role", nullable = false, length = 0)
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     @Basic
@@ -92,6 +82,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{ id= "+ id + ", username ="+userName + ", role="+role+ " }";
+        return "User{ id= " + id + ", username =" + userName + ", role=" + role + " }";
     }
 }

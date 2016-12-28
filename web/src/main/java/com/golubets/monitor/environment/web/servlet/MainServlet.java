@@ -106,7 +106,7 @@ public class MainServlet extends HttpServlet {
         User userDb = userDao.getByName(user.getUserName()) ;
 
         if (userDb != null && user.getUserName().equals(userDb.getUserName()) && user.getPassword().equals(userDb.getPassword())) {
-            req.getSession().setAttribute("role", userDb.getRole());
+           // req.getSession().setAttribute("role", userDb.getRole());
             return true;
         } else {
             return false;

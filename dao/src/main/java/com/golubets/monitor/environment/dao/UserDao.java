@@ -7,7 +7,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,34 +21,32 @@ public class UserDao {
     }
 
     private class PersistUser extends User {
-        public void setId(Integer id){
+        public void setId(Integer id) {
             super.setId(id);
         }
     }
 
-    public synchronized void persist(User user){
+    public synchronized void persist(User user) {
         Session session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         try {
             session.saveOrUpdate(user);
             tx.commit();
-        }catch (Exception e){
+        } catch (Exception e) {
             tx.rollback();
-        }finally {
+        } finally {
             if (session != null && session.isOpen()) {
                 session.close();
             }
         }
     }
 
-    public User getById (Integer id){
-        PersistUser user = null;
+    public User getById(Integer id) {
+        User user = new User();
         Session session = sessionFactory.openSession();
         List<User> list = session.createQuery("from User").list();
-        if (list.size()==1){
-            user.setUserName(list.get(0).getUserName());
-            user.setPassword(list.get(0).getPassword());
-            user.setRole(list.get(0).getRole());
+        if (list.size() == 1) {
+            return list.get(0);
         }
         if (session != null && session.isOpen()) {
             session.close();
@@ -59,29 +56,18 @@ public class UserDao {
 
     public List<User> getAll() {
         Session session = sessionFactory.openSession();
-        List<User> list = new ArrayList<>();
-        List<User> entityList = session.createQuery("from User ").list();
-        for (User u:entityList){
-            PersistUser user = new PersistUser();
-            user.setId(u.getId());
-            user.setUserName(u.getUserName());
-            user.setPassword(u.getPassword());
-            user.setRole(u.getRole());
-            list.add(user);
-        }
         if (session != null && session.isOpen()) {
             session.close();
         }
-        return list;
+        return session.createQuery("from User ").list();
     }
-    public User getByName (String name){
-        PersistUser user = new PersistUser();
+
+    public User getByName(String name) {
+        User user = new User();
         Session session = sessionFactory.openSession();
         List<User> list = session.createQuery("from User").list();
-        if (list.size()==1){
-            user.setUserName(list.get(0).getUserName());
-            user.setPassword(list.get(0).getPassword());
-            user.setRole(list.get(0).getRole());
+        if (list.size() == 1) {
+            return list.get(0);
         }
         if (session != null && session.isOpen()) {
             session.close();

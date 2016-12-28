@@ -5,7 +5,6 @@
          http://www.springframework.org/schema/beans/spring-beans.xsd
          http://www.springframework.org/schema/security
          http://www.springframework.org/schema/security/spring-security.xsd">
-
     <http>
         <intercept-url pattern="/settings" access="hasRole('ADMIN')" />
         <intercept-url pattern="/settings/*" access="hasRole('ADMIN')" />
