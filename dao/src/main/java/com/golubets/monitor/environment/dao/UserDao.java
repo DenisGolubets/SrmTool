@@ -2,17 +2,18 @@ package com.golubets.monitor.environment.dao;
 
 import com.golubets.monitor.environment.model.User;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * Created by golubets on 9.12.2016.
  */
-@Repository("userDao")
+@Component
 public class UserDao {
     private static SessionFactory sessionFactory = null;
 
@@ -42,37 +43,22 @@ public class UserDao {
     }
 
     public User getById(Integer id) {
-        User user = new User();
         Session session = sessionFactory.openSession();
-        List<User> list = session.createQuery("from User").list();
-        if (list.size() == 1) {
-            return list.get(0);
-        }
-        if (session != null && session.isOpen()) {
-            session.close();
-        }
-        return user;
+        Query query = session.createQuery("from User where id=:id");
+        query.setParameter("id", id);
+        return (User) query.uniqueResult();
     }
 
     public List<User> getAll() {
         Session session = sessionFactory.openSession();
-        if (session != null && session.isOpen()) {
-            session.close();
-        }
         return session.createQuery("from User ").list();
     }
 
     public User getByName(String name) {
-        User user = new User();
-        Session session = sessionFactory.openSession();
-        List<User> list = session.createQuery("from User").list();
-        if (list.size() == 1) {
-            return list.get(0);
-        }
-        if (session != null && session.isOpen()) {
-            session.close();
-        }
-        return user;
-    }
 
+        Session session = sessionFactory.openSession();
+        Query query = session.createQuery("from User where userName=:name");
+        query.setParameter("name", name);
+        return (User) query.uniqueResult();
+    }
 }

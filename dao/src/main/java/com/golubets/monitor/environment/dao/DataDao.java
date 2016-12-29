@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by golubets on 9.12.2016.
  */
-@Component("dataDao")
+@Component
 public class DataDao {
     private static SessionFactory sessionFactory = null;
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
@@ -50,7 +50,6 @@ public class DataDao {
 
     public List<DataEntity> getAllByArduino(Arduino arduino) {
         Session session = sessionFactory.openSession();
-        List<DataEntity> list = session.createQuery("from DataEntity where arduinoId=" + arduino.getId()).list();
-        return list;
+        return session.createQuery("from DataEntity where arduinoId=" + arduino.getId()).list();
     }
 }

@@ -4,6 +4,7 @@ import com.golubets.monitor.environment.model.UserRole;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Created by golubets on 28.12.2016.
  */
-@Repository("userRoleDao")
+@Component
 public class UserRoleDao {
     private static SessionFactory sessionFactory = null;
 
@@ -19,13 +20,14 @@ public class UserRoleDao {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }
 
-    public UserRole getRoleByUserId(Integer id){
+    public List<UserRole> getRoleByUserId(Integer id){
         Session session = sessionFactory.openSession();
-        UserRole userRole = new UserRole();
-        List<UserRole> list = session.createQuery("from UserRole where userid = " + id).list();
-        if (list.size()==1){
-            return list.get(0);
-        }
-        return userRole;
+        return session.createQuery("from UserRole where userid = " + id).list();
+
+    }
+
+    public List<UserRole> getAll(){
+        Session session = sessionFactory.openSession();
+        return session.createQuery("from UserRole ").list();
     }
 }

@@ -2,17 +2,18 @@ package com.golubets.monitor.environment.dao;
 
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * Created by golubets on 9.12.2016.
  */
-@Repository("arduinoDao")
+@Component
 public class ArduinoDao extends Arduino {
     private static SessionFactory sessionFactory = null;
 
@@ -42,37 +43,22 @@ public class ArduinoDao extends Arduino {
     }
 
     public Arduino getByID(Integer id) {
-       Arduino arduino = null;
+
         Session session = sessionFactory.openSession();
-        List<Arduino> list = session.createQuery("from Arduino where id=" + id).list();
-        if (list.size() == 1) {
-            arduino = list.get(0);
-        }
-        if (session != null && session.isOpen()) {
-            session.close();
-        }
-        return arduino;
+        Query query = session.createQuery("from Arduino where id=:id");
+        query.setParameter("id", id);
+        return (Arduino) query.uniqueResult();
     }
 
     public Arduino getByName(String name) {
-        Arduino arduino = null;
         Session session = sessionFactory.openSession();
-        List<Arduino> list = session.createQuery("from Arduino where name=" + name).list();
-        if (list.size() == 1) {
-            arduino = list.get(0);
-        }
-        if (session != null && session.isOpen()) {
-            session.close();
-        }
-        return arduino;
+        Query query = session.createQuery("from Arduino where name=:name");
+        query.setParameter("name", name);
+        return (Arduino) query.uniqueResult();
     }
 
     public List<Arduino> getAll() {
         Session session = sessionFactory.openSession();
-        List<Arduino> list = session.createQuery("from Arduino ").list();
-        if (session != null && session.isOpen()) {
-            session.close();
-        }
-        return list;
+        return session.createQuery("from Arduino ").list();
     }
 }

@@ -5,19 +5,22 @@
          http://www.springframework.org/schema/beans/spring-beans.xsd
          http://www.springframework.org/schema/security
          http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <b:bean id="userDetailsService" class="com.golubets.monitor.environment.web.config.UserDetailsServiceImpl"/>
+
     <http>
-        <intercept-url pattern="/settings" access="hasRole('ADMIN')" />
-        <intercept-url pattern="/settings/*" access="hasRole('ADMIN')" />
-        <form-login />
-        <logout />
+        <intercept-url pattern="/settings" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/settings/*" access="hasRole('ADMIN')"/>
+        <form-login login-page="/login"
+                    username-parameter="name"
+                    password-parameter="password"/>
+        <logout/>
     </http>
 
     <authentication-manager>
-    <authentication-provider>
-    <user-service>
-        <user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN"/>
-    </user-service>
-    </authentication-provider>
+        <authentication-provider user-service-ref="userDetailsService">
+            <password-encoder hash="sha"/>
+        </authentication-provider>
     </authentication-manager>
 
 </b:beans>

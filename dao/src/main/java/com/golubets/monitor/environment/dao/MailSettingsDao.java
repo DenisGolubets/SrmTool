@@ -5,14 +5,14 @@ import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
  * Created by golubets on 15.12.2016.
  */
-@Repository("mailSettingsDao")
+@Component
 public class MailSettingsDao {
     private static SessionFactory sessionFactory = null;
 
@@ -38,7 +38,6 @@ public class MailSettingsDao {
 
     public List<MailSettings> getAll() {
         Session session = sessionFactory.openSession();
-        List<MailSettings> mailSettings = session.createQuery("from MailSettings ").list();
-        return mailSettings;
+        return session.createQuery("from MailSettings ").list();
     }
 }
