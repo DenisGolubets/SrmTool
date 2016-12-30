@@ -54,6 +54,7 @@
     <div id="content">
         <form method="post">
             <input type="hidden" name="id" value="${arduino.getId()}"/>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <table>
                 <tr>
                     <td>Name</td>

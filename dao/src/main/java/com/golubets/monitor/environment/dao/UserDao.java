@@ -5,7 +5,6 @@ import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -29,12 +28,10 @@ public class UserDao {
 
     public synchronized void persist(User user) {
         Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
         try {
             session.saveOrUpdate(user);
-            tx.commit();
+            session.flush();
         } catch (Exception e) {
-            tx.rollback();
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

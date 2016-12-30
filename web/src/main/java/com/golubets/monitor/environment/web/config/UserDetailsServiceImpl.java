@@ -30,6 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userDao.getByName(username);
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUserName(),
                 user.getPassword(),
+                true, true, true,true,
                 getGrantedAuthorities(user));
         return userDetails;
     }

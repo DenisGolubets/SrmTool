@@ -4,7 +4,6 @@ import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,13 +21,11 @@ public class MailSettingsDao {
 
     public void persist(MailSettings mailSettings) {
         Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
         try {
             session.saveOrUpdate(mailSettings);
-            tx.commit();
+            session.flush();
         } catch (Exception e) {
             e.printStackTrace();
-            tx.rollback();
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

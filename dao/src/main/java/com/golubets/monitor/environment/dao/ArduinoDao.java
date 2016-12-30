@@ -29,12 +29,11 @@ public class ArduinoDao extends Arduino {
 
     public synchronized void persist(Arduino arduino) {
         Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
         try {
             session.saveOrUpdate(arduino);
-            tx.commit();
+            session.flush();
         } catch (Exception e) {
-            tx.rollback();
+            e.printStackTrace();
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

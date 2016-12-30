@@ -6,6 +6,7 @@
     <session-factory>
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
+        <property name="hibernate.connection.autocommit">true</property>
         <property name="dialect">com.enigmabridge.hibernate.dialect.SQLiteDialect</property>
         <property name="connection.driver_class">org.sqlite.JDBC</property>
         <property name="connection.url">jdbc:sqlite:D:/db/data2.db</property>

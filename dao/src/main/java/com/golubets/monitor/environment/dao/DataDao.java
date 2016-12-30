@@ -5,7 +5,6 @@ import com.golubets.monitor.environment.model.DataEntity;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -24,10 +23,8 @@ public class DataDao {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }
 
-    public void persist(Arduino arduino, Date date){
+    public void persist(Arduino arduino, Date date) {
         Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-
         try {
             DataEntity entity = new DataEntity();
             entity.setArduinoId(arduino.getId());
@@ -35,17 +32,14 @@ public class DataDao {
             entity.setTemp(arduino.getTemp());
             entity.setHum(arduino.getHum());
             session.save(entity);
-
-            tx.commit();
-        }catch (Exception e){
-            tx.rollback();
-
-        }finally {
+            session.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             if (session != null && session.isOpen()) {
                 session.close();
             }
         }
-
     }
 
     public List<DataEntity> getAllByArduino(Arduino arduino) {
