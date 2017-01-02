@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Created by golubets on 19.07.2016.
  */
 @Entity
-@Table(name = "arduino", schema = "", catalog = "")
+@Table(name = "arduino")
 public class Arduino implements Serializable {
 
     private int id;
@@ -135,17 +135,8 @@ public class Arduino implements Serializable {
         return dhtType;
     }
 
-    @Basic
-    @Column(name = "lasth", nullable = true)
-    public double getHum() {
-        return hum;
-    }
 
-    @Basic
-    @Column(name = "lastt", nullable = true)
-    public double getTemp() {
-        return temp;
-    }
+
 
     public void setId(int id) {
         this.id = id;
@@ -213,6 +204,16 @@ public class Arduino implements Serializable {
 
     public void setTemp(double temp) {
         this.temp = temp;
+    }
+
+    @Transient
+    public double getHum() {
+        return hum;
+    }
+
+    @Transient
+    public double getTemp() {
+        return temp;
     }
 
 

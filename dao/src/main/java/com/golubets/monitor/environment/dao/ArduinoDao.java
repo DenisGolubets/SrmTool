@@ -6,6 +6,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +16,9 @@ import java.util.List;
  */
 @Component
 public class ArduinoDao extends Arduino {
+
+    private static final Logger log = Logger.getLogger(Arduino.class);
+
     private static SessionFactory sessionFactory = null;
 
     public ArduinoDao() {
@@ -33,7 +37,7 @@ public class ArduinoDao extends Arduino {
             session.saveOrUpdate(arduino);
             session.flush();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

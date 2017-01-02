@@ -29,7 +29,6 @@
         <form method="post" action='email' name="email">
             <input type="hidden" name="id" value="${mailSettings.getId()}"/>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-
             <table>
                 <tr>
                     <td>SMTP</td>

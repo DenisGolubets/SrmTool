@@ -5,6 +5,7 @@ import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,6 +15,9 @@ import java.util.List;
  */
 @Component
 public class UserDao {
+
+    private static final Logger log = Logger.getLogger(DataDao.class);
+
     private static SessionFactory sessionFactory = null;
 
     public UserDao() {
@@ -32,6 +36,7 @@ public class UserDao {
             session.saveOrUpdate(user);
             session.flush();
         } catch (Exception e) {
+            log.error(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

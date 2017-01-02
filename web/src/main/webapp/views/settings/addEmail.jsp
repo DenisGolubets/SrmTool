@@ -30,7 +30,6 @@
         <form method="get" action='email' name="email">
             <input type="hidden" name="action" value="addemail"/>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-
             <table>
                 <tr>
                     <td>SMTP</td>

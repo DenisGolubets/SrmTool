@@ -1,10 +1,12 @@
 package com.golubets.monitor.environment.web.servlet;
 
 import com.golubets.monitor.environment.dao.ArduinoDao;
+import com.golubets.monitor.environment.dao.DataDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.mail.EmailSender;
 import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.model.DataEntity;
 import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.ArduinoIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class MainController {
     MailSettingsDao mailSettingsDao;
     @Autowired
     UserDao userDao;
+    @Autowired
+    DataDao dataDao;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
@@ -54,7 +58,13 @@ public class MainController {
     @RequestMapping(value = "/settings/arduino")
     public ModelAndView settingsArduino() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("arduinos", arduinoDao.getAll());
+        List<Arduino> list = arduinoDao.getAll();
+        for (Arduino arduino : list){
+            DataEntity dataEntity = dataDao.getLastRowByArduino(arduino);
+            arduino.setTemp(dataEntity.getTemp());
+            arduino.setHum(dataEntity.getHum());
+        }
+            modelAndView.addObject("arduinos", list);
         modelAndView.setViewName("/settings/settingsArduino");
         return modelAndView;
     }
@@ -118,8 +128,8 @@ public class MainController {
         }
         try {
             EmailSender emailSender = new EmailSender(mailSettings);
-            emailSender.sendMail("Test","This email is tested from STMTool");
-        }catch (Exception e){
+            emailSender.sendMail("Test", "This email is tested from STMTool");
+        } catch (Exception e) {
             return "redirect:/settings/email";
         }
         mailSettingsDao.persist(mailSettings);

@@ -89,9 +89,9 @@ public class ArduinoListener {
     }
 
     private void writeDateToDB() {
-        ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
+       // ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
         DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
-        arduinoDao.persist(arduino);
+        //arduinoDao.persist(arduino);
         dataDao.persist(arduino, date);
     }
 

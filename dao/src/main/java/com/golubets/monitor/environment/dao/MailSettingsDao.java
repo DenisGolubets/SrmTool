@@ -4,6 +4,7 @@ import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
  */
 @Component
 public class MailSettingsDao {
+    private static final Logger log = Logger.getLogger(DataDao.class);
+
     private static SessionFactory sessionFactory = null;
 
     public MailSettingsDao() {
@@ -25,7 +28,7 @@ public class MailSettingsDao {
             session.saveOrUpdate(mailSettings);
             session.flush();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
