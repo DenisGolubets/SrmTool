@@ -58,13 +58,8 @@ public class MainController {
     @RequestMapping(value = "/settings/arduino")
     public ModelAndView settingsArduino() {
         ModelAndView modelAndView = new ModelAndView();
-        List<Arduino> list = arduinoDao.getAll();
-        for (Arduino arduino : list){
-            DataEntity dataEntity = dataDao.getLastRowByArduino(arduino);
-            arduino.setTemp(dataEntity.getTemp());
-            arduino.setHum(dataEntity.getHum());
-        }
-            modelAndView.addObject("arduinos", list);
+        List<Arduino> list = arduinoDao.getAllWithLastData();
+        modelAndView.addObject("arduinos", list);
         modelAndView.setViewName("/settings/settingsArduino");
         return modelAndView;
     }

@@ -1,6 +1,8 @@
 package com.golubets.monitor.environment.dao;
 
 import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.model.DataEntity;
+import com.golubets.monitor.environment.util.DaoApplicationContext;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -22,12 +24,6 @@ public class ArduinoDao extends Arduino {
 
     public ArduinoDao() {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
-    }
-
-    private class PersistArduino extends Arduino {
-        public void setId(Integer id) {
-            super.setId(id);
-        }
     }
 
     public void persist(Arduino arduino) {
@@ -109,7 +105,30 @@ public class ArduinoDao extends Arduino {
             session.beginTransaction();
             list = session.createQuery("from Arduino").list();
             session.getTransaction().commit();
-            return list;
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return list;
+    }
+
+    public List<Arduino> getAllWithLastData() {
+        Session session = sessionFactory.openSession();
+        List<Arduino> list = null;
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from Arduino").list();
+            session.getTransaction().commit();
+            DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
+            for (Arduino arduino:list){
+                DataEntity dataEntity = dataDao.getLastRowByArduino(arduino);
+                arduino.setTemp(dataEntity.getTemp());
+                arduino.setHum(dataEntity.getHum());
+            }
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error(e);
