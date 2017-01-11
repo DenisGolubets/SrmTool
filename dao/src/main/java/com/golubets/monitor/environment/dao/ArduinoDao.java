@@ -5,7 +5,6 @@ import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
 
@@ -31,12 +30,30 @@ public class ArduinoDao extends Arduino {
         }
     }
 
-    public synchronized void persist(Arduino arduino) {
+    public void persist(Arduino arduino) {
         Session session = sessionFactory.openSession();
         try {
-            session.saveOrUpdate(arduino);
-            session.flush();
+            session.beginTransaction();
+            session.persist(arduino);
+            session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+    }
+
+    public void update(Arduino arduino) {
+        Session session = sessionFactory.openSession();
+        try {
+            session.beginTransaction();
+            session.saveOrUpdate(arduino);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
             log.error(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -48,20 +65,59 @@ public class ArduinoDao extends Arduino {
     public Arduino getByID(Integer id) {
 
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("from Arduino where id=:id");
-        query.setParameter("id", id);
-        return (Arduino) query.uniqueResult();
+        Arduino arduino = null;
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Arduino where id=:id");
+            query.setParameter("id", id);
+            arduino = (Arduino) query.uniqueResult();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return arduino;
     }
 
     public Arduino getByName(String name) {
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("from Arduino where name=:name");
-        query.setParameter("name", name);
-        return (Arduino) query.uniqueResult();
+        Arduino arduino = null;
+        try {
+            Query query = session.createQuery("from Arduino where name=:name");
+            query.setParameter("name", name);
+            arduino = (Arduino) query.uniqueResult();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return arduino;
     }
 
     public List<Arduino> getAll() {
         Session session = sessionFactory.openSession();
-        return session.createQuery("from Arduino ").list();
+        List<Arduino> list = null;
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from Arduino").list();
+            session.getTransaction().commit();
+            return list;
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return list;
     }
 }

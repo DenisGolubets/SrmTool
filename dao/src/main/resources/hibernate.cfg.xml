@@ -6,16 +6,23 @@
     <session-factory>
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
-        <property name="hibernate.connection.autocommit">true</property>
         <property name="dialect">com.enigmabridge.hibernate.dialect.SQLiteDialect</property>
         <property name="connection.driver_class">org.sqlite.JDBC</property>
         <property name="connection.url">jdbc:sqlite:D:/db/data2.db</property>
-        <property name="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider
-        </property>
+
+        <!-- manage automatic database creation -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- hibernate c3p0 connection pooling configuration  -->
+        <property name="hibernate.c3p0.acquire_increment">1</property>
+        <property name="hibernate.c3p0.idle_test_period">60</property> <!-- seconds -->
         <property name="hibernate.c3p0.min_size">1</property>
-        <property name="hibernate.c3p0.max_size">20</property>
-        <property name="hibernate.c3p0.timeout">1200</property>
-        <property name="hibernate.c3p0.idle_test_period">600</property>
+        <property name="hibernate.c3p0.max_size">10</property>
+        <property name="hibernate.c3p0.max_statements">50</property>
+        <property name="hibernate.c3p0.timeout">0</property> <!-- seconds -->
+        <property name="hibernate.c3p0.acquireRetryAttempts">1</property>
+        <property name="hibernate.c3p0.acquireRetryDelay">250</property>
+
         <mapping class="com.golubets.monitor.environment.model.Arduino"/>
         <mapping class="com.golubets.monitor.environment.model.DataEntity"/>
         <mapping class="com.golubets.monitor.environment.model.User"/>

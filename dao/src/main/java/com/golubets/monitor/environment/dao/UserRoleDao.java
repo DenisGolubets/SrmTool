@@ -4,8 +4,8 @@ import com.golubets.monitor.environment.model.UserRole;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -14,20 +14,49 @@ import java.util.List;
  */
 @Component
 public class UserRoleDao {
+
+    private static final Logger log = Logger.getLogger(UserRoleDao.class);
+
     private static SessionFactory sessionFactory = null;
 
     public UserRoleDao() {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }
 
-    public List<UserRole> getRoleByUserId(Integer id){
+    public List<UserRole> getRoleByUserId(Integer id) {
         Session session = sessionFactory.openSession();
-        return session.createQuery("from UserRole where userid = " + id).list();
+        List<UserRole> list = null;
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from UserRole where userid = " + id).list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return list;
 
     }
 
-    public List<UserRole> getAll(){
+    public List<UserRole> getAll() {
         Session session = sessionFactory.openSession();
-        return session.createQuery("from UserRole ").list();
+        List<UserRole> list = null;
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from UserRole").list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return list;
     }
 }

@@ -3,7 +3,6 @@ package com.golubets.monitor.environment;
 import com.golubets.monitor.environment.arduinoconnection.Connector;
 import com.golubets.monitor.environment.arduinoconnection.EthConnector;
 import com.golubets.monitor.environment.arduinoconnection.JsscSerialConnector;
-import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.dao.DataDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.mail.EmailSender;
@@ -15,7 +14,6 @@ import com.golubets.monitor.environment.util.DaoApplicationContext;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +34,7 @@ public class ArduinoListener {
     private Date date;
     private static final long periodicityOfMailing = 20 * 60 * 980;
 
-    private transient Connector connector;
+    private Connector connector;
 
     public ArduinoListener(Arduino arduino, Date date) throws Exception {
         this.arduino = arduino;
@@ -89,21 +87,22 @@ public class ArduinoListener {
     }
 
     private void writeDateToDB() {
-       // ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
         DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
-        //arduinoDao.persist(arduino);
         dataDao.persist(arduino, date);
     }
 
     private void doJob() throws Exception {
-        getDate();
-        writeDateToDB();
-        if (isAlert) {
-            informIfAlert();
+        try {
+            getDate();
+            writeDateToDB();
+            if (isAlert) {
+                informIfAlert();
+            }
+            connector.close();
+        } catch (Exception e) {
+            log.error(e);
         }
-        connector.close();
     }
-
 
     public String getDate(String request) throws IOException {
         try {

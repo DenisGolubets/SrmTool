@@ -105,7 +105,7 @@ public class MainController {
             return "redirect:/settings/arduino/" + id;
         }
 
-        arduinoDao.persist(arduino);
+        arduinoDao.update(arduino);
         return "redirect:/settings/arduino";
 
     }

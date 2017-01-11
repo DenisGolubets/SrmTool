@@ -26,11 +26,11 @@ public class EthConnector implements Connector, AutoCloseable {
     public StringBuilder sb;
 
     public synchronized void close() throws IOException {
-        if (socket != null) {
+        if (socket != null && socket.isConnected()) {
             socket.close();
-            in.close();
-            out.close();
         }
+        in.close();
+        out.close();
     }
 
     @Override

@@ -30,33 +30,61 @@ public class DataDao {
 
     public void persist(Arduino arduino, Date date) {
         Session session = sessionFactory.openSession();
+
         try {
+            session.beginTransaction();
             DataEntity entity = new DataEntity();
             entity.setArduinoId(arduino.getId());
             entity.setDateTime(DATE_FORMAT.format(date));
             entity.setTemp(arduino.getTemp());
             entity.setHum(arduino.getHum());
-            session.save(entity);
-            session.flush();
+            session.persist(entity);
+            session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             log.error(e);
         } finally {
-            if (session != null && session.isOpen()) {
-                session.close();
-            }
+            session.close();
         }
     }
 
     public List<DataEntity> getAllByArduino(Arduino arduino) {
         Session session = sessionFactory.openSession();
-        return session.createQuery("from DataEntity where arduinoId=" + arduino.getId()).list();
+
+        List<DataEntity> list = null;
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from DataEntity where arduinoId=" + arduino.getId()).list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        }finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return list;
     }
 
     public DataEntity getLastRowByArduino(Arduino arduino) {
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("from DataEntity where id=(" +
-                "select max(id) from DataEntity where arduinoId=:id)");
-        query.setParameter("id",arduino.getId());
-        return (DataEntity) query.uniqueResult();
+        DataEntity dataEntity = null;
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from DataEntity where id=(" +
+                    "select max(id) from DataEntity where arduinoId=:id)");
+            query.setParameter("id", arduino.getId());
+            dataEntity = (DataEntity) query.uniqueResult();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        }finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return dataEntity;
     }
 }

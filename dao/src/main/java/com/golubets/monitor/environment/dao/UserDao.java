@@ -33,9 +33,11 @@ public class UserDao {
     public synchronized void persist(User user) {
         Session session = sessionFactory.openSession();
         try {
-            session.saveOrUpdate(user);
-            session.flush();
+            session.beginTransaction();
+            session.persist(user);
+            session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             log.error(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -46,21 +48,59 @@ public class UserDao {
 
     public User getById(Integer id) {
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("from User where id=:id");
-        query.setParameter("id", id);
-        return (User) query.uniqueResult();
+        User user = null;
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from User where id=:id");
+            query.setParameter("id", id);
+            user = (User) query.uniqueResult();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        }finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return user;
     }
 
     public List<User> getAll() {
         Session session = sessionFactory.openSession();
-        return session.createQuery("from User ").list();
+        List<User> list = null;
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from User ").list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        }finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return list;
     }
 
     public User getByName(String name) {
 
         Session session = sessionFactory.openSession();
-        Query query = session.createQuery("from User where userName=:name");
-        query.setParameter("name", name);
-        return (User) query.uniqueResult();
+        User user = null;
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from User where userName=:name");
+            query.setParameter("name", name);
+            user = (User) query.uniqueResult();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return user;
     }
 }

@@ -16,8 +16,8 @@ public class Poll {
 
     private static final Logger log = Logger.getLogger(Poll.class);
     public static Poll instance;
-    //private long period = 600000; //10 min
-    private long period = 60000; //1 min
+    private long period = 600000; //10 min
+//    private long period = 60000; //1 min
     private Timer timer = new Timer();
 
     private List<Arduino> arduinoList = Collections.synchronizedList(new ArrayList<Arduino>());
@@ -35,7 +35,6 @@ public class Poll {
 
     private Poll() {
         interview();
-
         timer.schedule(new TimerTask() {
             @Override
             public void run() {

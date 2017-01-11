@@ -25,9 +25,11 @@ public class MailSettingsDao {
     public void persist(MailSettings mailSettings) {
         Session session = sessionFactory.openSession();
         try {
+            session.beginTransaction();
             session.saveOrUpdate(mailSettings);
-            session.flush();
+            session.getTransaction().commit();
         } catch (Exception e) {
+            session.getTransaction().rollback();
             log.error(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -38,6 +40,19 @@ public class MailSettingsDao {
 
     public List<MailSettings> getAll() {
         Session session = sessionFactory.openSession();
-        return session.createQuery("from MailSettings ").list();
+        List<MailSettings> list = null;
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from MailSettings").list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        }finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return list;
     }
 }
