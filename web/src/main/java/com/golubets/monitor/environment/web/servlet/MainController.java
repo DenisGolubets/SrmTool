@@ -6,7 +6,6 @@ import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.mail.EmailSender;
 import com.golubets.monitor.environment.model.Arduino;
-import com.golubets.monitor.environment.model.DataEntity;
 import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.ArduinoIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +14,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,8 +39,30 @@ public class MainController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("arduinos", arduinoDao.getAllWithLastData());
         modelAndView.setViewName("index");
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<Arduino> index(@PathVariable int id) {
+        if (id==-1){
+            return arduinoDao.getAllWithLastData();
+        }else {
+            List<Arduino> list = new ArrayList<>();
+            list.add(arduinoDao.getByIDWithLastData(id));
+            return list;
+        }
+    }
+
+    @RequestMapping(value = "/time", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    String getTime() {
+        String result = " is " + new Date().toString();
+        return result;
     }
 
     @RequestMapping(value = "settings")

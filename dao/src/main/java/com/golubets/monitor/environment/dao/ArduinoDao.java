@@ -79,6 +79,31 @@ public class ArduinoDao extends Arduino {
         return arduino;
     }
 
+    public Arduino getByIDWithLastData(Integer id) {
+
+        Session session = sessionFactory.openSession();
+        Arduino arduino = null;
+        try {
+            session.beginTransaction();
+            Query query = session.createQuery("from Arduino where id=:id");
+            query.setParameter("id", id);
+            arduino = (Arduino) query.uniqueResult();
+            DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
+            DataEntity dataEntity = dataDao.getLastRowByArduino(arduino);
+            arduino.setTemp(dataEntity.getTemp());
+            arduino.setHum(dataEntity.getHum());
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return arduino;
+    }
+
     public Arduino getByName(String name) {
         Session session = sessionFactory.openSession();
         Arduino arduino = null;

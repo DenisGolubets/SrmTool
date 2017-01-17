@@ -19,7 +19,6 @@
 <!-- -*- HTML -*- -->
 <body>
 <div id="header">
-    <h1>ServerRoomMonitorTools</h1>
     <jsp:include page="/views/headerMenue.jsp" />
 </div>
 <div id="main">

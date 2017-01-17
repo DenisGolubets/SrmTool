@@ -32,11 +32,11 @@ h3 {
     background: none !important;
     border: none;
     padding: 0 !important;
-    font: inherit;
-    /*border is optional*/
-    border-bottom: 1px solid #444;
+    color: #486aaf;
+    text-decoration: none;
     cursor: pointer;
 }
+
 
 a:link, a:visited, a:link:active, a:link:hover {
     color: #486aaf;

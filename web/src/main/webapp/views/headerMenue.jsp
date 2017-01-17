@@ -9,6 +9,9 @@
 <table width="200" border="0">
     <tbody>
     <tr>
+        <h1>EnvironmentMonitorTools</h1>
+    </tr>
+    <tr>
         <td><h1><a href=${pageContext.request.contextPath}/ >Home</a></h1></td>
         <td><h1><a href=${pageContext.request.contextPath}/settings >Settings</a></h1></td>
     </tr>
