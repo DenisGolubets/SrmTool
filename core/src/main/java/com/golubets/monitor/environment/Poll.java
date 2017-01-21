@@ -7,7 +7,10 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by golubets on 24.08.2016.
@@ -17,10 +20,8 @@ public class Poll {
     private static final Logger log = Logger.getLogger(Poll.class);
     public static Poll instance;
     private long period = 600000; //10 min
-//    private long period = 60000; //1 min
+    //    private long period = 60000; //1 min
     private Timer timer = new Timer();
-
-    private List<Arduino> arduinoList = Collections.synchronizedList(new ArrayList<Arduino>());
 
     public static Poll getInstance() {
         if (instance == null) {
@@ -46,7 +47,8 @@ public class Poll {
     private void interview() {
         final Date date = new Date();
         ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
-        for (Arduino a : arduinoDao.getAll()) {
+        List<Arduino> list = arduinoDao.getAll();
+        for (Arduino a : list) {
             try {
                 new ArduinoListener(a, date);
             } catch (NumberFormatException e) {
@@ -62,17 +64,6 @@ public class Poll {
                 log.error(e);
             }
         }
-    }
-
-    public Arduino getArduinoById(int id) {
-        if (arduinoList.size() > 0) {
-            for (Arduino a : arduinoList) {
-                if (a.getId() == id) {
-                    return a;
-                }
-            }
-        }
-        return null;
     }
 }
 

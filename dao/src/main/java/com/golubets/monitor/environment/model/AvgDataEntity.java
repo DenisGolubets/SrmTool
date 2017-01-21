@@ -3,11 +3,11 @@ package com.golubets.monitor.environment.model;
 import javax.persistence.*;
 
 /**
- * Created by golubets on 09.12.2016.
+ * Created by golubets on 19.01.2017.
  */
 @Entity
-@Table(name = "date", schema = "", catalog = "")
-public class DataEntity {
+@Table(name = "avg_date", schema = "", catalog = "")
+public class AvgDataEntity {
     private int id;
     private int arduinoId;
     private String dateTime;
@@ -67,16 +67,16 @@ public class DataEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof AvgDataEntity)) return false;
 
-        DataEntity that = (DataEntity) o;
+        AvgDataEntity that = (AvgDataEntity) o;
 
         if (id != that.id) return false;
+        if (arduinoId != that.arduinoId) return false;
         if (Double.compare(that.temp, temp) != 0) return false;
         if (Double.compare(that.hum, hum) != 0) return false;
-        if (dateTime != null ? !dateTime.equals(that.dateTime) : that.dateTime != null) return false;
+        return dateTime != null ? dateTime.equals(that.dateTime) : that.dateTime == null;
 
-        return true;
     }
 
     @Override
@@ -84,6 +84,7 @@ public class DataEntity {
         int result;
         long temp1;
         result = id;
+        result = 31 * result + arduinoId;
         result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
         temp1 = Double.doubleToLongBits(temp);
         result = 31 * result + (int) (temp1 ^ (temp1 >>> 32));

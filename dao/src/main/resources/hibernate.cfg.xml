@@ -25,6 +25,7 @@
 
         <mapping class="com.golubets.monitor.environment.model.Arduino"/>
         <mapping class="com.golubets.monitor.environment.model.DataEntity"/>
+        <mapping class="com.golubets.monitor.environment.model.AvgDataEntity"/>
         <mapping class="com.golubets.monitor.environment.model.User"/>
         <mapping class="com.golubets.monitor.environment.model.MailSettings"/>
         <mapping class="com.golubets.monitor.environment.model.UserRole"/>
