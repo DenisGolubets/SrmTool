@@ -6,11 +6,9 @@ import com.golubets.monitor.environment.arduinoconnection.JsscSerialConnector;
 import com.golubets.monitor.environment.dao.DataDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.mail.EmailSender;
-import com.golubets.monitor.environment.model.Arduino;
-import com.golubets.monitor.environment.model.ConnectionType;
-import com.golubets.monitor.environment.model.MailSettings;
-import com.golubets.monitor.environment.model.SubjectForMail;
+import com.golubets.monitor.environment.model.*;
 import com.golubets.monitor.environment.util.DaoApplicationContext;
+import com.golubets.monitor.environment.util.DateUtil;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -88,6 +86,16 @@ public class ArduinoListener {
 
     private void writeDateToDB() {
         DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
+        DateUtil dateUtil = new DateUtil();
+        DataEntity prevData = dataDao.getLastRowByArduino(arduino);
+
+        String prevDataTime = dateUtil.getCurrentHour(prevData.getDateTime());
+        String curDateTime = dateUtil.getCurrentHour(date);
+
+        if (prevData != null && !(prevDataTime.equals(curDateTime))) {
+            AvgDataEntity avgDataEntity = dataDao.getAvg(arduino, prevDataTime, curDateTime);
+            dataDao.persistAvg(avgDataEntity);
+        }
         dataDao.persist(arduino, date);
     }
 
