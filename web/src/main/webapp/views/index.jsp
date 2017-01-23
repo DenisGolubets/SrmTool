@@ -18,28 +18,12 @@
     </c:if>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-        console.log("arduinos.size = "+${arduinos.size()});
+        console.log("arduinos.size = " +${arduinos.size()});
         google.charts.load('current', {'packages': ['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
-        function drawChart() {
-            var data = google.visualization.arrayToDataTable([
-                ['month', 'sensor1', 'sensor2'],
-                ['1', 22, 22.1],
-                ['2', 21, 23],
-                ['3', 20, 21],
-                ['4', 20, 23]
-            ]);
-            var options = {
-                title: '',
-                curveType: 'function',
-                legend: {position: 'bottom'}
-            };
-            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-            chart.draw(data, options);
-        }
     </script>
     <script>
         $(document).ready(function () {
+            var avgDate;
             $('.astext').click(function () {
                 var buttonid = this.id;
                 $.ajax({
@@ -50,54 +34,57 @@
                     success: function (arr) {
                         var out = "";
                         var i;
+                        var buttonid = arr[0].id;
                         for (i = 0; i < arr.length; i++) {
                             temp = arr[i].temp;
                             hum = arr[i].hum;
                             out += "<li>" + arr[i].name + "</li>";
                             out += "<ul><li class=last> <span class=host>Sensor </span>";
                             out += "[ Temperature: " + arr[i].temp + ", Humidity: " + arr[i].hum + " ]<br></li></ul>";
-
                         }
                         if (i < 2) {
                             out += "<button class=astext id='-1' >All</button>";
                         }
-
                         document.getElementById("mbody").innerHTML = out;
-
-                        if (i < 2) {
-                            google.charts.load('current', {'packages': ['corechart']});
-                            var data = google.visualization.arrayToDataTable([
-                                ['month', 'temp', 'hum'],
-                                ['1', temp, hum],
-                                ['2', temp, hum],
-                                ['3', temp, hum],
-                                ['4', temp, hum]
-                            ]);
-                            var options = {
-                                title: '',
-                                curveType: 'function',
-                                legend: {position: 'bottom'}
-                            };
-                            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-                            chart.clear;
-                            chart.draw(data, options);
-
-                        }
+                        drawChartAvdData(buttonid);
                     }
                 });
             });
         });
-
+        function drawChartAvdData(buttonid) {
+            $.ajax({
+                url: '/m' + buttonid,
+                type: 'GET',
+                contentType: 'application/x-www-form-urlencoded',
+                dataType: "json",
+                success: function (arr) {
+                    var data = [[]];
+                    var i;
+                    for (i = 0; i < arr.length; i++) {
+                        data[i] = [];
+                        data[i][0] = arr[i].dateTime;
+                        data[i][1] = arr[i].temp;
+                        data[i][2] = arr[i].hum;
+                    }
+                    data.unshift(['date', 'temp', 'hum']);
+                    var data = google.visualization.arrayToDataTable(data);
+                    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+                    chart.clear;
+                    var options = {
+                        title: '', curveType: 'function',
+                        legend: {position: 'bottom'}
+                    };
+                    chart.draw(data, options);
+                }
+            });
+        }
     </script>
-
 
 </head>
 <!-- -*- HTML -*- -->
 <body>
-
 <div id="header">
     <jsp:include page="/views/headerMenue.jsp"/>
-
 </div>
 <div id="main">
     <div id=nav>

@@ -9,10 +9,13 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -103,6 +106,30 @@ public class DataDao {
             }
         }
         return dataEntity;
+    }
+
+    public List<AvgDataEntity> getAvgLastLimitRecords(Arduino arduino, int limit) {
+        Session session = sessionFactory.openSession();
+        List<AvgDataEntity> list = null;
+        try {
+            session.beginTransaction();
+
+            Criteria criteria = session.createCriteria(AvgDataEntity.class);
+            criteria.add(Restrictions.eq("arduinoId", arduino.getId()));
+            criteria.addOrder(Order.desc("id"));
+            criteria.setMaxResults(limit);
+            list = criteria.list();
+            Collections.reverse(list);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return list;
     }
 
     public AvgDataEntity getAvg(Arduino arduino, String dateFrom, String dateTo) {

@@ -6,6 +6,7 @@ import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.mail.EmailSender;
 import com.golubets.monitor.environment.model.Arduino;
+import com.golubets.monitor.environment.model.AvgDataEntity;
 import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.ArduinoIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +49,31 @@ public class MainController {
     public
     @ResponseBody
     List<Arduino> index(@PathVariable int id) {
-        if (id==-1){
+        if (id == -1) {
             return arduinoDao.getAllWithLastData();
-        }else {
+        } else {
             List<Arduino> list = new ArrayList<>();
             list.add(arduinoDao.getByIDWithLastData(id));
             return list;
         }
+    }
+
+    @RequestMapping(value = "/d{id}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<AvgDataEntity> indexDayAvgData(@PathVariable int id) {
+        List<AvgDataEntity> list = new ArrayList<>();
+        list = dataDao.getAvgLastLimitRecords(arduinoDao.getByID(id), 24);
+        return list;
+    }
+
+    @RequestMapping(value = "/m{id}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    List<AvgDataEntity> indexMonthAvgData(@PathVariable int id) {
+        List<AvgDataEntity> list = new ArrayList<>();
+        list = dataDao.getAvgLastLimitRecords(arduinoDao.getByID(id),720);
+        return list;
     }
 
     @RequestMapping(value = "/time", method = RequestMethod.POST)
