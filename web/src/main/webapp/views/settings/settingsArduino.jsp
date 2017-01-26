@@ -13,6 +13,7 @@
     <title>Settings</title>
 </head>
 <head>
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css"/>
 
     <title></title>

@@ -9,7 +9,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -47,8 +46,8 @@ public class EmailSender implements BaseObject, Serializable {
     //email with authentication
     public EmailSender(MailSettings mailSettings) {
         this.host = mailSettings.getHost();
-        this.login = mailSettings.getLogin();
-        this.pass = mailSettings.getPass();
+        this.login = mailSettings.getMailLogin();
+        this.pass = mailSettings.getMailPass();
         this.port = mailSettings.getPort();
         this.from = mailSettings.getFrom();
         this.to = mailSettings.getTo();

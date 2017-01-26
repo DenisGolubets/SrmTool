@@ -11,6 +11,8 @@
     <http>
         <intercept-url pattern="/settings" access="hasRole('ADMIN')"/>
         <intercept-url pattern="/settings/*" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/settings/arduino/*" access="hasRole('ADMIN')"/>
+        <intercept-url pattern="/settings/email/*" access="hasRole('ADMIN')"/>
         <form-login login-page="/login"
                     username-parameter="name"
                     password-parameter="password"/>

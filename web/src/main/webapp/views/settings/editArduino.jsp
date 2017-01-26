@@ -1,8 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ page import="com.golubets.monitor.environment.dao.ArduinoDao" %>
-<%@ page import="com.golubets.monitor.environment.model.Arduino" %>
-<%@ page import="com.golubets.monitor.environment.util.DaoApplicationContext" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%--
   Created by IntelliJ IDEA.
   User: golubets
@@ -16,26 +13,7 @@
     <title>Edit arduino</title>
 </head>
 <head>
-    <%--<%--%>
-    <%--int id = -1;--%>
-    <%--Arduino arduino = null;--%>
-    <%--ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");--%>
-    <%--try {--%>
-    <%--String stringId = request.getParameter("id");--%>
-    <%--if (stringId == null || stringId.length() == 0) {--%>
-    <%--arduino = (Arduino) request.getSession().getAttribute("arduino");--%>
-    <%--} else {--%>
-    <%--id = Integer.parseInt(stringId);--%>
-    <%--}--%>
-    <%--} catch (NumberFormatException e) {--%>
-    <%--id = -1;--%>
-    <%--}--%>
-
-    <%--if (arduino == null && id != -1) {--%>
-    <%--arduino = arduinoDao.getByID(id);--%>
-    <%--}--%>
-
-    <%--%>--%>
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css"/>
 
     <title></title>
@@ -51,78 +29,87 @@
 
 
     <div id="content">
-        <form method="post">
+        <form:form method="post" modelAttribute="arduino">
             <input type="hidden" name="id" value="${arduino.getId()}"/>
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <table>
                 <tr>
                     <td>Name</td>
-                    <td><input ${errName} type="text" name="name" value="${arduino.getName()}"></td>
+                    <td>
+                        <form:input path="name" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>Connection type</td>
-                    <td><select name="connectionType">
-                        <option name="${arduino.getConnectionType()}">
-                            ${arduino.getConnectionType()}
-                        </option>
-                    </select></td>
+                    <td>
+                        <form:select path="connectionType" items="${connectionType}" multiple="false"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>MAC</td>
-                    <td><input type="text" name="mac" value="${arduino.getMac()}"></td>
+                    <td>
+                        <form:input path="mac" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>IP</td>
-                    <td><input type="text" name="ip" value="${arduino.getIp()}"></td>
+                    <td>
+                        <form:input path="ip" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>Subnet</td>
-                    <td><input type="text" name="subnet" value="${arduino.getSubnet()}"></td>
+                    <td>
+                        <form:input path="subnet" type="text"/>
+                    </td>
                 </tr>
-
                 <tr>
                     <td>Gateway</td>
-                    <td><input type="text" name="gateway" value="${arduino.getGateway()}"></td>
+                    <td>
+                        <form:input path="gateway" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>DNS</td>
-                    <td><input type="text" name="dns" value="${arduino.getDns()}"></td>
+                    <td>
+                        <form:input path="dns" type="text"/>
+                    </td>
                 </tr>
-
                 <tr>
                     <td>Sensor port</td>
-                    <td><input type="text" name="dhtPort" value="${arduino.getDhtPort()}"></td>
+                    <td>
+                        <form:input path="dhtPort" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>Sensor type</td>
-
-                    <td><select name="sensorType">
-                        <option name="${arduino.getDhtType()}">${arduino.getDhtType()}</option>
-                        <option name="22"> 22</option>
-                    </select></td>
+                    <td>
+                        <form:select path="dhtType" items="${dhtType}" multiple="false"/>
+                    </td>
                     </td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox"
-                               name="isAlertT" <c:if test="${arduino.isAlertT()}">checked="checked"</c:if>/><label>Alert
-                        by
-                        temp</label>
+                    <td>
+                        Alert by Temp<form:checkbox path="alertT"/>
                     </td>
-                    <td><input ${errTopT} type="text" name="topT" value="${arduino.getTopT()}"></td>
-
+                    <td>
+                        <form:input path="topT" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                 <tr>
-                    <td><input type="checkbox"
-                               name="isAlertH" <c:if test="${arduino.isAlertH()}">checked="checked"</c:if>/><label>Alert by
-                        hum</label></td>
-                    <td><input ${errTopH} type="text" name="topH" value="${arduino.getTopH()}"></td>
+                    <td>
+                        Alert by Hum <form:checkbox path="alertH"/>
+                    </td>
+                    <td>
+                        <form:input path="topH" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td><input type="submit" value="Submit"/></td>
                 </tr>
             </table>
-        </form>
+        </form:form>
         <ul class="groupview">
         </ul>
         <div class="contentpusher"></div>

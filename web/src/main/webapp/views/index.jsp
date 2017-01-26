@@ -10,6 +10,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <html>
 <head>
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/images/favicon.png" type="image/png">
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css"/>
     <title>Home</title>
@@ -18,7 +19,6 @@
     </c:if>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-        console.log("arduinos.size = " +${arduinos.size()});
         google.charts.load('current', {'packages': ['corechart']});
     </script>
     <script>
@@ -32,6 +32,7 @@
                     contentType: 'application/x-www-form-urlencoded',
                     dataType: "json",
                     success: function (arr) {
+                        console.log(arr);
                         var out = "";
                         var i;
                         var buttonid = arr[0].id;
@@ -66,7 +67,7 @@
                         data[i][1] = arr[i].temp;
                         data[i][2] = arr[i].hum;
                     }
-                    data.unshift(['date', 'temp', 'hum']);
+                    data.unshift(['date', 'temp,C', 'hum,%']);
                     var data = google.visualization.arrayToDataTable(data);
                     var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
                     chart.clear;

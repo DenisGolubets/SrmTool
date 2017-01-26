@@ -70,13 +70,13 @@ public class Arduino implements Serializable {
     }
 
     @Basic
-    @Column(name = "alertt", nullable = true)
+    @Column(name = "isalertt", nullable = true)
     public boolean isAlertT() {
         return isAlertT;
     }
 
     @Basic
-    @Column(name = "alerth", nullable = true)
+    @Column(name = "isalerth", nullable = true)
     public boolean isAlertH() {
         return isAlertH;
     }

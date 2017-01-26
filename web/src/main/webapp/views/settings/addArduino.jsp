@@ -6,15 +6,13 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
 <html>
 <head>
-    <title>Edit arduino</title>
-</head>
-<head>
-
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
-
-    <title></title>
+    <title>Edit arduino</title>
 </head>
 <!-- -*- HTML -*- -->
 <body>
@@ -25,76 +23,91 @@
     <jsp:include page="/views/leftSettingsMenue.jsp" />
 
     <div id="content">
-        <form method="post">
+        <form:form method="post" modelAttribute="arduino">
+            <input type="hidden" name="id" value="${arduino.getId()}"/>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <table>
                 <tr>
                     <td>Name</td>
-                    <td><input ${errName} type="text" name="name" value="<%=(request.getParameter("name")==null)?"":request.getParameter("name")%>" ></td>
+                    <td>
+                        <form:input path="name" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>Connection type</td>
-                    <td><select name="connectionType">
-                        <option name="ETHERNET">
-                            ETHERNET
-                        </option>
-                    </select></td>
+                    <td>
+                        <form:select path="connectionType" items="${connectionType}" multiple="false"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>MAC</td>
-                    <td><input type="text" name="mac" value="<%=(request.getParameter("mac")==null)?"":request.getParameter("mac")%>"></td>
+                    <td>
+                        <form:input path="mac" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>IP</td>
-                    <td><input ${errIp} type="text" name="ip" value="<%=(request.getParameter("ip")==null)?"":request.getParameter("ip")%>"></td>
+                    <td>
+                        <form:input path="ip" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>Subnet</td>
-                    <td><input type="text" name="subnet" value="<%=(request.getParameter("subnet")==null)?"":request.getParameter("subnet")%>"></td>
+                    <td>
+                        <form:input path="subnet" type="text"/>
+                    </td>
                 </tr>
 
                 <tr>
                     <td>Gateway</td>
-                    <td><input type="text" name="gateway" value="<%=(request.getParameter("gateway")==null)?"":request.getParameter("gateway")%>"></td>
+                    <td>
+                        <form:input path="gateway" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>DNS</td>
-                    <td><input type="text" name="dns" value="<%=(request.getParameter("dns")==null)?"":request.getParameter("dns")%>"></td>
+                    <td>
+                        <form:input path="dns" type="text"/>
+                    </td>
                 </tr>
 
                 <tr>
                     <td>Sensor port</td>
-                    <td><input ${errDhtPort} type="text" name="dhtPort" value="<%=(request.getParameter("dhtPort")==null)?"":request.getParameter("dhtPort")%>"></td>
+                    <td>
+                        <form:input path="dhtPort" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td>Sensor type</td>
 
-                    <td><select name="sensorType">
-                        <option name="22"> 22</option>
-                        <option name="23"> 23</option>
-                        <option name="11"> 11</option>
-                    </select></td>
+                    <td>
+                        <form:select path="dhtType" items="${dhtType}" multiple="false"/>
+                    </td>
                     </td>
                 </tr>
                 <tr>
-                    <td><input type="checkbox"
-                               name="isAlertT" <%=((request.getParameter("isAlertT")!=null) ? "checked='checked'" : "")%> /><label>Alert by
-                        temp</label>
+                    <td>
+                        Alert by Temp<form:checkbox path="alertT"/>
                     </td>
-                    <td><input ${errTopT} type="text" name="topT" value="<%=(request.getParameter("topT")==null)?"":request.getParameter("topT")%>"></td>
+                    <td>
+                        <form:input path="topT" type="text"/>
+                    </td>
+                </tr>
+                <tr>
+                <tr>
+                    <td>
+                        Alert by Hum <form:checkbox path="alertH"/>
 
-                </tr>
-                <tr>
-                <tr>
-                    <td><input type="checkbox"
-                               name="isAlertH" <%=((request.getParameter("isAlertH")!=null) ? "checked='checked'" : "")%> ><label>Alert by
-                        hum</label></td>
-                    <td><input ${errTopH} type="text" name="topH" value="<%=(request.getParameter("topH")==null)?"":request.getParameter("topH")%>"></td>
+                    </td>
+                    <td>
+                        <form:input path="topH" type="text"/>
+                    </td>
                 </tr>
                 <tr>
                     <td><input type="submit" value="Submit"/></td>
                 </tr>
             </table>
-        </form>
+        </form:form>
         <ul class="groupview">
         </ul>
         <div class="contentpusher"></div>

@@ -149,10 +149,15 @@ public class ArduinoDao extends Arduino {
             list = session.createQuery("from Arduino").list();
             session.getTransaction().commit();
             DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
-            for (Arduino arduino:list){
+            for (Arduino arduino : list) {
                 DataEntity dataEntity = dataDao.getLastRowByArduino(arduino);
-                arduino.setTemp(dataEntity.getTemp());
-                arduino.setHum(dataEntity.getHum());
+                if (dataEntity != null) {
+                    arduino.setTemp(dataEntity.getTemp());
+                    arduino.setHum(dataEntity.getHum());
+                } else {
+                    arduino.setTemp(0);
+                    arduino.setHum(0);
+                }
             }
         } catch (Exception e) {
             session.getTransaction().rollback();

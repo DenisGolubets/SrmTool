@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%--
   Created by IntelliJ IDEA.
   User: golubets
@@ -12,6 +13,7 @@
     <title>Email Setting</title>
 </head>
 <head>
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
 
     <title></title>
@@ -25,45 +27,61 @@
     <jsp:include page="/views/leftSettingsMenue.jsp" />
 
     <div id="content">
-        <form method="post" action='email' name="email">
+        <form:form method="post" modelAttribute="mailSettings">
             <input type="hidden" name="id" value="${mailSettings.getId()}"/>
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
             <table>
                 <tr>
                     <td>SMTP</td>
-                    <td><input ${errHost} type="text"  name="host" value="${mailSettings.getHost()}"></td>
+                    <td>
+                        <form:input path="host" type="text"/>
+
+                    </td>
                 </tr>
                 <tr>
                     <td>From</td>
-                    <td><input ${errFrom} type="text"  name="from" value="${mailSettings.getFrom()}"></td>
+                    <td>
+                        <form:input path="from" type="text"/>
+
+                    </td>
                 </tr>
                     <tr>
                         <td>To</td>
-                        <td><input ${errTo} type="text"  name="to" value="${mailSettings.getTo()}" ></td>
+                        <td>
+                            <form:input path="to" type="text"/>
+
+                        </td>
                     </tr>
                 <tr>
                     <td>SSL</td>
 
-                    <td><input type="checkbox" name="ssl" <c:if test="${mailSettings.getSsl()}">checked="checked"</c:if> />
-
+                    <td>
+                            <form:checkbox path="ssl"/>
                 </tr>
                 <tr>
                     <td>port</td>
-                    <td><input type="text"  name="port" value="${mailSettings.getPort()}"></td>
+                    <td>
+                        <form:input path="port" type="text"/>
+
+                    </td>
                 </tr>
                 <tr>
-                    <td>Login</td>
-                    <td><input type="text"  name="login" value="${mailSettings.getLogin()}"></td>
+                    <td>User Name</td>
+                    <td>
+                        <form:input path="mailLogin" type="text"/>
+                    </td>
                 </tr>
                 <tr>
-                    <td>Pass</td>
-                    <td><input type="password"  name="pass" value="${mailSettings.getPass()}" ></td>
+                    <td>Password</td>
+                    <td>
+                        <form:input path="mailPass" type="password" />
+                    </td>
                 </tr>
                 <tr>
                     <td><input type="submit" value="Submit"/></td>
                 </tr>
             </table>
-        </form>
+        </form:form>
         <ul class="groupview">
         </ul>
         <div class="contentpusher"></div>

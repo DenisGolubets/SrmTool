@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/images/favicon.png" type="image/png">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css" />
     <title>Settings</title>
 </head>

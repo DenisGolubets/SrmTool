@@ -7,6 +7,7 @@ import com.golubets.monitor.environment.dao.UserDao;
 import com.golubets.monitor.environment.mail.EmailSender;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.AvgDataEntity;
+import com.golubets.monitor.environment.model.ConnectionType;
 import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.ArduinoIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -110,6 +112,9 @@ public class MainController {
     @RequestMapping(value = "/settings/arduino/new")
     public ModelAndView settingsArduinoNew() {
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("arduino", new Arduino());
+        modelAndView.addObject("connectionType", Arrays.asList(ConnectionType.values()));
+        modelAndView.addObject("dhtType", Arrays.asList(11,22,23));
         modelAndView.setViewName("/settings/addArduino");
         return modelAndView;
     }
@@ -132,6 +137,8 @@ public class MainController {
     public ModelAndView settingsArduinoId(@PathVariable int id) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("arduino", arduinoDao.getByID(id));
+        modelAndView.addObject("connectionType", Arrays.asList(ConnectionType.values()));
+        modelAndView.addObject("dhtType", Arrays.asList(11,22,23));
         modelAndView.setViewName("/settings/editArduino");
         return modelAndView;
     }
