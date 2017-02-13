@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.serializer;
+package com.golubets.monitor.environment.util.serializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

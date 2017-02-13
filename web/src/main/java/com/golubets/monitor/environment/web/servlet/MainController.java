@@ -9,7 +9,7 @@ import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.AvgDataEntity;
 import com.golubets.monitor.environment.model.ConnectionType;
 import com.golubets.monitor.environment.model.MailSettings;
-import com.golubets.monitor.environment.util.ArduinoIDGenerator;
+import com.golubets.monitor.environment.util.arduinoutil.ArduinoIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;

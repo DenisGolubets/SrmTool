@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * This class can send without authentication, with TLS/STARTTLS and with SSL
  */
+
 public class EmailSender implements BaseObject, Serializable {
     private static final Logger log = Logger.getLogger(EmailSender.class);
     private static final long serialVersionUID = 0L;

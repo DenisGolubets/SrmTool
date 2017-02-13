@@ -1,7 +1,7 @@
 package com.golubets.monitor.environment.model;
 
 
-import com.golubets.monitor.environment.util.ArduinoIDGenerator;
+import com.golubets.monitor.environment.util.arduinoutil.ArduinoIDGenerator;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;

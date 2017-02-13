@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.util;
+package com.golubets.monitor.environment.util.arduinoutil;
 
 /**
  * Created by golubets on 23.12.2016.

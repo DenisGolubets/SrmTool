@@ -52,7 +52,7 @@ public class Poll {
             try {
                 new ArduinoListener(a, date);
             } catch (NumberFormatException e) {
-                String textBody = "Check the sensor arduinoconnection on Arduino ";
+                String textBody = "Check the sensor arduinoutil on Arduino ";
                 log.error(textBody + a, e);
             } catch (SocketTimeoutException e) {
                 String textBody = "The Arduino is disconnected ";

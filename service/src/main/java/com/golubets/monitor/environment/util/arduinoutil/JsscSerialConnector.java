@@ -1,4 +1,4 @@
-package com.golubets.monitor.environment.arduinoconnection;
+package com.golubets.monitor.environment.util.arduinoutil;
 
 import jssc.*;
 

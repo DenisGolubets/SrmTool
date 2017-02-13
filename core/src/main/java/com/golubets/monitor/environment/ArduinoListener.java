@@ -1,8 +1,8 @@
 package com.golubets.monitor.environment;
 
-import com.golubets.monitor.environment.arduinoconnection.Connector;
-import com.golubets.monitor.environment.arduinoconnection.EthConnector;
-import com.golubets.monitor.environment.arduinoconnection.JsscSerialConnector;
+import com.golubets.monitor.environment.util.arduinoutil.Connector;
+import com.golubets.monitor.environment.util.arduinoutil.EthConnector;
+import com.golubets.monitor.environment.util.arduinoutil.JsscSerialConnector;
 import com.golubets.monitor.environment.dao.DataDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.mail.EmailSender;
