@@ -88,6 +88,7 @@ public class ArduinoListener {
         DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
         DateUtil dateUtil = new DateUtil();
         DataEntity prevData = dataDao.getLastRowByArduino(arduino);
+        dataDao.persist(arduino, date);
         if (prevData != null) {
             String prevDataTime = dateUtil.getCurrentHour(prevData.getDateTime());
             String curDateTime = dateUtil.getCurrentHour(date);
@@ -96,7 +97,7 @@ public class ArduinoListener {
                 dataDao.persistAvg(avgDataEntity);
             }
         }
-        dataDao.persist(arduino, date);
+
     }
 
     private void doJob() throws Exception {

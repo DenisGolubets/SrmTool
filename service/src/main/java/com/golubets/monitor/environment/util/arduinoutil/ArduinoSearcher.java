@@ -3,6 +3,7 @@ package com.golubets.monitor.environment.util.arduinoutil;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.ConnectionType;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 

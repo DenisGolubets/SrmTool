@@ -78,14 +78,6 @@ public class MainController {
         return list;
     }
 
-    @RequestMapping(value = "/time", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String getTime() {
-        String result = " is " + new Date().toString();
-        return result;
-    }
-
     @RequestMapping(value = "settings")
     public ModelAndView settings() {
         ModelAndView modelAndView = new ModelAndView();

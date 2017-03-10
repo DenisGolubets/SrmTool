@@ -1,5 +1,6 @@
 package com.golubets.monitor.environment.util;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,7 +9,8 @@ import java.util.Date;
  * Created by golubets on 20.01.2017.
  */
 public class DateUtil {
-    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     public SimpleDateFormat getDATE_FORMAT() {
         return DATE_FORMAT;
@@ -49,11 +51,19 @@ public class DateUtil {
     public Date getDateFromString(String date) {
         Date parseDate = null;
         try {
-            parseDate = DATE_FORMAT.parse(date);
-        } catch (ParseException e) {
+            Timestamp timestamp = Timestamp.valueOf(date);
+            parseDate = new Date(timestamp.getTime());
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return parseDate;
     }
 
+    public Timestamp getTimestamp(Date time){
+        return new Timestamp(time.getTime());
+    }
+
+    public Date getDateFromTimestemp(Timestamp timestamp){
+        return new Date(timestamp.getTime());
+    }
 }

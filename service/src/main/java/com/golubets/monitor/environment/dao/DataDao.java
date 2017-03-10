@@ -14,7 +14,7 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +40,7 @@ public class DataDao {
             session.beginTransaction();
             DataEntity entity = new DataEntity();
             entity.setArduinoId(arduino.getId());
-            entity.setDateTime(new DateUtil().getFormatedDate(date));
+            entity.setDateTime(new Timestamp(date.getTime()).toString());
             entity.setTemp(arduino.getTemp());
             entity.setHum(arduino.getHum());
             session.persist(entity);
@@ -51,6 +51,36 @@ public class DataDao {
         } finally {
             session.close();
         }
+    }
+
+    public void updateDataEntity(DataEntity entity){
+        Session session = sessionFactory.openSession();
+        try {
+            session.getTransaction().begin();
+            session.update(entity);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            session.close();
+        }
+
+    }
+
+    public void updateAvgDataEntity(AvgDataEntity entity){
+        Session session = sessionFactory.openSession();
+        try {
+            session.getTransaction().begin();
+            session.update(entity);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            session.close();
+        }
+
     }
 
     public void persistAvg(AvgDataEntity entity) {
@@ -75,6 +105,25 @@ public class DataDao {
         try {
             session.beginTransaction();
             list = session.createQuery("from DataEntity where arduinoId=" + arduino.getId()).list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            log.error(e);
+        } finally {
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
+        }
+        return list;
+    }
+
+    public List<AvgDataEntity> getAllAvgDataEntityByArduino(Arduino arduino) {
+        Session session = sessionFactory.openSession();
+
+        List<AvgDataEntity> list = null;
+        try {
+            session.beginTransaction();
+            list = session.createQuery("from AvgDataEntity where arduinoId=" + arduino.getId()).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -117,7 +166,9 @@ public class DataDao {
             Criteria criteria = session.createCriteria(AvgDataEntity.class);
             criteria.add(Restrictions.eq("arduinoId", arduino.getId()));
             criteria.addOrder(Order.desc("id"));
-            criteria.setMaxResults(limit);
+            if (limit > 0) {
+                criteria.setMaxResults(limit);
+            }
             list = criteria.list();
             Collections.reverse(list);
             session.getTransaction().commit();
@@ -143,21 +194,51 @@ public class DataDao {
             criteria.add(Restrictions.eq("arduinoId", arduino.getId()));
             criteria.add(Restrictions.between("dateTime", dateFrom, dateTo));
             list = criteria.list();
-            double avgTemp = 0;
-            double avgHum = 0;
-            for (DataEntity entity : list) {
-                avgTemp += entity.getTemp();
-                avgHum += entity.getHum();
-            }
-            avgTemp = Math.round(avgTemp / list.size());
-            avgHum = Math.round(avgHum / list.size());
-            avgDataEntity = new AvgDataEntity();
-            avgDataEntity.setArduinoId(arduino.getId());
-            avgDataEntity.setDateTime(dateFrom);
-            avgDataEntity.setTemp(avgTemp);
-            avgDataEntity.setHum(avgHum);
+            System.out.println(list);
+            if (list.size() != 0) {
+                double avgTemp = 0;
+                double avgHum = 0;
 
-            session.getTransaction().commit();
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("\nfrom " + dateFrom + " to " + dateTo + "\n");
+                String strTemp = "";
+                String strHum = "\n";
+
+                for (DataEntity entity : list) {
+                    avgTemp += entity.getTemp();
+                    strTemp += entity.getTemp();
+                    strTemp += " ";
+
+                    avgHum += entity.getHum();
+                    strHum += entity.getHum();
+                    strHum += " ";
+                }
+
+                stringBuilder.append(strTemp);
+                stringBuilder.append(strHum);
+
+
+                avgTemp = Math.round(avgTemp / list.size());
+                avgHum = Math.round(avgHum / list.size());
+
+                stringBuilder.append("\navgT: " + avgTemp + " avgH: " + avgHum);
+                stringBuilder.append("\n");
+
+                log.error(stringBuilder.toString());
+
+                avgDataEntity = new AvgDataEntity();
+                avgDataEntity.setArduinoId(arduino.getId());
+                avgDataEntity.setDateTime(dateFrom);
+                avgDataEntity.setTemp(avgTemp);
+                avgDataEntity.setHum(avgHum);
+            }
+
+
+            if (session.getTransaction().getLocalStatus().equals("ACTIVE")) {
+                session.getTransaction().commit();
+            }
+
+
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error(e);

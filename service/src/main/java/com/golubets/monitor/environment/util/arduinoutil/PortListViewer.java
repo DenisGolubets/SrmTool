@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by golubets on 15.08.2016.
  */
-public class ViewPortList {
+public class PortListViewer {
 
     public static List<String> getPortNames(){
         List<String> portList = new ArrayList<>();

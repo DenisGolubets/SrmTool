@@ -9,9 +9,8 @@
         <property name="dialect">com.enigmabridge.hibernate.dialect.SQLiteDialect</property>
         <property name="connection.driver_class">org.sqlite.JDBC</property>
         <property name="connection.url">jdbc:sqlite:../db/data.db</property>
+        <property name="hibernate.connection.provider_class">org.hibernate.c3p0.internal.C3P0ConnectionProvider</property>
 
-        <!-- manage automatic database creation -->
-        <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!-- hibernate c3p0 connection pooling configuration  -->
         <property name="hibernate.c3p0.acquire_increment">1</property>
