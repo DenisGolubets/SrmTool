@@ -56,13 +56,13 @@ public class ArduinoSerializer {
                 }
             }
         } catch (NullPointerException e) {
-            log.error(e);
+            log.error("error", e);
         } catch (JsonParseException e) {
-            e.printStackTrace();
+            log.error("error", e);
         } catch (JsonMappingException e) {
-            e.printStackTrace();
+            log.error("error", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return list;
     }

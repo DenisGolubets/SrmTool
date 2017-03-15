@@ -1,7 +1,5 @@
 package com.golubets.monitor.environment.util.arduinoutil;
 
-import org.apache.log4j.Logger;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +11,6 @@ import java.net.SocketTimeoutException;
  * Created by golubets on 17.07.2016.
  */
 public class EthConnector implements Connector, AutoCloseable {
-    private static final Logger log = Logger.getLogger(EthConnector.class);
     private int reconnectTime;
     private final String server;
     private final Integer port;

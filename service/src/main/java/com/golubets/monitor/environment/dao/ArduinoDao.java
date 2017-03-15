@@ -4,10 +4,10 @@ import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.DataEntity;
 import com.golubets.monitor.environment.util.DaoApplicationContext;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -50,7 +50,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -70,7 +70,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -95,7 +95,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -114,7 +114,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -132,7 +132,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -161,7 +161,7 @@ public class ArduinoDao extends Arduino {
             }
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

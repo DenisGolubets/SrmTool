@@ -45,7 +45,7 @@ public class SettingsSerializer {
         try {
             cipher.init(Cipher.ENCRYPT_MODE, key64);
         } catch (InvalidKeyException e) {
-            log.error(e);
+            log.error("error", e);
         }
         try (OutputStream out = new CipherOutputStream(new BufferedOutputStream(new FileOutputStream(cryptSettingFile)), cipher)) {
             ObjectMapper mapper = new ObjectMapper();
@@ -74,7 +74,7 @@ public class SettingsSerializer {
             } catch (FileNotFoundException e) {
                 log.error(ENCRYPT_SETTING_FILE + " not found", e);
             } catch (IOException e) {
-                log.error(e);
+                log.error("error", e);
             }
         }
         return map;
@@ -85,9 +85,9 @@ public class SettingsSerializer {
             try {
                 cipher = Cipher.getInstance("Blowfish");
             } catch (NoSuchAlgorithmException e) {
-                log.error(e);
+                log.error("error", e);
             } catch (NoSuchPaddingException e) {
-                log.error(e);
+                log.error("error", e);
             }
         }
     }

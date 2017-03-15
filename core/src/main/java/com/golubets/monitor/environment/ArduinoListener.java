@@ -109,7 +109,7 @@ public class ArduinoListener {
             }
             connector.close();
         } catch (Exception e) {
-            log.error(e);
+            log.error("error ", e);
         }
     }
 

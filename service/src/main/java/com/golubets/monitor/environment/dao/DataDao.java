@@ -3,7 +3,6 @@ package com.golubets.monitor.environment.dao;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.AvgDataEntity;
 import com.golubets.monitor.environment.model.DataEntity;
-import com.golubets.monitor.environment.util.DateUtil;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -11,7 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.logging.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -47,13 +46,13 @@ public class DataDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             session.close();
         }
     }
 
-    public void updateDataEntity(DataEntity entity){
+    public void updateDataEntity(DataEntity entity) {
         Session session = sessionFactory.openSession();
         try {
             session.getTransaction().begin();
@@ -61,14 +60,14 @@ public class DataDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             session.close();
         }
 
     }
 
-    public void updateAvgDataEntity(AvgDataEntity entity){
+    public void updateAvgDataEntity(AvgDataEntity entity) {
         Session session = sessionFactory.openSession();
         try {
             session.getTransaction().begin();
@@ -76,7 +75,7 @@ public class DataDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             session.close();
         }
@@ -92,7 +91,7 @@ public class DataDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             session.close();
         }
@@ -108,7 +107,7 @@ public class DataDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -127,7 +126,7 @@ public class DataDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -148,7 +147,7 @@ public class DataDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -174,7 +173,7 @@ public class DataDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -199,32 +198,13 @@ public class DataDao {
                 double avgTemp = 0;
                 double avgHum = 0;
 
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("\nfrom " + dateFrom + " to " + dateTo + "\n");
-                String strTemp = "";
-                String strHum = "\n";
-
                 for (DataEntity entity : list) {
                     avgTemp += entity.getTemp();
-                    strTemp += entity.getTemp();
-                    strTemp += " ";
-
                     avgHum += entity.getHum();
-                    strHum += entity.getHum();
-                    strHum += " ";
                 }
-
-                stringBuilder.append(strTemp);
-                stringBuilder.append(strHum);
-
 
                 avgTemp = Math.round(avgTemp / list.size());
                 avgHum = Math.round(avgHum / list.size());
-
-                stringBuilder.append("\navgT: " + avgTemp + " avgH: " + avgHum);
-                stringBuilder.append("\n");
-
-                log.error(stringBuilder.toString());
 
                 avgDataEntity = new AvgDataEntity();
                 avgDataEntity.setArduinoId(arduino.getId());
@@ -241,7 +221,7 @@ public class DataDao {
 
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

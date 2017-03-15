@@ -4,7 +4,7 @@ import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jboss.logging.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class MailSettingsDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -47,7 +47,7 @@ public class MailSettingsDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         }finally {
             if (session != null && session.isOpen()) {
                 session.close();

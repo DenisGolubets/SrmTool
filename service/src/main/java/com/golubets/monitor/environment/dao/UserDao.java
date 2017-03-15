@@ -5,7 +5,7 @@ import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jboss.logging.Logger;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class UserDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -57,7 +57,7 @@ public class UserDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         }finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -75,7 +75,7 @@ public class UserDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error(e);
+            log.error("error", e);
         }finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -95,7 +95,8 @@ public class UserDao {
             user = (User) query.uniqueResult();
             session.getTransaction().commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            session.getTransaction().rollback();
+            log.error("error", e);
         }finally {
             if (session != null && session.isOpen()) {
                 session.close();
