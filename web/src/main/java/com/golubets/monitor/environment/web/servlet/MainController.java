@@ -9,6 +9,7 @@ import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.AvgDataEntity;
 import com.golubets.monitor.environment.model.ConnectionType;
 import com.golubets.monitor.environment.model.MailSettings;
+import com.golubets.monitor.environment.util.DateUtil;
 import com.golubets.monitor.environment.util.arduinoutil.ArduinoIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,10 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * Created by golubets on 20.12.2016.
@@ -38,6 +37,8 @@ public class MainController {
     UserDao userDao;
     @Autowired
     DataDao dataDao;
+    @Autowired
+    DateUtil dateUtil;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
@@ -73,9 +74,35 @@ public class MainController {
     public
     @ResponseBody
     List<AvgDataEntity> indexMonthAvgData(@PathVariable int id) {
-        List<AvgDataEntity> list = new ArrayList<>();
-        list = dataDao.getAvgLastLimitRecords(arduinoDao.getByID(id),720);
-        return list;
+        String previousHour = dateUtil.getPreviousHour(new Date());
+        //get last 720 Hours
+        int records = 720;
+        List<AvgDataEntity> prepareList = new ArrayList<>(records);
+        for (int i = 0; i < records; i++) {
+            if (prepareList.size() == 0) {
+                AvgDataEntity avgDataEntity = new AvgDataEntity();
+                avgDataEntity.setDateTime(previousHour);
+                prepareList.add(avgDataEntity);
+            } else {
+                AvgDataEntity avgDataEntity = new AvgDataEntity();
+                String prevHour = dateUtil.getPreviousHour(prepareList.get(prepareList.size() - 1).getDateTime());
+                avgDataEntity.setDateTime(prevHour);
+                prepareList.add(avgDataEntity);
+            }
+        }
+        Collections.sort(prepareList, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
+
+        List<AvgDataEntity> list;
+        list = dataDao.getAvgLastLimitRecords(arduinoDao.getByID(id), records);
+
+        int listRecords = records - 1;
+        for (int i = records - 1; i > 0; i--) {
+            if (prepareList.get(i).getDateTime().equals(list.get(listRecords).getDateTime())) {
+                prepareList.set(i, list.get(listRecords));
+                listRecords--;
+            }
+        }
+        return prepareList;
     }
 
     @RequestMapping(value = "settings")
@@ -106,7 +133,7 @@ public class MainController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("arduino", new Arduino());
         modelAndView.addObject("connectionType", Arrays.asList(ConnectionType.values()));
-        modelAndView.addObject("dhtType", Arrays.asList(11,22,23));
+        modelAndView.addObject("dhtType", Arrays.asList(11, 22, 23));
         modelAndView.setViewName("/settings/addArduino");
         return modelAndView;
     }
@@ -130,7 +157,7 @@ public class MainController {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("arduino", arduinoDao.getByID(id));
         modelAndView.addObject("connectionType", Arrays.asList(ConnectionType.values()));
-        modelAndView.addObject("dhtType", Arrays.asList(11,22,23));
+        modelAndView.addObject("dhtType", Arrays.asList(11, 22, 23));
         modelAndView.setViewName("/settings/editArduino");
         return modelAndView;
     }

@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-    compile project(":dao")
+    compile project(":service")
     compile project(":core")
 
     // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api

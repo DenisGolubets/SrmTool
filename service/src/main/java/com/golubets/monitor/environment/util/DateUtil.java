@@ -1,13 +1,15 @@
 package com.golubets.monitor.environment.util;
 
+import org.springframework.stereotype.Component;
+
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * Created by golubets on 20.01.2017.
  */
+@Component
 public class DateUtil {
     private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //    private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

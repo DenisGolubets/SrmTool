@@ -64,8 +64,13 @@
                     for (i = 0; i < arr.length; i++) {
                         data[i] = [];
                         data[i][0] = arr[i].dateTime;
-                        data[i][1] = arr[i].temp;
-                        data[i][2] = arr[i].hum;
+                        if (arr[i].temp > 0) {
+                            data[i][1] = arr[i].temp;
+                        } else data[i][1] = null;
+
+                        if (arr[i].hum > 0) {
+                            data[i][2] = arr[i].hum;
+                        } else data[i][2] = null;
                     }
                     data.unshift(['date', 'temp,C', 'hum,%']);
                     var data = google.visualization.arrayToDataTable(data);
