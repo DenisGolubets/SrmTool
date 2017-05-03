@@ -1,9 +1,7 @@
 package com.golubets.monitor.environment.util;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 
 /**
  * Created by golubets on 08.12.2016.

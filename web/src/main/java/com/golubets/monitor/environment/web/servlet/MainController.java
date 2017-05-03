@@ -4,6 +4,7 @@ import com.golubets.monitor.environment.dao.ArduinoDao;
 import com.golubets.monitor.environment.dao.DataDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
 import com.golubets.monitor.environment.dao.UserDao;
+import com.golubets.monitor.environment.exception.PersistException;
 import com.golubets.monitor.environment.mail.EmailSender;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.AvgDataEntity;
@@ -11,6 +12,7 @@ import com.golubets.monitor.environment.model.ConnectionType;
 import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.DateUtil;
 import com.golubets.monitor.environment.util.arduinoutil.ArduinoIDGenerator;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -29,6 +30,8 @@ import java.util.*;
  */
 @Controller
 public class MainController {
+    private static final Logger log = Logger.getLogger(MainController.class);
+
     @Autowired
     private ArduinoDao arduinoDao;
     @Autowired
@@ -43,8 +46,12 @@ public class MainController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("arduinos", arduinoDao.getAllWithLastData());
-        modelAndView.setViewName("index");
+        try {
+            modelAndView.addObject("arduinos", arduinoDao.getAllWithLastData());
+            modelAndView.setViewName("index");
+        } catch (PersistException e) {
+            log.error("", e);
+        }
         return modelAndView;
     }
 
@@ -53,10 +60,20 @@ public class MainController {
     @ResponseBody
     List<Arduino> index(@PathVariable int id) {
         if (id == -1) {
-            return arduinoDao.getAllWithLastData();
+            List<Arduino> list = new ArrayList<>();
+            try {
+                list = arduinoDao.getAllWithLastData();
+            } catch (PersistException e) {
+                log.error("", e);
+            }
+            return list;
         } else {
             List<Arduino> list = new ArrayList<>();
-            list.add(arduinoDao.getByIDWithLastData(id));
+            try {
+                list.add(arduinoDao.getByIDWithLastData(id));
+            } catch (PersistException e) {
+                log.error("", e);
+            }
             return list;
         }
     }
@@ -66,7 +83,11 @@ public class MainController {
     @ResponseBody
     List<AvgDataEntity> indexDayAvgData(@PathVariable int id) {
         List<AvgDataEntity> list = new ArrayList<>();
-        list = dataDao.getAvgLastLimitRecords(arduinoDao.getByID(id), 24);
+        try {
+            list = dataDao.getAvgLastLimitRecords(arduinoDao.getByID(id), 24);
+        } catch (PersistException e) {
+            log.error("", e);
+        }
         return list;
     }
 
@@ -74,33 +95,38 @@ public class MainController {
     public
     @ResponseBody
     List<AvgDataEntity> indexMonthAvgData(@PathVariable int id) {
-        String previousHour = dateUtil.getPreviousHour(new Date());
-        //get last 720 Hours
-        int records = 720;
-        List<AvgDataEntity> prepareList = new ArrayList<>(records);
-        for (int i = 0; i < records; i++) {
-            if (prepareList.size() == 0) {
-                AvgDataEntity avgDataEntity = new AvgDataEntity();
-                avgDataEntity.setDateTime(previousHour);
-                prepareList.add(avgDataEntity);
-            } else {
-                AvgDataEntity avgDataEntity = new AvgDataEntity();
-                String prevHour = dateUtil.getPreviousHour(prepareList.get(prepareList.size() - 1).getDateTime());
-                avgDataEntity.setDateTime(prevHour);
-                prepareList.add(avgDataEntity);
+        List<AvgDataEntity> prepareList = new ArrayList<>();
+        try {
+            String previousHour = dateUtil.getPreviousHour(new Date());
+            //get last 720 Hours
+            int records = 720;
+            prepareList = new ArrayList<>(records);
+            for (int i = 0; i < records; i++) {
+                if (prepareList.size() == 0) {
+                    AvgDataEntity avgDataEntity = new AvgDataEntity();
+                    avgDataEntity.setDateTime(previousHour);
+                    prepareList.add(avgDataEntity);
+                } else {
+                    AvgDataEntity avgDataEntity = new AvgDataEntity();
+                    String prevHour = dateUtil.getPreviousHour(prepareList.get(prepareList.size() - 1).getDateTime());
+                    avgDataEntity.setDateTime(prevHour);
+                    prepareList.add(avgDataEntity);
+                }
             }
-        }
-        Collections.sort(prepareList, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
+            Collections.sort(prepareList, (o1, o2) -> o1.getDateTime().compareTo(o2.getDateTime()));
 
-        List<AvgDataEntity> list;
-        list = dataDao.getAvgLastLimitRecords(arduinoDao.getByID(id), records);
+            List<AvgDataEntity> list;
+            list = dataDao.getAvgLastLimitRecords(arduinoDao.getByID(id), records);
 
-        int listRecords = records - 1;
-        for (int i = records - 1; i > 0; i--) {
-            if (prepareList.get(i).getDateTime().equals(list.get(listRecords).getDateTime())) {
-                prepareList.set(i, list.get(listRecords));
-                listRecords--;
+            int listRecords = records - 1;
+            for (int i = records - 1; i > 0; i--) {
+                if (prepareList.get(i).getDateTime().equals(list.get(listRecords).getDateTime())) {
+                    prepareList.set(i, list.get(listRecords));
+                    listRecords--;
+                }
             }
+        } catch (PersistException e) {
+            log.error("", e);
         }
         return prepareList;
     }
@@ -122,9 +148,13 @@ public class MainController {
     @RequestMapping(value = "/settings/arduino")
     public ModelAndView settingsArduino() {
         ModelAndView modelAndView = new ModelAndView();
-        List<Arduino> list = arduinoDao.getAllWithLastData();
-        modelAndView.addObject("arduinos", list);
-        modelAndView.setViewName("/settings/settingsArduino");
+        try {
+            List<Arduino> list = arduinoDao.getAllWithLastData();
+            modelAndView.addObject("arduinos", list);
+            modelAndView.setViewName("/settings/settingsArduino");
+        } catch (PersistException e) {
+            log.error("", e);
+        }
         return modelAndView;
     }
 
@@ -141,13 +171,17 @@ public class MainController {
     @RequestMapping(value = "/settings/arduino/new", method = RequestMethod.POST)
     public String saveNewArduino(@Valid Arduino arduino, BindingResult result) {
 
-        if (result.hasErrors()) {
-            return "redirect:/settings/arduino/new";
+        try {
+            if (result.hasErrors()) {
+                return "redirect:/settings/arduino/new";
+            }
+            if (arduino.getId() == 0) {
+                arduino.setId(new ArduinoIDGenerator().genereteId());
+            }
+            arduinoDao.persist(arduino);
+        } catch (PersistException e) {
+            log.error("", e);
         }
-        if (arduino.getId() == 0) {
-            arduino.setId(new ArduinoIDGenerator().genereteId());
-        }
-        arduinoDao.persist(arduino);
         return "redirect:/settings/arduino";
 
     }
@@ -155,10 +189,14 @@ public class MainController {
     @RequestMapping(value = "/settings/arduino/{id}")
     public ModelAndView settingsArduinoId(@PathVariable int id) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("arduino", arduinoDao.getByID(id));
-        modelAndView.addObject("connectionType", Arrays.asList(ConnectionType.values()));
-        modelAndView.addObject("dhtType", Arrays.asList(11, 22, 23));
-        modelAndView.setViewName("/settings/editArduino");
+        try {
+            modelAndView.addObject("arduino", arduinoDao.getByID(id));
+            modelAndView.addObject("connectionType", Arrays.asList(ConnectionType.values()));
+            modelAndView.addObject("dhtType", Arrays.asList(11, 22, 23));
+            modelAndView.setViewName("/settings/editArduino");
+        } catch (PersistException e) {
+            log.error("", e);
+        }
         return modelAndView;
     }
 
@@ -168,8 +206,11 @@ public class MainController {
         if (result.hasErrors()) {
             return "redirect:/settings/arduino/" + id;
         }
-
-        arduinoDao.update(arduino);
+        try {
+            arduinoDao.update(arduino);
+        } catch (PersistException e) {
+            log.error("", e);
+        }
         return "redirect:/settings/arduino";
 
     }
@@ -177,9 +218,14 @@ public class MainController {
     @RequestMapping(value = "/settings/email")
     public ModelAndView settingsEmail() {
         ModelAndView modelAndView = new ModelAndView();
-        List<MailSettings> list = mailSettingsDao.getAll();
-        modelAndView.setViewName("/settings/settingsEmail");
-        MailSettings mailSettings = (list.size() == 1) ? list.get(0) : new MailSettings();
+        MailSettings mailSettings = null;
+        try {
+            List<MailSettings> list = mailSettingsDao.getAll();
+            modelAndView.setViewName("/settings/settingsEmail");
+            mailSettings = (list.size() == 1) ? list.get(0) : new MailSettings();
+        } catch (PersistException e) {
+            log.error("", e);
+        }
         modelAndView.addObject("mailSettings", mailSettings);
         return modelAndView;
     }
@@ -196,7 +242,11 @@ public class MainController {
         } catch (Exception e) {
             return "redirect:/settings/email";
         }
-        mailSettingsDao.persist(mailSettings);
+        try {
+            mailSettingsDao.persist(mailSettings);
+        } catch (PersistException e) {
+            log.error("", e);
+        }
         return "redirect:/settings/";
 
     }

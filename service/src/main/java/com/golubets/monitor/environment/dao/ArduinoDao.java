@@ -1,5 +1,6 @@
 package com.golubets.monitor.environment.dao;
 
+import com.golubets.monitor.environment.exception.PersistException;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.DataEntity;
 import com.golubets.monitor.environment.util.DaoApplicationContext;
@@ -26,7 +27,7 @@ public class ArduinoDao extends Arduino {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }
 
-    public void persist(Arduino arduino) {
+    public void persist(Arduino arduino) throws PersistException {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
@@ -35,6 +36,7 @@ public class ArduinoDao extends Arduino {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -42,7 +44,7 @@ public class ArduinoDao extends Arduino {
         }
     }
 
-    public void update(Arduino arduino) {
+    public void update(Arduino arduino) throws PersistException {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
@@ -51,6 +53,7 @@ public class ArduinoDao extends Arduino {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -58,7 +61,7 @@ public class ArduinoDao extends Arduino {
         }
     }
 
-    public Arduino getByID(Integer id) {
+    public Arduino getByID(Integer id) throws PersistException {
 
         Session session = sessionFactory.openSession();
         Arduino arduino = null;
@@ -71,6 +74,7 @@ public class ArduinoDao extends Arduino {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -79,7 +83,7 @@ public class ArduinoDao extends Arduino {
         return arduino;
     }
 
-    public Arduino getByIDWithLastData(Integer id) {
+    public Arduino getByIDWithLastData(Integer id) throws PersistException {
 
         Session session = sessionFactory.openSession();
         Arduino arduino = null;
@@ -96,6 +100,7 @@ public class ArduinoDao extends Arduino {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -104,7 +109,7 @@ public class ArduinoDao extends Arduino {
         return arduino;
     }
 
-    public Arduino getByName(String name) {
+    public Arduino getByName(String name) throws PersistException {
         Session session = sessionFactory.openSession();
         Arduino arduino = null;
         try {
@@ -115,6 +120,7 @@ public class ArduinoDao extends Arduino {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -123,7 +129,7 @@ public class ArduinoDao extends Arduino {
         return arduino;
     }
 
-    public List<Arduino> getAll() {
+    public List<Arduino> getAll() throws PersistException {
         Session session = sessionFactory.openSession();
         List<Arduino> list = null;
         try {
@@ -133,6 +139,7 @@ public class ArduinoDao extends Arduino {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -141,7 +148,7 @@ public class ArduinoDao extends Arduino {
         return list;
     }
 
-    public List<Arduino> getAllWithLastData() {
+    public List<Arduino> getAllWithLastData() throws PersistException {
         Session session = sessionFactory.openSession();
         List<Arduino> list = null;
         try {
@@ -162,6 +169,7 @@ public class ArduinoDao extends Arduino {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

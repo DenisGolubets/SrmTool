@@ -1,5 +1,6 @@
 package com.golubets.monitor.environment.dao;
 
+import com.golubets.monitor.environment.exception.PersistException;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.AvgDataEntity;
 import com.golubets.monitor.environment.model.DataEntity;
@@ -32,7 +33,7 @@ public class DataDao {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }
 
-    public void persist(Arduino arduino, Date date) {
+    public void persist(Arduino arduino, Date date) throws PersistException {
         Session session = sessionFactory.openSession();
 
         try {
@@ -47,12 +48,13 @@ public class DataDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             session.close();
         }
     }
 
-    public void updateDataEntity(DataEntity entity) {
+    public void updateDataEntity(DataEntity entity) throws PersistException {
         Session session = sessionFactory.openSession();
         try {
             session.getTransaction().begin();
@@ -61,13 +63,14 @@ public class DataDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             session.close();
         }
 
     }
 
-    public void updateAvgDataEntity(AvgDataEntity entity) {
+    public void updateAvgDataEntity(AvgDataEntity entity) throws PersistException {
         Session session = sessionFactory.openSession();
         try {
             session.getTransaction().begin();
@@ -76,13 +79,14 @@ public class DataDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             session.close();
         }
 
     }
 
-    public void persistAvg(AvgDataEntity entity) {
+    public void persistAvg(AvgDataEntity entity) throws PersistException {
         Session session = sessionFactory.openSession();
 
         try {
@@ -92,12 +96,13 @@ public class DataDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             session.close();
         }
     }
 
-    public List<DataEntity> getAllByArduino(Arduino arduino) {
+    public List<DataEntity> getAllByArduino(Arduino arduino) throws PersistException {
         Session session = sessionFactory.openSession();
 
         List<DataEntity> list = null;
@@ -108,6 +113,7 @@ public class DataDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -116,7 +122,7 @@ public class DataDao {
         return list;
     }
 
-    public List<AvgDataEntity> getAllAvgDataEntityByArduino(Arduino arduino) {
+    public List<AvgDataEntity> getAllAvgDataEntityByArduino(Arduino arduino) throws PersistException {
         Session session = sessionFactory.openSession();
 
         List<AvgDataEntity> list = null;
@@ -127,6 +133,7 @@ public class DataDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -135,7 +142,7 @@ public class DataDao {
         return list;
     }
 
-    public DataEntity getLastRowByArduino(Arduino arduino) {
+    public DataEntity getLastRowByArduino(Arduino arduino) throws PersistException {
         Session session = sessionFactory.openSession();
         DataEntity dataEntity = null;
         try {
@@ -148,6 +155,7 @@ public class DataDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -156,7 +164,7 @@ public class DataDao {
         return dataEntity;
     }
 
-    public List<AvgDataEntity> getAvgLastLimitRecords(Arduino arduino, int limit) {
+    public List<AvgDataEntity> getAvgLastLimitRecords(Arduino arduino, int limit) throws PersistException {
         Session session = sessionFactory.openSession();
         List<AvgDataEntity> list = null;
         try {
@@ -174,6 +182,7 @@ public class DataDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -182,7 +191,7 @@ public class DataDao {
         return list;
     }
 
-    public AvgDataEntity getAvg(Arduino arduino, String dateFrom, String dateTo) {
+    public AvgDataEntity getAvg(Arduino arduino, String dateFrom, String dateTo) throws PersistException {
         Session session = sessionFactory.openSession();
         AvgDataEntity avgDataEntity = null;
         List<DataEntity> list = null;
@@ -222,6 +231,7 @@ public class DataDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

@@ -1,5 +1,6 @@
 package com.golubets.monitor.environment.dao;
 
+import com.golubets.monitor.environment.exception.PersistException;
 import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
 import org.hibernate.Session;
@@ -22,7 +23,7 @@ public class MailSettingsDao {
         sessionFactory = HibernateSessionFactory.getSessionFactory();
     }
 
-    public void persist(MailSettings mailSettings) {
+    public void persist(MailSettings mailSettings) throws PersistException {
         Session session = sessionFactory.openSession();
         try {
             session.beginTransaction();
@@ -31,6 +32,7 @@ public class MailSettingsDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
+            throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -38,7 +40,7 @@ public class MailSettingsDao {
         }
     }
 
-    public List<MailSettings> getAll() {
+    public List<MailSettings> getAll() throws PersistException {
         Session session = sessionFactory.openSession();
         List<MailSettings> list = null;
         try {
@@ -48,7 +50,8 @@ public class MailSettingsDao {
         } catch (Exception e) {
             session.getTransaction().rollback();
             log.error("error", e);
-        }finally {
+            throw new PersistException(e);
+        } finally {
             if (session != null && session.isOpen()) {
                 session.close();
             }

@@ -1,5 +1,6 @@
 package com.golubets.monitor.environment;
 
+import com.golubets.monitor.environment.exception.PersistException;
 import com.golubets.monitor.environment.util.arduinoutil.Connector;
 import com.golubets.monitor.environment.util.arduinoutil.EthConnector;
 import com.golubets.monitor.environment.util.arduinoutil.JsscSerialConnector;
@@ -85,17 +86,21 @@ public class ArduinoListener {
     }
 
     private void writeDateToDB() {
-        DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
-        DateUtil dateUtil = new DateUtil();
-        DataEntity prevData = dataDao.getLastRowByArduino(arduino);
-        dataDao.persist(arduino, date);
-        if (prevData != null) {
-            String prevDataTime = dateUtil.getCurrentHour(prevData.getDateTime());
-            String curDateTime = dateUtil.getCurrentHour(date);
-            if (!(prevDataTime.equals(curDateTime))) {
-                AvgDataEntity avgDataEntity = dataDao.getAvg(arduino, prevDataTime, curDateTime);
-                dataDao.persistAvg(avgDataEntity);
+        try {
+            DataDao dataDao = (DataDao) DaoApplicationContext.getInstance().getContext().getBean("dataDao");
+            DateUtil dateUtil = new DateUtil();
+            DataEntity prevData = dataDao.getLastRowByArduino(arduino);
+            dataDao.persist(arduino, date);
+            if (prevData != null) {
+                String prevDataTime = dateUtil.getCurrentHour(prevData.getDateTime());
+                String curDateTime = dateUtil.getCurrentHour(date);
+                if (!(prevDataTime.equals(curDateTime))) {
+                    AvgDataEntity avgDataEntity = dataDao.getAvg(arduino, prevDataTime, curDateTime);
+                    dataDao.persistAvg(avgDataEntity);
+                }
             }
+        } catch (PersistException e) {
+            log.error("", e);
         }
 
     }

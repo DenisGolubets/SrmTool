@@ -1,6 +1,7 @@
 package com.golubets.monitor.environment;
 
 import com.golubets.monitor.environment.dao.ArduinoDao;
+import com.golubets.monitor.environment.exception.PersistException;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.util.DaoApplicationContext;
 import org.apache.log4j.Logger;
@@ -45,24 +46,28 @@ public class Poll {
     }
 
     private void interview() {
-        final Date date = new Date();
-        ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
-        List<Arduino> list = arduinoDao.getAll();
-        for (Arduino a : list) {
-            try {
-                new ArduinoListener(a, date);
-            } catch (NumberFormatException e) {
-                String textBody = "Check the sensor arduinoutil on Arduino ";
-                log.error(textBody + a, e);
-            } catch (SocketTimeoutException e) {
-                String textBody = "The Arduino is disconnected ";
-                log.error(textBody + a, e);
-            } catch (IOException e) {
-                String textBody = "The Arduino has problems ";
-                log.error(textBody + a, e);
-            } catch (Exception e) {
-                log.error(e);
+        try {
+            Date date = new Date();
+            ArduinoDao arduinoDao = (ArduinoDao) DaoApplicationContext.getInstance().getContext().getBean("arduinoDao");
+            List<Arduino> list = arduinoDao.getAll();
+            for (Arduino a : list) {
+                try {
+                    new ArduinoListener(a, date);
+                } catch (NumberFormatException e) {
+                    String textBody = "Check the sensor arduinoutil on Arduino ";
+                    log.error(textBody + a, e);
+                } catch (SocketTimeoutException e) {
+                    String textBody = "The Arduino is disconnected ";
+                    log.error(textBody + a, e);
+                } catch (IOException e) {
+                    String textBody = "The Arduino has problems ";
+                    log.error(textBody + a, e);
+                } catch (Exception e) {
+                    log.error(e);
+                }
             }
+        } catch (PersistException e) {
+            log.error("", e);
         }
     }
 }
