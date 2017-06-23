@@ -46,21 +46,19 @@ public class EthConnector implements Connector, AutoCloseable {
     }
 
     private void connect(String server, Integer port) throws IOException {
-
         try {
             socket = new Socket(server, port);
-
             socket.setKeepAlive(false);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             out = new OutputStreamWriter(socket.getOutputStream(), "UTF-8");
         } catch (IOException e) {
+            connectCount++;
             reconnect();
         }
     }
 
     private void reconnect() throws IOException {
-
-        if (connectCount >= 10) {
+        if (connectCount >= 3) {
             connectCount = 0;
             throw new SocketTimeoutException();
         }
@@ -70,7 +68,6 @@ public class EthConnector implements Connector, AutoCloseable {
             throw new IOException(e1);
         }
         connect(server, port);
-        connectCount++;
     }
 
 
@@ -94,7 +91,6 @@ public class EthConnector implements Connector, AutoCloseable {
                 throw new IOException(e);
             }
         }
-
         //return string without space and last word "end"
         return sb.toString().substring(0, sb.length() - 3).replaceAll("[\\s]", "");
     }

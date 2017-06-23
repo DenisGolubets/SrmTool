@@ -13,6 +13,7 @@ import com.golubets.monitor.environment.util.DateUtil;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.Date;
 import java.util.List;
 
@@ -42,11 +43,12 @@ public class ArduinoListener {
         this.date = date;
         this.connector = createConnection(arduino.getConnectionType());
 
+
         doJob();
     }
 
     private void getDate() throws NullPointerException, IOException {
-        String[] arr = getDate("i").split("\\|");
+        String[] arr = getCurrentDate("i").split("\\|");
         for (String s : arr) {
             if (s.startsWith("AVG10minT:")) {
                 avg10MinT = Double.parseDouble(s.replaceAll(",", "").substring(s.indexOf(":") + 1));
@@ -60,10 +62,8 @@ public class ArduinoListener {
     }
 
     private void informIfAlert() throws Exception {
-        MailSettingsDao mailSettingsDao = (MailSettingsDao) DaoApplicationContext.getInstance().getContext().getBean("mailSettingsDao");
-        List<MailSettings> list = mailSettingsDao.getAll();
-        if (list != null && list.size() < 2) {
-            emailSender = new EmailSender(list.get(0));
+        if (emailSender == null) {
+            initializationEmailSender();
         }
         String subject = String.valueOf(SubjectForMail.ALERT);
         String textBody = arduino + "\n\r";
@@ -82,6 +82,14 @@ public class ArduinoListener {
                 emailSender.sendMail(subject, textBody);
             } else log.info(subject + "\n\r" + textBody);
             lastEmailSend = System.currentTimeMillis();
+        }
+    }
+
+    private void initializationEmailSender() throws Exception {
+        MailSettingsDao mailSettingsDao = (MailSettingsDao) DaoApplicationContext.getInstance().getContext().getBean("mailSettingsDao");
+        List<MailSettings> list = mailSettingsDao.getAll();
+        if (list != null && list.size() < 2) {
+            emailSender = new EmailSender(list.get(0));
         }
     }
 
@@ -112,28 +120,40 @@ public class ArduinoListener {
             if (isAlert) {
                 informIfAlert();
             }
-            connector.close();
         } catch (Exception e) {
             log.error("error ", e);
+        } finally {
+            connector.close();
         }
     }
 
-    public String getDate(String request) throws IOException {
+    public String getCurrentDate(String request) throws IOException {
         try {
             return connector.getResponse(request);
         } catch (IOException e) {
-            createConnection(arduino.getConnectionType());
-            getDate(request);
+            log.error("", e);
         }
         return null;
     }
 
     public Connector createConnection(ConnectionType connectionType) throws IOException {
         Connector connector = null;
-        if (connectionType == ConnectionType.SERIAL) {
-            connector = new JsscSerialConnector(arduino.getSerialPort());
-        } else if (connectionType == ConnectionType.ETHERNET) {
-            connector = new EthConnector(arduino.getIp(), 23);
+        try {
+            if (connectionType == ConnectionType.SERIAL) {
+                connector = new JsscSerialConnector(arduino.getSerialPort());
+            } else if (connectionType == ConnectionType.ETHERNET) {
+                connector = new EthConnector(arduino.getIp(), 23);
+            }
+        } catch (SocketTimeoutException e) {
+            String mailBody = arduino.getName() + " connected to: " + arduino.getIp() + " not responding";
+            try {
+                if (emailSender == null) {
+                    initializationEmailSender();
+                }
+                emailSender.sendMail("Arduino exception", mailBody);
+            } catch (Exception e1) {
+                log.error("", e1);
+            }
         }
         return connector;
     }
