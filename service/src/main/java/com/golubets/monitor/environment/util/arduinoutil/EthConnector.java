@@ -11,7 +11,6 @@ import java.net.SocketTimeoutException;
  * Created by golubets on 17.07.2016.
  */
 public class EthConnector implements Connector, AutoCloseable {
-    private int reconnectTime;
     private final String server;
     private final Integer port;
     private Socket socket;
@@ -42,7 +41,6 @@ public class EthConnector implements Connector, AutoCloseable {
         this.server = server;
         this.port = port;
         connect(this.server, this.port);
-        reconnectTime = 1;
     }
 
     private void connect(String server, Integer port) throws IOException {
@@ -96,6 +94,12 @@ public class EthConnector implements Connector, AutoCloseable {
     }
 
     public void setDate(String request) throws IOException {
+
+        System.out.println(request);
         out.write(request);
+        out.flush();
+        while (sb.indexOf("end") != 0) {
+            sb.append(in.readLine());
+        }
     }
 }

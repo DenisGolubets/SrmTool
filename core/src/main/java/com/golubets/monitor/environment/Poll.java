@@ -52,7 +52,7 @@ public class Poll {
             List<Arduino> list = arduinoDao.getAll();
             for (Arduino a : list) {
                 try {
-                    new ArduinoListener(a, date);
+                    new ArduinoDispatcher(a, date);
                 } catch (NumberFormatException e) {
                     String textBody = "Check the sensor arduinoutil on Arduino ";
                     log.error(textBody + a, e);

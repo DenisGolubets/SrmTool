@@ -3,32 +3,24 @@ package com.golubets.monitor.environment.util.arduinoutil;
 import com.golubets.monitor.environment.model.Arduino;
 import com.golubets.monitor.environment.model.ConnectionType;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 
 /**
  * Created by golubets on 13.02.2017.
  */
-public class ArduinoSearcher {
-    private final Logger log = Logger.getLogger(ArduinoSearcher.class);
+public class ArduinoUtil {
+    private final Logger log = Logger.getLogger(ArduinoUtil.class);
     private Connector connector;
     private Arduino arduino;
 
-    public Arduino getArduinoByIP(String ip, Arduino arduino) {
+    public ArduinoUtil(Connector connector, Arduino arduino) {
+        this.connector = connector;
         this.arduino = arduino;
-        try {
-            connector = new EthConnector(ip, 23);
-            String temp = connector.getResponse("I");
-            parseArduino(temp);
-        } catch (IOException e) {
-            log.error(e);
-        }
-        return arduino;
     }
 
-    private void parseArduino(String temp) throws NumberFormatException {
-        String[] splitString = temp.split("\\|");
+    private void getFullData () throws NumberFormatException, IOException {
+        String[] splitString = connector.getResponse("I").split("\\|");
         for (String s : splitString) {
             String[] row = s.split(":");
             switch (row[0]) {

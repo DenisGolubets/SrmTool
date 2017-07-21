@@ -20,8 +20,8 @@ import java.util.List;
 /**
  * Created by golubets on 29.11.2016.
  */
-public class ArduinoListener {
-    private final Logger log = Logger.getLogger(ArduinoListener.class);
+public class ArduinoDispatcher {
+    private final Logger log = Logger.getLogger(ArduinoDispatcher.class);
     private String separator = System.getProperty("line.separator");
     private Arduino arduino;
     private double avg10MinT;
@@ -36,7 +36,7 @@ public class ArduinoListener {
 
     private Connector connector;
 
-    public ArduinoListener(Arduino arduino, Date date) throws Exception {
+    public ArduinoDispatcher(Arduino arduino, Date date) throws Exception {
         this.arduino = arduino;
         this.topH = arduino.getTopH();
         this.topT = arduino.getTopT();
@@ -45,6 +45,12 @@ public class ArduinoListener {
 
 
         doJob();
+    }
+
+    public ArduinoDispatcher(Arduino arduino) throws IOException {
+        this.arduino = arduino;
+        this.connector = createConnection(arduino.getConnectionType());
+
     }
 
     private void getDate() throws NullPointerException, IOException {
@@ -158,4 +164,27 @@ public class ArduinoListener {
         return connector;
     }
 
+    public void writeToArduino() throws IOException, InterruptedException {
+        connector.setDate("smac" + arduino.getMac().replaceAll("-", ".").substring(8));
+        Thread.sleep(2000);
+        connector.setDate("si" + arduino.getIp());
+        Thread.sleep(2000);
+        connector.setDate("ss" + arduino.getSubnet());
+        Thread.sleep(2000);
+        connector.setDate("sg" + arduino.getGateway());
+        Thread.sleep(2000);
+        connector.setDate("sd" + arduino.getDns());
+        Thread.sleep(2000);
+        connector.setDate("sT" + arduino.getTopT());
+        Thread.sleep(2000);
+        connector.setDate("sH" + arduino.getTopH());
+        Thread.sleep(2000);
+        connector.setDate("sDt" + arduino.getDhtType());
+        Thread.sleep(2000);
+        connector.setDate("sDp" + arduino.getDhtPort());
+        Thread.sleep(2000);
+        connector.setDate("sw");
+
+
+    }
 }
