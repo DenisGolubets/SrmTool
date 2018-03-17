@@ -1,15 +1,15 @@
 package com.golubets.monitor.environment;
 
-import com.golubets.monitor.environment.exception.PersistException;
-import com.golubets.monitor.environment.util.arduinoutil.Connector;
-import com.golubets.monitor.environment.util.arduinoutil.EthConnector;
-import com.golubets.monitor.environment.util.arduinoutil.JsscSerialConnector;
 import com.golubets.monitor.environment.dao.DataDao;
 import com.golubets.monitor.environment.dao.MailSettingsDao;
+import com.golubets.monitor.environment.exception.PersistException;
 import com.golubets.monitor.environment.mail.EmailSender;
 import com.golubets.monitor.environment.model.*;
 import com.golubets.monitor.environment.util.DaoApplicationContext;
 import com.golubets.monitor.environment.util.DateUtil;
+import com.golubets.monitor.environment.util.arduinoutil.Connector;
+import com.golubets.monitor.environment.util.arduinoutil.EthConnector;
+import com.golubets.monitor.environment.util.arduinoutil.JsscSerialConnector;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class ArduinoDispatcher {
     private long lastEmailSend = 0;
     private EmailSender emailSender = null;
     private Date date;
-    private static final long periodicityOfMailing = 20 * 60 * 980;
+    private static final long PERIODICITY_OF_MAILING = 20 * 60 * 980;
 
     private Connector connector;
 
@@ -57,10 +57,10 @@ public class ArduinoDispatcher {
         String[] arr = getCurrentDate("i").split("\\|");
         for (String s : arr) {
             if (s.startsWith("AVG10minT:")) {
-                avg10MinT = Double.parseDouble(s.replaceAll(",", "").substring(s.indexOf(":") + 1));
+                avg10MinT = Double.parseDouble(s.replaceAll(",", "").substring(s.indexOf(':') + 1));
                 arduino.setTemp(avg10MinT);
             } else if (s.startsWith("AVG10minH:")) {
-                avg10MinH = Double.parseDouble(s.substring(s.indexOf(":") + 1));
+                avg10MinH = Double.parseDouble(s.substring(s.indexOf(':') + 1));
                 arduino.setHum(avg10MinH);
             }
         }
@@ -83,7 +83,7 @@ public class ArduinoDispatcher {
         if (emailSender == null) {
             //save to log
             log.warn(subject + " " + textBody);
-        } else if (lastEmailSend == 0 || (System.currentTimeMillis() - lastEmailSend >= periodicityOfMailing)) {
+        } else if (lastEmailSend == 0 || (System.currentTimeMillis() - lastEmailSend >= PERIODICITY_OF_MAILING)) {
             if (emailSender != null) {
                 emailSender.sendMail(subject, textBody);
             } else log.info(subject + "\n\r" + textBody);

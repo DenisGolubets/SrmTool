@@ -18,7 +18,7 @@ import java.util.TimerTask;
  */
 public class Poll {
 
-    private static final Logger log = Logger.getLogger(Poll.class);
+    private static final Logger LOGGER = Logger.getLogger(Poll.class);
     public static Poll instance;
     private long period = 600000; //10 min
     //    private long period = 60000; //1 min
@@ -55,19 +55,19 @@ public class Poll {
                     new ArduinoDispatcher(a, date);
                 } catch (NumberFormatException e) {
                     String textBody = "Check the sensor arduinoutil on Arduino ";
-                    log.error(textBody + a, e);
+                    LOGGER.error(textBody + a, e);
                 } catch (SocketTimeoutException e) {
                     String textBody = "The Arduino is disconnected ";
-                    log.error(textBody + a, e);
+                    LOGGER.error(textBody + a, e);
                 } catch (IOException e) {
                     String textBody = "The Arduino has problems ";
-                    log.error(textBody + a, e);
+                    LOGGER.error(textBody + a, e);
                 } catch (Exception e) {
-                    log.error(e);
+                    LOGGER.error(e);
                 }
             }
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
     }
 }

@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.golubets.monitor.environment.model.Arduino;
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +17,11 @@ import java.util.List;
  * Created by golubets on 24.08.2016.
  */
 public class ArduinoSerializer {
-    private static final Logger log = Logger.getLogger(ArduinoSerializer.class);
+    private static final Logger LOGGER = Logger.getLogger(ArduinoSerializer.class);
 
     private static final long serialVersionUID = 0L;
 
-   // private final static String ARDUINO_SETTINGS_FOLDER = "data/";
-    private final static String ARDUINO_SETTINGS_FOLDER = "D:/data/";
+    private final static String ARDUINO_SETTINGS_FOLDER = "data/";
     private final static String MASK = ".ar";
 
 
@@ -56,13 +58,13 @@ public class ArduinoSerializer {
                 }
             }
         } catch (NullPointerException e) {
-            log.error("error", e);
+            LOGGER.error("error", e);
         } catch (JsonParseException e) {
-            log.error("error", e);
+            LOGGER.error("error", e);
         } catch (JsonMappingException e) {
-            log.error("error", e);
+            LOGGER.error("error", e);
         } catch (IOException e) {
-            log.error("error", e);
+            LOGGER.error("error", e);
         }
         return list;
     }

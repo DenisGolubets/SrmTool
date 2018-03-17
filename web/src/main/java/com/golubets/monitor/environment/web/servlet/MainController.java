@@ -30,7 +30,7 @@ import java.util.*;
  */
 @Controller
 public class MainController {
-    private static final Logger log = Logger.getLogger(MainController.class);
+    private static final Logger LOGGER = Logger.getLogger(MainController.class);
 
     @Autowired
     private ArduinoDao arduinoDao;
@@ -50,7 +50,7 @@ public class MainController {
             modelAndView.addObject("arduinos", arduinoDao.getAllWithLastData());
             modelAndView.setViewName("index");
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
         return modelAndView;
     }
@@ -64,7 +64,7 @@ public class MainController {
             try {
                 list = arduinoDao.getAllWithLastData();
             } catch (PersistException e) {
-                log.error("", e);
+                LOGGER.error("", e);
             }
             return list;
         } else {
@@ -72,7 +72,7 @@ public class MainController {
             try {
                 list.add(arduinoDao.getByIDWithLastData(id));
             } catch (PersistException e) {
-                log.error("", e);
+                LOGGER.error("", e);
             }
             return list;
         }
@@ -86,7 +86,7 @@ public class MainController {
         try {
             list = dataDao.getAvgLastLimitRecords(arduinoDao.getByID(id), 24);
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
         return list;
     }
@@ -126,7 +126,7 @@ public class MainController {
                 }
             }
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
         return prepareList;
     }
@@ -153,7 +153,7 @@ public class MainController {
             modelAndView.addObject("arduinos", list);
             modelAndView.setViewName("/settings/settingsArduino");
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
         return modelAndView;
     }
@@ -180,7 +180,7 @@ public class MainController {
             }
             arduinoDao.persist(arduino);
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
         return "redirect:/settings/arduino";
 
@@ -195,7 +195,7 @@ public class MainController {
             modelAndView.addObject("dhtType", Arrays.asList(11, 22, 23));
             modelAndView.setViewName("/settings/editArduino");
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
         return modelAndView;
     }
@@ -209,7 +209,7 @@ public class MainController {
         try {
             arduinoDao.update(arduino);
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
         return "redirect:/settings/arduino";
 
@@ -224,7 +224,7 @@ public class MainController {
             modelAndView.setViewName("/settings/settingsEmail");
             mailSettings = (list.size() == 1) ? list.get(0) : new MailSettings();
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
         modelAndView.addObject("mailSettings", mailSettings);
         return modelAndView;
@@ -245,7 +245,7 @@ public class MainController {
         try {
             mailSettingsDao.persist(mailSettings);
         } catch (PersistException e) {
-            log.error("", e);
+            LOGGER.error("", e);
         }
         return "redirect:/settings/";
 

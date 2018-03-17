@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class EmailSender implements BaseObject, Serializable {
-    private static final Logger log = Logger.getLogger(EmailSender.class);
+    private static final Logger LOGGER = Logger.getLogger(EmailSender.class);
     private static final long serialVersionUID = 0L;
 
     private String host;
@@ -126,14 +126,14 @@ public class EmailSender implements BaseObject, Serializable {
                 throw new Exception(e);
             }
             if (errCounter > 5) {
-                log.error(e);
+                LOGGER.error(e);
             } else {
                 try {
                     TimeUnit.MINUTES.sleep(2);
                     sendMail(subject, bodyText);
                 } catch (InterruptedException e1) {
 
-                    log.error(e1);
+                    LOGGER.error(e1);
                 }
             }
         }

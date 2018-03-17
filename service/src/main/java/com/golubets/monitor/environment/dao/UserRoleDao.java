@@ -2,9 +2,9 @@ package com.golubets.monitor.environment.dao;
 
 import com.golubets.monitor.environment.model.UserRole;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 @Component
 public class UserRoleDao {
 
-    private static final Logger log = Logger.getLogger(UserRoleDao.class);
+    private static final Logger LOGGER = Logger.getLogger(UserRoleDao.class);
 
     private static SessionFactory sessionFactory = null;
 
@@ -32,7 +32,7 @@ public class UserRoleDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();
@@ -51,7 +51,7 @@ public class UserRoleDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

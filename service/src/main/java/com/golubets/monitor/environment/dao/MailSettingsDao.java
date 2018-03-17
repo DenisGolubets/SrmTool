@@ -3,9 +3,9 @@ package com.golubets.monitor.environment.dao;
 import com.golubets.monitor.environment.exception.PersistException;
 import com.golubets.monitor.environment.model.MailSettings;
 import com.golubets.monitor.environment.util.HibernateSessionFactory;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Component
 public class MailSettingsDao {
-    private static final Logger log = Logger.getLogger(DataDao.class);
+    private static final Logger LOGGER = Logger.getLogger(DataDao.class);
 
     private static SessionFactory sessionFactory = null;
 
@@ -31,7 +31,7 @@ public class MailSettingsDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
             throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -49,7 +49,7 @@ public class MailSettingsDao {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
             throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {

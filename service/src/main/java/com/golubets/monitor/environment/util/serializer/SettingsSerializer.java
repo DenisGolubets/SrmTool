@@ -21,10 +21,10 @@ import java.util.Map;
  * Created by golubets on 24.08.2016.
  */
 public class SettingsSerializer {
-    private static final Logger log = Logger.getLogger(SettingsSerializer.class);
+    private static final Logger LOGGER = Logger.getLogger(SettingsSerializer.class);
 
-    private static final byte[] k = "2w32eEt9!".getBytes(Charset.forName("UTF-8"));
-    private static final SecretKey key64 = new SecretKeySpec(k, "Blowfish");
+    private static final byte[] K = "2w32eEt9!".getBytes(Charset.forName("UTF-8"));
+    private static final SecretKey KEY_64 = new SecretKeySpec(K, "Blowfish");
 
     private final static String ENCRYPT_SETTING_FILE = "setting.dat";
 
@@ -43,9 +43,9 @@ public class SettingsSerializer {
     public static void saveEncryptedSettingsToJsonFile(Map<String, BaseObject> saveMap) {
         initCipher();
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, key64);
+            cipher.init(Cipher.ENCRYPT_MODE, KEY_64);
         } catch (InvalidKeyException e) {
-            log.error("error", e);
+            LOGGER.error("error", e);
         }
         try (OutputStream out = new CipherOutputStream(new BufferedOutputStream(new FileOutputStream(cryptSettingFile)), cipher)) {
             ObjectMapper mapper = new ObjectMapper();
@@ -61,9 +61,9 @@ public class SettingsSerializer {
         HashMap<String,BaseObject> map = null;
         initCipher();
         try {
-            cipher.init(Cipher.DECRYPT_MODE, key64);
+            cipher.init(Cipher.DECRYPT_MODE, KEY_64);
         } catch (InvalidKeyException e) {
-            log.error(e);
+            LOGGER.error(e);
         }
         if (cryptSettingFile.exists() && !cryptSettingFile.isDirectory()) {
             try (InputStream in = new CipherInputStream(new BufferedInputStream(new FileInputStream(cryptSettingFile)), cipher)) {
@@ -72,9 +72,9 @@ public class SettingsSerializer {
                 MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, MailSettings.class);
                 map = mapper.readValue(in, mapType);
             } catch (FileNotFoundException e) {
-                log.error(ENCRYPT_SETTING_FILE + " not found", e);
+                LOGGER.error(ENCRYPT_SETTING_FILE + " not found", e);
             } catch (IOException e) {
-                log.error("error", e);
+                LOGGER.error("error", e);
             }
         }
         return map;
@@ -85,9 +85,9 @@ public class SettingsSerializer {
             try {
                 cipher = Cipher.getInstance("Blowfish");
             } catch (NoSuchAlgorithmException e) {
-                log.error("error", e);
+                LOGGER.error("error", e);
             } catch (NoSuchPaddingException e) {
-                log.error("error", e);
+                LOGGER.error("error", e);
             }
         }
     }

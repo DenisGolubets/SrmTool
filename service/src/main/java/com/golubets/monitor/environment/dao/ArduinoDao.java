@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public class ArduinoDao extends Arduino {
 
-    private static final Logger log = Logger.getLogger(Arduino.class);
+    private static final Logger LOGGER = Logger.getLogger(Arduino.class);
 
     private static SessionFactory sessionFactory = null;
 
@@ -35,7 +35,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
             throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -52,7 +52,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
             throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -73,7 +73,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
             throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -99,7 +99,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
             throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -119,7 +119,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
             throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -138,7 +138,7 @@ public class ArduinoDao extends Arduino {
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
             throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
@@ -168,7 +168,7 @@ public class ArduinoDao extends Arduino {
             }
         } catch (Exception e) {
             session.getTransaction().rollback();
-            log.error("error", e);
+            LOGGER.error("error", e);
             throw new PersistException(e);
         } finally {
             if (session != null && session.isOpen()) {
